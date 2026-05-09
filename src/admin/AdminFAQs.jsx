@@ -5,152 +5,85 @@ import { cacheClear } from '../lib/cache'
 export default function AdminFAQs() {
   const [faqs, setFaqs] = useState([])
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ question: '', answer: '', category: '' })
+  const [form, setForm] = useState({ question:'', answer:'', category:'' })
   const [saving, setSaving] = useState(false)
 
-  useEffect(() => { loadFAQs() }, [])
+  useEffect(() => { load() }, [])
 
-  async function loadFAQs() {
+  async function load() {
     const { data } = await supabase.from('faqs').select('*').order('sort_order')
     setFaqs(data || [])
   }
 
-  async function saveFAQ() {
+  async function save() {
     setSaving(true)
-    if (editing === 'new') {
-      await supabase.from('faqs').insert({
-        ...form,
-        published: true,
-        sort_order: faqs.length + 1
-      })
-    } else {
-      await supabase.from('faqs').update(form).eq('id', editing.id)
-    }
-    cacheClear('faqs')
-    setEditing(null)
-    setSaving(false)
-    loadFAQs()
+    if (editing === 'new') await supabase.from('faqs').insert({ ...form, published: true, sort_order: faqs.length + 1 })
+    else await supabase.from('faqs').update(form).eq('id', editing.id)
+    cacheClear('faqs'); setEditing(null); setSaving(false); load()
   }
 
-  async function deleteFAQ(faq) {
-    if (!confirm(`Delete this FAQ?\n"${faq.question}"`)) return
+  async function del(faq) {
+    if (!confirm(`Delete this FAQ?`)) return
     await supabase.from('faqs').delete().eq('id', faq.id)
-    cacheClear('faqs')
-    loadFAQs()
-  }
-
-  async function togglePublish(faq) {
-    await supabase.from('faqs').update({ published: !faq.published }).eq('id', faq.id)
-    cacheClear('faqs')
-    loadFAQs()
-  }
-
-  function startEdit(faq) {
-    setForm({ question: faq.question, answer: faq.answer, category: faq.category || '' })
-    setEditing(faq)
-  }
-
-  function startNew() {
-    setForm({ question: '', answer: '', category: '' })
-    setEditing('new')
+    cacheClear('faqs'); load()
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div style={{ padding: 28 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">FAQs</h1>
-          <p className="text-gray-500 text-sm">{faqs.length} questions · shown on homepage</p>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>FAQs</h1>
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>{faqs.length} questions · shown on homepage</p>
         </div>
-        <button onClick={startNew}
-          className="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+        <button onClick={() => { setForm({ question:'', answer:'', category:'' }); setEditing('new') }}
+          style={{ background: 'var(--primary)', color: '#fff', border: 'none', padding: '9px 18px', borderRadius: 8, fontWeight: 700, fontSize: 13, cursor: 'pointer', fontFamily: 'var(--ff)' }}>
           + Add FAQ
         </button>
       </div>
 
-      {/* Editor form */}
       {editing && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-          <h2 className="font-bold text-lg text-gray-900 mb-4">
-            {editing === 'new' ? '➕ New FAQ' : '✏️ Edit FAQ'}
-          </h2>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Question</label>
-              <input type="text" value={form.question}
-                onChange={e => setForm(f => ({ ...f, question: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900"
-                placeholder="e.g. What materials do you use?" />
+        <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 12, padding: 24, marginBottom: 20 }}>
+          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: 'var(--ink)' }}>{editing==='new'?'New FAQ':'Edit FAQ'}</h2>
+          {[['question','Question','text'],['answer','Answer','textarea'],['category','Category (optional)','text']].map(([key,label,type]) => (
+            <div key={key} style={{ marginBottom: 14 }}>
+              <label style={{ fontSize: 11, fontWeight: 600, color: 'var(--muted)', display: 'block', marginBottom: 5 }}>{label}</label>
+              {type==='textarea' ? (
+                <textarea value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} rows={4}
+                  style={{ width:'100%', border:'1px solid var(--border)', borderRadius:8, padding:'10px 14px', fontSize:13, fontFamily:'var(--ff)', outline:'none', resize:'vertical', boxSizing:'border-box' }} />
+              ) : (
+                <input type="text" value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))}
+                  style={{ width:'100%', border:'1px solid var(--border)', borderRadius:8, padding:'10px 14px', fontSize:13, fontFamily:'var(--ff)', outline:'none', boxSizing:'border-box' }} />
+              )}
             </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Answer</label>
-              <textarea value={form.answer}
-                onChange={e => setForm(f => ({ ...f, answer: e.target.value }))}
-                rows={4}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 resize-y"
-                placeholder="Write a helpful, detailed answer..." />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Category (optional)</label>
-              <input type="text" value={form.category}
-                onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900"
-                placeholder="e.g. Products, Shipping, Customization" />
-            </div>
-            <div className="flex gap-3">
-              <button onClick={saveFAQ} disabled={saving || !form.question || !form.answer}
-                className="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2 rounded-lg text-sm font-bold transition-colors disabled:opacity-60">
-                {saving ? 'Saving...' : 'Save FAQ'}
-              </button>
-              <button onClick={() => setEditing(null)}
-                className="text-sm px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 font-medium">
-                Cancel
-              </button>
-            </div>
+          ))}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button onClick={save} disabled={saving||!form.question||!form.answer}
+              style={{ background:'var(--primary)', color:'#fff', border:'none', padding:'9px 20px', borderRadius:8, fontWeight:700, fontSize:13, cursor:'pointer', fontFamily:'var(--ff)', opacity:saving?0.7:1 }}>
+              {saving?'Saving...':'Save FAQ'}
+            </button>
+            <button onClick={() => setEditing(null)} style={{ background:'none', border:'1px solid var(--border)', color:'var(--mid)', padding:'9px 16px', borderRadius:8, cursor:'pointer', fontFamily:'var(--ff)', fontSize:13 }}>Cancel</button>
           </div>
         </div>
       )}
 
-      {/* FAQ List */}
-      {faqs.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-200">
-          <div className="text-4xl mb-3">❓</div>
-          <p className="text-gray-500 font-medium mb-4">No FAQs yet</p>
-          <button onClick={startNew} className="bg-blue-900 text-white px-5 py-2 rounded-lg text-sm font-bold">
-            Add First FAQ
-          </button>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {faqs.map((faq, i) => (
-            <div key={faq.id}
-              className={`bg-white rounded-xl border p-4 flex gap-4 ${faq.published ? 'border-gray-200' : 'border-gray-200 opacity-60'}`}>
-              <div className="flex-shrink-0 w-8 h-8 bg-blue-100 text-blue-900 rounded-lg flex items-center justify-center font-bold text-sm">
-                {i + 1}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-800 text-sm">{faq.question}</p>
-                <p className="text-gray-500 text-sm mt-1 line-clamp-2">{faq.answer}</p>
-                {faq.category && (
-                  <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full mt-2 inline-block font-medium">
-                    {faq.category}
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-col gap-2 flex-shrink-0">
-                <button onClick={() => startEdit(faq)}
-                  className="text-xs text-blue-700 hover:text-blue-900 font-semibold">Edit</button>
-                <button onClick={() => togglePublish(faq)}
-                  className={`text-xs font-semibold ${faq.published ? 'text-green-600 hover:text-green-800' : 'text-yellow-600 hover:text-yellow-800'}`}>
-                  {faq.published ? 'Hide' : 'Show'}
-                </button>
-                <button onClick={() => deleteFAQ(faq)}
-                  className="text-xs text-red-500 hover:text-red-700 font-semibold">Delete</button>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {faqs.map((faq, i) => (
+          <div key={faq.id} style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 10, padding: '14px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+            <div style={{ display: 'flex', gap: 12, flex: 1 }}>
+              <div style={{ width: 28, height: 28, borderRadius: 6, background: 'var(--primary)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 800, flexShrink: 0 }}>{i+1}</div>
+              <div>
+                <p style={{ fontWeight: 600, color: 'var(--ink)', fontSize: 13, marginBottom: 4 }}>{faq.question}</p>
+                <p style={{ fontSize: 12, color: 'var(--muted)', lineHeight: 1.5 }}>{faq.answer.substring(0,120)}{faq.answer.length>120?'...':''}</p>
+                {faq.category && <span style={{ fontSize: 10, fontWeight: 700, background: '#F3F4F6', color: 'var(--mid)', padding: '2px 8px', borderRadius: 4, marginTop: 6, display: 'inline-block' }}>{faq.category}</span>}
               </div>
             </div>
-          ))}
-        </div>
-      )}
+            <div style={{ display: 'flex', gap: 12, flexShrink: 0 }}>
+              <button onClick={() => { setForm({ question:faq.question, answer:faq.answer, category:faq.category||'' }); setEditing(faq) }} style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--ff)' }}>Edit</button>
+              <button onClick={() => del(faq)} style={{ fontSize: 12, color: '#DC2626', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--ff)' }}>Delete</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
