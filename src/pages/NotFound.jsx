@@ -1,21 +1,17 @@
 import { Link } from 'react-router-dom'
-import SEOHead from '../components/SEOHead'
 
 export default function NotFound() {
   return (
-    <>
-      <SEOHead title="Page Not Found" />
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 pt-16">
-        <div className="text-center px-4">
-          <div className="text-9xl font-bold text-blue-900 opacity-10 mb-4 select-none">404</div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-3">Page Not Found</h1>
-          <p className="text-gray-500 mb-8 max-w-md">The page you're looking for doesn't exist or may have been moved.</p>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link to="/" className="btn-primary">← Back to Home</Link>
-            <Link to="/blogs" className="btn-secondary">Browse Blog</Link>
-          </div>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface)', paddingTop: 60 }}>
+      <div style={{ textAlign: 'center', padding: '0 24px' }}>
+        <div style={{ fontSize: 120, fontWeight: 800, color: 'var(--primary)', opacity: 0.1, lineHeight: 1 }}>404</div>
+        <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--ink)', marginBottom: 12 }}>Page Not Found</h1>
+        <p style={{ color: 'var(--mid)', marginBottom: 32, fontSize: 15 }}>The page you're looking for doesn't exist.</p>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+          <Link to="/" style={{ background: 'var(--primary)', color: '#fff', padding: '11px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>← Back to Home</Link>
+          <Link to="/blogs" style={{ border: '1.5px solid var(--primary)', color: 'var(--primary)', padding: '11px 24px', borderRadius: 8, fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>Browse Blog</Link>
         </div>
       </div>
-    </>
+    </div>
   )
 }

@@ -3,9 +3,10 @@ import { supabase } from '../lib/supabase'
 import { cacheClear } from '../lib/cache'
 
 const SECTIONS = [
-  { id: 'hero', label: 'Hero Banner', desc: 'Main banner shown at the top of the homepage', icon: '🏠' },
-  { id: 'about', label: 'About Us', desc: 'Company information and story section', icon: 'ℹ️' },
-  { id: 'cta', label: 'Call To Action', desc: 'Bottom contact/enquiry section', icon: '📢' },
+  { id: 'hero', label: 'Hero Banner', desc: 'Main banner at top of homepage', icon: '🏠' },
+  { id: 'about', label: 'About / Why TMCI', desc: 'Company info and checklist section', icon: 'ℹ️' },
+  { id: 'products', label: 'Products Section', desc: 'Product mosaic grid', icon: '🔧' },
+  { id: 'cta', label: 'Call To Action', desc: 'Bottom CTA banner', icon: '📢' },
 ]
 
 export default function AdminSections() {
@@ -15,9 +16,9 @@ export default function AdminSections() {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  useEffect(() => { loadSections() }, [])
+  useEffect(() => { load() }, [])
 
-  async function loadSections() {
+  async function load() {
     const { data } = await supabase.from('site_sections').select('*')
     const map = {}
     data?.forEach(s => { map[s.id] = s })
@@ -26,119 +27,76 @@ export default function AdminSections() {
 
   function startEdit(section) {
     const existing = sections[section.id] || {}
-    setForm({
-      content: existing.content || '',
-      content_type: existing.content_type || 'html',
-    })
+    setForm({ content: existing.content || '', content_type: existing.content_type || 'html' })
     setEditing(section)
     setSaved(false)
   }
 
-  async function saveSection() {
+  async function save() {
     setSaving(true)
-    await supabase.from('site_sections').upsert({
-      id: editing.id,
-      title: editing.label,
-      content_type: form.content_type,
-      content: form.content,
-      updated_at: new Date().toISOString()
-    })
+    await supabase.from('site_sections').upsert({ id: editing.id, title: editing.label, content_type: form.content_type, content: form.content, updated_at: new Date().toISOString() })
     cacheClear('home_sections')
-    await loadSections()
-    setSaving(false)
-    setSaved(true)
+    await load()
+    setSaving(false); setSaved(true)
     setTimeout(() => setSaved(false), 3000)
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Website Sections</h1>
-        <p className="text-gray-500 text-sm mt-1">Edit each section of your homepage. Paste HTML code or an image URL. Changes go live instantly.</p>
+    <div style={{ padding: 28 }}>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>Website Sections</h1>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Edit each section of your homepage. Paste HTML or an image URL. Changes go live instantly.</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4 mb-8">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 14, marginBottom: 28 }}>
         {SECTIONS.map(section => (
-          <div key={section.id} className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-start mb-3">
-              <div className="text-3xl">{section.icon}</div>
-              {sections[section.id] && (
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold">Live</span>
-              )}
+          <div key={section.id} style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 12, padding: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+              <span style={{ fontSize: 28 }}>{section.icon}</span>
+              {sections[section.id] && <span style={{ fontSize: 10, fontWeight: 700, background: '#F0FDF4', color: '#16A34A', padding: '2px 8px', borderRadius: 10 }}>Live</span>}
             </div>
-            <h3 className="font-bold text-gray-800 mb-1">{section.label}</h3>
-            <p className="text-sm text-gray-500 mb-4">{section.desc}</p>
-            <button
-              onClick={() => startEdit(section)}
-              className="w-full bg-blue-900 hover:bg-blue-800 text-white text-sm py-2 rounded-lg font-semibold transition-colors">
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', marginBottom: 4 }}>{section.label}</h3>
+            <p style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 16 }}>{section.desc}</p>
+            <button onClick={() => startEdit(section)}
+              style={{ background: 'var(--primary)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 7, fontSize: 12.5, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--ff)', width: '100%' }}>
               ✏️ Edit Section
             </button>
           </div>
         ))}
       </div>
 
-      {/* Editor panel */}
       {editing && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">Editing: {editing.label}</h2>
-              <p className="text-sm text-gray-500">Choose HTML for rich content, or Image URL for a banner image</p>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => setEditing(null)}
-                className="text-sm text-gray-600 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                Cancel
-              </button>
-              <button onClick={saveSection} disabled={saving}
-                className={`text-sm px-5 py-2 rounded-lg font-bold transition-colors disabled:opacity-60 ${saved ? 'bg-green-500 text-white' : 'bg-blue-900 hover:bg-blue-800 text-white'}`}>
+        <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 12, padding: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ink)' }}>Editing: {editing.label}</h2>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button onClick={() => setEditing(null)} style={{ background: 'none', border: '1px solid var(--border)', color: 'var(--mid)', padding: '8px 16px', borderRadius: 7, cursor: 'pointer', fontFamily: 'var(--ff)', fontSize: 13 }}>Cancel</button>
+              <button onClick={save} disabled={saving}
+                style={{ background: saved ? '#16A34A' : 'var(--primary)', color: '#fff', border: 'none', padding: '8px 20px', borderRadius: 7, fontWeight: 700, cursor: 'pointer', fontFamily: 'var(--ff)', fontSize: 13, opacity: saving ? 0.7 : 1 }}>
                 {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Changes'}
               </button>
             </div>
           </div>
 
-          <div className="mb-5">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Content Type</label>
-            <div className="flex gap-3">
-              {[['html', '📄 HTML Code'], ['image', '🖼️ Image URL']].map(([val, label]) => (
-                <button key={val}
-                  onClick={() => setForm(f => ({ ...f, content_type: val }))}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border-2 transition-colors ${form.content_type === val ? 'border-blue-900 bg-blue-50 text-blue-900' : 'border-gray-200 text-gray-600 hover:border-gray-300'}`}>
-                  {label}
-                </button>
-              ))}
-            </div>
+          <div style={{ display: 'flex', gap: 10, marginBottom: 16 }}>
+            {[['html','📄 HTML Code'],['image','🖼️ Image URL']].map(([val,label]) => (
+              <button key={val} onClick={() => setForm(f => ({ ...f, content_type: val }))}
+                style={{ padding: '8px 16px', borderRadius: 7, fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--ff)', border: `2px solid ${form.content_type === val ? 'var(--primary)' : 'var(--border)'}`, background: form.content_type === val ? 'rgba(0,137,123,0.08)' : '#fff', color: form.content_type === val ? 'var(--primary)' : 'var(--mid)' }}>
+                {label}
+              </button>
+            ))}
           </div>
 
           {form.content_type === 'html' ? (
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">HTML Content</label>
-              <textarea
-                value={form.content}
-                onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
-                rows={16}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-900 resize-y"
-                placeholder={'<div>\n  <h1>Your Heading Here</h1>\n  <p>Your content here...</p>\n  <a href="#contact">Get a Quote</a>\n</div>'}
-              />
-              <p className="text-xs text-gray-400 mt-2">💡 Tip: You can paste full HTML with inline styles, Tailwind classes, or any content.</p>
-            </div>
+            <textarea value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} rows={14}
+              style={{ width: '100%', border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px', fontSize: 13, fontFamily: 'monospace', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
+              placeholder="<h1>Your HTML here</h1><p>Add any content...</p>" />
           ) : (
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Image URL</label>
-              <input
-                type="url"
-                value={form.content}
-                onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900"
-                placeholder="https://res.cloudinary.com/your-cloud/image/upload/v1234/banner.jpg"
-              />
-              <p className="text-xs text-gray-400 mt-2">💡 Paste a Cloudinary, Unsplash, or any direct image URL.</p>
-              {form.content && (
-                <div className="mt-4">
-                  <p className="text-xs font-semibold text-gray-600 mb-2">Preview:</p>
-                  <img src={form.content} alt="Preview" className="max-h-48 rounded-lg object-contain border border-gray-200" />
-                </div>
-              )}
+              <input type="url" value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))}
+                style={{ width: '100%', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', fontSize: 13, fontFamily: 'var(--ff)', outline: 'none', boxSizing: 'border-box' }}
+                placeholder="https://res.cloudinary.com/your-cloud/image/upload/..." />
+              {form.content && <img src={form.content} alt="Preview" style={{ marginTop: 12, maxHeight: 180, borderRadius: 8, border: '1px solid var(--border)', objectFit: 'contain' }} />}
             </div>
           )}
         </div>

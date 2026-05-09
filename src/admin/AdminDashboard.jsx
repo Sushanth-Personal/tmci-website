@@ -18,44 +18,46 @@ export default function AdminDashboard() {
   }, [])
 
   const cards = [
-    { label: 'Total Blog Posts', value: stats.blogs, icon: '📝', href: '/admin/blogs', color: 'bg-blue-50 border-blue-200' },
-    { label: 'Published Posts', value: stats.published, icon: '✅', href: '/admin/blogs', color: 'bg-green-50 border-green-200' },
-    { label: 'Total FAQs', value: stats.faqs, icon: '❓', href: '/admin/faqs', color: 'bg-amber-50 border-amber-200' },
-    { label: 'Site Sections', value: 3, icon: '🖥️', href: '/admin/sections', color: 'bg-purple-50 border-purple-200' },
+    { label: 'Total Blog Posts', value: stats.blogs, icon: '📝', href: '/admin/blogs', bg: '#EFF6FF', border: '#BFDBFE' },
+    { label: 'Published Posts', value: stats.published, icon: '✅', href: '/admin/blogs', bg: '#F0FDF4', border: '#BBF7D0' },
+    { label: 'Total FAQs', value: stats.faqs, icon: '❓', href: '/admin/faqs', bg: '#FFFBEB', border: '#FDE68A' },
+    { label: 'Site Sections', value: 3, icon: '🖥️', href: '/admin/sections', bg: '#F5F3FF', border: '#DDD6FE' },
   ]
 
-  const quickActions = [
-    { label: 'Write New Blog Post', icon: '✍️', href: '/admin/blogs/new', color: 'bg-blue-900 hover:bg-blue-800' },
-    { label: 'Edit Website Sections', icon: '🖥️', href: '/admin/sections', color: 'bg-blue-700 hover:bg-blue-600' },
-    { label: 'Manage FAQs', icon: '❓', href: '/admin/faqs', color: 'bg-amber-500 hover:bg-amber-600' },
-    { label: 'View Live Website', icon: '🌐', href: '/', color: 'bg-gray-700 hover:bg-gray-600', target: '_blank' },
+  const actions = [
+    { label: 'Write New Blog Post', icon: '✍️', href: '/admin/blogs/new', bg: 'var(--primary)' },
+    { label: 'Edit Website Sections', icon: '🖥️', href: '/admin/sections', bg: 'var(--primary-dk)' },
+    { label: 'Change Theme & Colours', icon: '🎨', href: '/admin/theme', bg: '#7C3AED' },
+    { label: 'View Live Website', icon: '🌐', href: '/', bg: '#374151', target: '_blank' },
   ]
 
   return (
-    <div className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Welcome back! Manage your TMCI website from here.</p>
+    <div style={{ padding: 28 }}>
+      <div style={{ marginBottom: 28 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>Dashboard</h1>
+        <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Welcome back! Manage your TMCI website.</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 32 }}>
         {cards.map(card => (
-          <Link key={card.label} to={card.href}
-            className={`${card.color} border rounded-xl p-5 hover:shadow-md transition-shadow`}>
-            <div className="text-3xl mb-3">{card.icon}</div>
-            <div className="text-3xl font-bold text-gray-900">{card.value}</div>
-            <div className="text-xs text-gray-500 mt-1 font-medium">{card.label}</div>
+          <Link key={card.label} to={card.href} style={{ background: card.bg, border: `1px solid ${card.border}`, borderRadius: 12, padding: 20, textDecoration: 'none', transition: 'transform 0.15s' }}
+            onMouseOver={e => e.currentTarget.style.transform='translateY(-2px)'}
+            onMouseOut={e => e.currentTarget.style.transform=''}>
+            <div style={{ fontSize: 28, marginBottom: 10 }}>{card.icon}</div>
+            <div style={{ fontSize: 32, fontWeight: 800, color: 'var(--ink)', fontFamily: 'var(--mono)' }}>{card.value}</div>
+            <div style={{ fontSize: 12, color: 'var(--mid)', marginTop: 4, fontWeight: 500 }}>{card.label}</div>
           </Link>
         ))}
       </div>
 
-      <h2 className="font-bold text-gray-800 mb-4">Quick Actions</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {quickActions.map(action => (
-          <Link key={action.label} to={action.href} target={action.target}
-            className={`${action.color} text-white rounded-xl p-5 text-center transition-colors`}>
-            <div className="text-3xl mb-2">{action.icon}</div>
-            <div className="text-xs font-semibold leading-tight">{action.label}</div>
+      <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>Quick Actions</h2>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
+        {actions.map(action => (
+          <Link key={action.label} to={action.href} target={action.target} style={{ background: action.bg, color: '#fff', borderRadius: 12, padding: '18px 16px', textAlign: 'center', textDecoration: 'none', transition: 'opacity 0.15s' }}
+            onMouseOver={e => e.currentTarget.style.opacity='0.85'}
+            onMouseOut={e => e.currentTarget.style.opacity='1'}>
+            <div style={{ fontSize: 28, marginBottom: 8 }}>{action.icon}</div>
+            <div style={{ fontSize: 12, fontWeight: 600, lineHeight: 1.4 }}>{action.label}</div>
           </Link>
         ))}
       </div>

@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 export default function AdminWorkbench() {
   const [options, setOptions] = useState([])
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ category: '', name: '', image_url: '', description: '' })
+  const [form, setForm] = useState({ category:'', name:'', image_url:'', description:'' })
   const [saving, setSaving] = useState(false)
 
   useEffect(() => { load() }, [])
@@ -16,14 +16,9 @@ export default function AdminWorkbench() {
 
   async function save() {
     setSaving(true)
-    if (editing === 'new') {
-      await supabase.from('workbench_options').insert({ ...form, sort_order: options.length + 1 })
-    } else {
-      await supabase.from('workbench_options').update(form).eq('id', editing.id)
-    }
-    setEditing(null)
-    setSaving(false)
-    load()
+    if (editing === 'new') await supabase.from('workbench_options').insert({ ...form, sort_order: options.length + 1 })
+    else await supabase.from('workbench_options').update(form).eq('id', editing.id)
+    setEditing(null); setSaving(false); load()
   }
 
   async function del(opt) {
@@ -32,105 +27,59 @@ export default function AdminWorkbench() {
     load()
   }
 
-  const grouped = options.reduce((acc, o) => {
-    if (!acc[o.category]) acc[o.category] = []
-    acc[o.category].push(o)
-    return acc
-  }, {})
+  const grouped = options.reduce((acc, o) => { if (!acc[o.category]) acc[o.category]=[]; acc[o.category].push(o); return acc }, {})
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div style={{ padding: 28 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Workbench Options</h1>
-          <p className="text-gray-500 text-sm">Manage customization choices shown to customers</p>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>Workbench Options</h1>
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>Manage the module/add-on options shown in the configurator</p>
         </div>
-        <button
-          onClick={() => { setForm({ category: '', name: '', image_url: '', description: '' }); setEditing('new') }}
-          className="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+        <button onClick={() => { setForm({ category:'', name:'', image_url:'', description:'' }); setEditing('new') }}
+          style={{ background:'var(--primary)', color:'#fff', border:'none', padding:'9px 18px', borderRadius:8, fontWeight:700, fontSize:13, cursor:'pointer', fontFamily:'var(--ff)' }}>
           + Add Option
         </button>
       </div>
 
-      {/* Edit form */}
       {editing && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-          <h2 className="font-bold text-lg text-gray-900 mb-4">
-            {editing === 'new' ? 'New Option' : 'Edit Option'}
-          </h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {[
-              ['category', 'Category', 'e.g. Size, Material, Surface, Add-ons'],
-              ['name', 'Name', 'e.g. 1200mm Wide, Steel Top'],
-              ['image_url', 'Image URL (Cloudinary etc.)', 'https://res.cloudinary.com/...'],
-              ['description', 'Description', 'Short description of this option']
-            ].map(([key, label, placeholder]) => (
+        <div style={{ background:'#fff', border:'1px solid var(--border)', borderRadius:12, padding:24, marginBottom:24 }}>
+          <h2 style={{ fontSize:16, fontWeight:700, marginBottom:16, color:'var(--ink)' }}>{editing==='new'?'New Option':'Edit Option'}</h2>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+            {[['category','Category','e.g. Size, Material, Add-ons'],['name','Name','e.g. 1200mm Wide'],['image_url','Image URL','https://res.cloudinary.com/...'],['description','Description','Short description']].map(([key,label,ph]) => (
               <div key={key}>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
-                <input type="text" value={form[key]}
-                  onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900"
-                  placeholder={placeholder} />
+                <label style={{ fontSize:11, fontWeight:600, color:'var(--muted)', display:'block', marginBottom:5 }}>{label}</label>
+                <input type="text" value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))}
+                  style={{ width:'100%', border:'1px solid var(--border)', borderRadius:8, padding:'9px 12px', fontSize:13, fontFamily:'var(--ff)', outline:'none', boxSizing:'border-box' }} placeholder={ph} />
               </div>
             ))}
           </div>
-          {form.image_url && (
-            <div className="mt-4">
-              <p className="text-xs font-semibold text-gray-600 mb-2">Image Preview:</p>
-              <img src={form.image_url} alt="Preview" className="h-24 rounded-lg object-contain border" />
-            </div>
-          )}
-          <div className="flex gap-3 mt-5">
-            <button onClick={save} disabled={saving || !form.category || !form.name}
-              className="bg-blue-900 hover:bg-blue-800 text-white px-5 py-2 rounded-lg text-sm font-bold disabled:opacity-60 transition-colors">
-              {saving ? 'Saving...' : 'Save'}
-            </button>
-            <button onClick={() => setEditing(null)}
-              className="text-sm px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-              Cancel
-            </button>
+          {form.image_url && <img src={form.image_url} alt="" style={{ marginTop:12, height:80, borderRadius:8, objectFit:'cover' }} />}
+          <div style={{ display:'flex', gap:10, marginTop:16 }}>
+            <button onClick={save} disabled={saving} style={{ background:'var(--primary)', color:'#fff', border:'none', padding:'9px 20px', borderRadius:8, fontWeight:700, fontSize:13, cursor:'pointer', fontFamily:'var(--ff)' }}>{saving?'Saving...':'Save'}</button>
+            <button onClick={()=>setEditing(null)} style={{ background:'none', border:'1px solid var(--border)', color:'var(--mid)', padding:'9px 16px', borderRadius:8, cursor:'pointer', fontFamily:'var(--ff)', fontSize:13 }}>Cancel</button>
           </div>
         </div>
       )}
 
-      {/* Grouped options */}
-      {Object.keys(grouped).length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-200">
-          <div className="text-4xl mb-3">🔧</div>
-          <p className="text-gray-500 font-medium mb-4">No workbench options yet</p>
-          <button
-            onClick={() => { setForm({ category: '', name: '', image_url: '', description: '' }); setEditing('new') }}
-            className="bg-blue-900 text-white px-5 py-2 rounded-lg text-sm font-bold">
-            Add First Option
-          </button>
-        </div>
-      ) : (
-        Object.entries(grouped).map(([category, items]) => (
-          <div key={category} className="mb-8">
-            <h2 className="font-bold text-gray-700 text-base mb-3 pb-2 border-b border-gray-200">
-              {category} <span className="text-gray-400 font-normal text-sm">({items.length})</span>
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {items.map(opt => (
-                <div key={opt.id} className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                  {opt.image_url && (
-                    <img src={opt.image_url} alt={opt.name}
-                      className="w-full h-24 object-cover rounded-lg mb-3 bg-gray-50" />
-                  )}
-                  <p className="font-bold text-sm text-gray-800">{opt.name}</p>
-                  {opt.description && <p className="text-xs text-gray-500 mt-1 line-clamp-2">{opt.description}</p>}
-                  <div className="flex gap-3 mt-3">
-                    <button onClick={() => { setForm(opt); setEditing(opt) }}
-                      className="text-xs text-blue-700 hover:text-blue-900 font-semibold">Edit</button>
-                    <button onClick={() => del(opt)}
-                      className="text-xs text-red-500 hover:text-red-700 font-semibold">Delete</button>
-                  </div>
+      {Object.entries(grouped).map(([category, items]) => (
+        <div key={category} style={{ marginBottom: 28 }}>
+          <h2 style={{ fontSize:13, fontWeight:700, color:'var(--mid)', marginBottom:12, textTransform:'uppercase', letterSpacing:'0.08em' }}>{category}</h2>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:12 }}>
+            {items.map(opt => (
+              <div key={opt.id} style={{ background:'#fff', border:'1px solid var(--border)', borderRadius:10, padding:16 }}>
+                {opt.image_url && <img src={opt.image_url} alt={opt.name} style={{ width:'100%', height:80, objectFit:'cover', borderRadius:7, marginBottom:10 }} />}
+                <p style={{ fontWeight:700, fontSize:13, color:'var(--ink)', marginBottom:4 }}>{opt.name}</p>
+                {opt.description && <p style={{ fontSize:11.5, color:'var(--muted)', lineHeight:1.5, marginBottom:10 }}>{opt.description}</p>}
+                <div style={{ display:'flex', gap:10 }}>
+                  <button onClick={()=>{setForm(opt);setEditing(opt)}} style={{ fontSize:12, color:'var(--primary)', fontWeight:600, background:'none', border:'none', cursor:'pointer', fontFamily:'var(--ff)', padding:0 }}>Edit</button>
+                  <button onClick={()=>del(opt)} style={{ fontSize:12, color:'#DC2626', fontWeight:600, background:'none', border:'none', cursor:'pointer', fontFamily:'var(--ff)', padding:0 }}>Delete</button>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        ))
-      )}
+        </div>
+      ))}
     </div>
   )
 }

@@ -2,108 +2,76 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { cacheClear } from '../lib/cache'
-import { format } from 'date-fns'
 
 export default function AdminBlogs() {
   const [blogs, setBlogs] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => { loadBlogs() }, [])
+  useEffect(() => { load() }, [])
 
-  async function loadBlogs() {
-    const { data } = await supabase
-      .from('blogs')
-      .select('id,slug,title,published,author,created_at,tags')
-      .order('created_at', { ascending: false })
-    setBlogs(data || [])
-    setLoading(false)
+  async function load() {
+    const { data } = await supabase.from('blogs').select('id,slug,title,published,author,created_at').order('created_at', { ascending: false })
+    setBlogs(data || []); setLoading(false)
   }
 
   async function togglePublish(blog) {
     await supabase.from('blogs').update({ published: !blog.published }).eq('id', blog.id)
-    cacheClear('blogs_list')
-    cacheClear(`blog_${blog.slug}`)
-    loadBlogs()
+    cacheClear('blogs_list'); cacheClear(`blog_${blog.slug}`); load()
   }
 
   async function deleteBlog(blog) {
-    if (!confirm(`Delete "${blog.title}"?\n\nThis action cannot be undone.`)) return
+    if (!confirm(`Delete "${blog.title}"?`)) return
     await supabase.from('blogs').delete().eq('id', blog.id)
-    cacheClear('blogs_list')
-    cacheClear(`blog_${blog.slug}`)
-    loadBlogs()
+    cacheClear('blogs_list'); cacheClear(`blog_${blog.slug}`); load()
   }
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
+    <div style={{ padding: 28 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Blog Posts</h1>
-          <p className="text-gray-500 text-sm">{blogs.length} total · {blogs.filter(b => b.published).length} published</p>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>Blog Posts</h1>
+          <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>{blogs.length} total · {blogs.filter(b=>b.published).length} published</p>
         </div>
-        <Link to="/admin/blogs/new"
-          className="bg-blue-900 hover:bg-blue-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-          + New Post
-        </Link>
+        <Link to="/admin/blogs/new" style={{ background: 'var(--primary)', color: '#fff', padding: '9px 18px', borderRadius: 8, fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>+ New Post</Link>
       </div>
 
-      {loading ? (
-        <div className="space-y-3">
-          {[1,2,3].map(i => <div key={i} className="bg-white rounded-xl h-16 animate-pulse" />)}
+      {loading ? <div style={{ color: 'var(--muted)', fontSize: 14 }}>Loading...</div> :
+       blogs.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: 60, border: '2px dashed var(--border)', borderRadius: 12 }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>📝</div>
+          <p style={{ color: 'var(--muted)', marginBottom: 16 }}>No blog posts yet</p>
+          <Link to="/admin/blogs/new" style={{ background: 'var(--primary)', color: '#fff', padding: '10px 20px', borderRadius: 8, fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>Create First Post</Link>
         </div>
-      ) : blogs.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-xl border-2 border-dashed border-gray-200">
-          <div className="text-5xl mb-4">📝</div>
-          <p className="text-gray-500 font-medium mb-4">No blog posts yet</p>
-          <Link to="/admin/blogs/new" className="bg-blue-900 text-white px-5 py-2 rounded-lg text-sm font-bold">
-            Create First Post
-          </Link>
-        </div>
-      ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600">Title</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600 hidden lg:table-cell">Author</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600 hidden md:table-cell">Date</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600">Status</th>
-                <th className="text-left py-3 px-4 font-semibold text-gray-600">Actions</th>
+       ) : (
+        <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+            <thead>
+              <tr style={{ background: '#F9FAFB', borderBottom: '1px solid var(--border)' }}>
+                {['Title','Author','Date','Status','Actions'].map(h => (
+                  <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontWeight: 700, color: 'var(--mid)', fontSize: 12 }}>{h}</th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {blogs.map((blog, i) => (
-                <tr key={blog.id} className={`border-b last:border-0 hover:bg-gray-50/50 ${i % 2 === 0 ? '' : 'bg-gray-50/30'}`}>
-                  <td className="py-3 px-4">
-                    <div className="font-semibold text-gray-900 line-clamp-1">{blog.title}</div>
-                    <div className="text-xs text-gray-400">/blogs/{blog.slug}</div>
+                <tr key={blog.id} style={{ borderBottom: '1px solid #F3F4F6', background: i%2===0?'#fff':'#FAFAFA' }}>
+                  <td style={{ padding: '12px 16px' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--ink)' }}>{blog.title}</div>
+                    <div style={{ fontSize: 11, color: 'var(--muted)' }}>/blogs/{blog.slug}</div>
                   </td>
-                  <td className="py-3 px-4 text-gray-600 hidden lg:table-cell">{blog.author}</td>
-                  <td className="py-3 px-4 text-gray-500 hidden md:table-cell">
-                    {format(new Date(blog.created_at), 'MMM d, yyyy')}
-                  </td>
-                  <td className="py-3 px-4">
+                  <td style={{ padding: '12px 16px', color: 'var(--mid)' }}>{blog.author}</td>
+                  <td style={{ padding: '12px 16px', color: 'var(--muted)' }}>{new Date(blog.created_at).toLocaleDateString('en-IN')}</td>
+                  <td style={{ padding: '12px 16px' }}>
                     <button onClick={() => togglePublish(blog)}
-                      className={`text-xs px-2.5 py-1 rounded-full font-semibold transition-colors ${blog.published ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'}`}>
+                      style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 10, border: 'none', cursor: 'pointer', background: blog.published?'#F0FDF4':'#FFFBEB', color: blog.published?'#16A34A':'#D97706' }}>
                       {blog.published ? '● Published' : '○ Draft'}
                     </button>
                   </td>
-                  <td className="py-3 px-4">
-                    <div className="flex gap-3">
-                      <Link to={`/admin/blogs/edit/${blog.id}`}
-                        className="text-blue-700 hover:text-blue-900 font-semibold text-xs">
-                        Edit
-                      </Link>
-                      {blog.published && (
-                        <Link to={`/blogs/${blog.slug}`} target="_blank"
-                          className="text-gray-500 hover:text-gray-700 font-semibold text-xs">
-                          View ↗
-                        </Link>
-                      )}
-                      <button onClick={() => deleteBlog(blog)}
-                        className="text-red-500 hover:text-red-700 font-semibold text-xs">
-                        Delete
-                      </button>
+                  <td style={{ padding: '12px 16px' }}>
+                    <div style={{ display: 'flex', gap: 12 }}>
+                      <Link to={`/admin/blogs/edit/${blog.id}`} style={{ color: 'var(--primary)', fontWeight: 600, fontSize: 12, textDecoration: 'none' }}>Edit</Link>
+                      {blog.published && <Link to={`/blogs/${blog.slug}`} target="_blank" style={{ color: 'var(--muted)', fontWeight: 600, fontSize: 12, textDecoration: 'none' }}>View ↗</Link>}
+                      <button onClick={() => deleteBlog(blog)} style={{ color: '#DC2626', fontWeight: 600, fontSize: 12, background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'var(--ff)' }}>Delete</button>
                     </div>
                   </td>
                 </tr>
@@ -111,7 +79,7 @@ export default function AdminBlogs() {
             </tbody>
           </table>
         </div>
-      )}
+       )}
     </div>
   )
 }

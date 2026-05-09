@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { cacheGet, cacheSet } from '../lib/cache'
-import BlogCard from '../components/BlogCard'
 import SEOHead from '../components/SEOHead'
 
 export default function Blogs() {
@@ -27,79 +27,81 @@ export default function Blogs() {
   async function loadBlogs() {
     const cached = cacheGet('blogs_list')
     if (cached) { setBlogs(cached); setLoading(false); extractTags(cached); return }
-
     const { data } = await supabase
-      .from('blogs')
-      .select('id,slug,title,excerpt,cover_image,author,tags,created_at')
-      .eq('published', true)
-      .order('created_at', { ascending: false })
-
+      .from('blogs').select('id,slug,title,excerpt,cover_image,author,tags,created_at')
+      .eq('published', true).order('created_at', { ascending: false })
     setBlogs(data || [])
     setLoading(false)
     extractTags(data || [])
     cacheSet('blogs_list', data || [])
   }
 
-  function extractTags(blogs) {
+  function extractTags(list) {
     const tags = new Set()
-    blogs.forEach(b => b.tags?.forEach(t => tags.add(t)))
+    list.forEach(b => b.tags?.forEach(t => tags.add(t)))
     setAllTags([...tags])
   }
 
   return (
     <>
-      <SEOHead
-        title="Blog — Workbench Tips & Industry Insights"
-        description="Expert articles on workbench design, industrial ergonomics, maintenance tips and more from TMCI."
-      />
-      <div className="pt-24 pb-16 min-h-screen bg-gray-50">
-        <div className="container-xl">
-          {/* Header */}
-          <div className="text-center mb-12">
-            <span className="text-amber-500 font-semibold text-sm uppercase tracking-wide">Knowledge Hub</span>
-            <h1 className="text-4xl font-bold text-blue-900 mt-2 mb-3">Our Blog</h1>
-            <p className="text-gray-600 max-w-xl mx-auto">Expert insights on workbench design, maintenance, and workplace productivity</p>
+      <SEOHead title="Blog — Workbench Tips & Industry Insights" />
+      <div style={{ paddingTop: 80, paddingBottom: 64, minHeight: '100vh', background: 'var(--surface)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 40px' }}>
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <div className="overline">Knowledge Hub</div>
+            <h1 style={{ fontSize: 'clamp(24px,3vw,40px)', fontWeight: 800, color: 'var(--ink)', letterSpacing: -1, marginTop: 8 }}>Our Blog</h1>
+            <p style={{ color: 'var(--mid)', marginTop: 8, fontSize: 15 }}>Expert insights on workbench design, calibration, and workplace productivity</p>
           </div>
 
-          {/* Search + Filter */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-10">
-            <input
-              type="search"
-              placeholder="🔍 Search articles..."
-              value={search}
+          <div style={{ display: 'flex', gap: 12, marginBottom: 40, flexWrap: 'wrap' }}>
+            <input type="search" placeholder="🔍 Search articles..." value={search}
               onChange={e => setSearch(e.target.value)}
-              className="flex-1 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900 bg-white"
-            />
-            <div className="flex gap-2 flex-wrap">
-              <button onClick={() => setSelectedTag('')}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${!selectedTag ? 'bg-blue-900 text-white' : 'bg-white border border-gray-300 text-gray-600 hover:border-blue-900'}`}>
-                All
-              </button>
-              {allTags.map(tag => (
-                <button key={tag} onClick={() => setSelectedTag(tag === selectedTag ? '' : tag)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${selectedTag === tag ? 'bg-blue-900 text-white' : 'bg-white border border-gray-300 text-gray-600 hover:border-blue-900'}`}>
-                  {tag}
+              style={{ flex: 1, minWidth: 200, border: '1px solid var(--border)', borderRadius: 8, padding: '10px 16px', fontSize: 13, fontFamily: 'var(--ff)', outline: 'none', background: '#fff' }} />
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              {['', ...allTags].map(tag => (
+                <button key={tag || 'all'} onClick={() => setSelectedTag(tag)}
+                  style={{ padding: '8px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', fontFamily: 'var(--ff)', border: `1px solid ${selectedTag === tag ? 'var(--primary)' : 'var(--border)'}`, background: selectedTag === tag ? 'var(--primary)' : '#fff', color: selectedTag === tag ? '#fff' : 'var(--mid)', transition: 'all 0.15s' }}>
+                  {tag || 'All'}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1,2,3,4,5,6].map(i => (
-                <div key={i} className="bg-white rounded-2xl h-72 animate-pulse border border-gray-100" />
-              ))}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
+              {[1,2,3,4,5,6].map(i => <div key={i} style={{ background: '#fff', borderRadius: 12, height: 280, animation: 'pulse 1.5s ease-in-out infinite', opacity: 0.6 }} />)}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-20 text-gray-500">
-              <div className="text-5xl mb-4">📝</div>
-              <p className="text-lg font-medium">No articles found</p>
-              <p className="text-sm mt-2">Try a different search term or tag</p>
+            <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--mid)' }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>📝</div>
+              <p style={{ fontSize: 16, fontWeight: 600 }}>No articles found</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map(blog => <BlogCard key={blog.id} blog={blog} />)}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 20 }}>
+              {filtered.map(blog => (
+                <Link key={blog.id} to={`/blogs/${blog.slug}`} style={{ textDecoration: 'none' }}>
+                  <div style={{ background: '#fff', borderRadius: 12, border: '1px solid var(--border)', overflow: 'hidden', transition: 'all 0.2s', cursor: 'pointer' }}
+                    onMouseOver={e => { e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='0 8px 32px rgba(0,0,0,0.08)' }}
+                    onMouseOut={e => { e.currentTarget.style.transform=''; e.currentTarget.style.boxShadow='' }}>
+                    {blog.cover_image && <img src={blog.cover_image} alt={blog.title} style={{ width: '100%', height: 180, objectFit: 'cover' }} loading="lazy" />}
+                    <div style={{ padding: 20 }}>
+                      {blog.tags?.length > 0 && (
+                        <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
+                          {blog.tags.slice(0,3).map(tag => (
+                            <span key={tag} style={{ fontSize: 10, fontWeight: 700, background: 'var(--primary-pale-solid)', color: 'var(--primary)', padding: '2px 8px', borderRadius: 4 }}>{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                      <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)', lineHeight: 1.4, marginBottom: 8 }}>{blog.title}</h3>
+                      {blog.excerpt && <p style={{ fontSize: 13, color: 'var(--mid)', lineHeight: 1.6, marginBottom: 12, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{blog.excerpt}</p>}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--muted)' }}>
+                        <span>{blog.author}</span>
+                        <span>{new Date(blog.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
             </div>
           )}
         </div>
