@@ -1,9 +1,12 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+'use client'
+import { useState, useEffect, Suspense } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { supabase } from '../lib/supabase'
 import { cacheClear } from '../lib/cache'
 
-const ReactQuill = lazy(() => import('react-quill'))
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 const MODULES = {
   toolbar: [
@@ -21,8 +24,9 @@ const MODULES = {
 function slugify(t) { return t.toLowerCase().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/(^-|-$)/g,'') }
 
 export default function AdminBlogEdit() {
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const params = useParams()
+  const id = params.id
+  const router = useRouter()
   const isNew = !id
   const [form, setForm] = useState({ title:'', slug:'', excerpt:'', content:'', cover_image:'', author:'TMCI Technology', tags:'', published:false, seo_title:'', seo_description:'' })
   const [loading, setLoading] = useState(!isNew)
@@ -41,7 +45,7 @@ export default function AdminBlogEdit() {
     setSaving(true)
     const payload = { title: form.title.trim(), slug: slugify(form.slug || form.title), excerpt: form.excerpt.trim(), content: form.content, cover_image: form.cover_image.trim(), author: form.author.trim(), tags: form.tags.split(',').map(t=>t.trim()).filter(Boolean), published: publish, seo_title: form.seo_title.trim(), seo_description: form.seo_description.trim(), updated_at: new Date().toISOString() }
     const { error } = isNew ? await supabase.from('blogs').insert(payload) : await supabase.from('blogs').update(payload).eq('id', id)
-    if (!error) { cacheClear('blogs_list'); if (!isNew) cacheClear(`blog_${form.slug}`); navigate('/admin/blogs') }
+    if (!error) { cacheClear('blogs_list'); if (!isNew) cacheClear(`blog_${form.slug}`); router.push('/admin/blogs') }
     else alert('Error: ' + error.message)
     setSaving(false)
   }
@@ -53,7 +57,7 @@ export default function AdminBlogEdit() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ink)' }}>{isNew ? 'New Blog Post' : 'Edit Blog Post'}</h1>
-          <Link to="/admin/blogs" style={{ fontSize: 12, color: 'var(--muted)', textDecoration: 'none' }}>← Back to posts</Link>
+          <Link href="/admin/blogs" style={{ fontSize: 12, color: 'var(--muted)', textDecoration: 'none' }}>← Back to posts</Link>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <button onClick={() => save(false)} disabled={saving} style={{ border: '1px solid var(--border)', background: '#fff', color: 'var(--mid)', padding: '9px 18px', borderRadius: 8, fontWeight: 600, fontSize: 13, cursor: 'pointer', fontFamily: 'var(--ff)' }}>Save Draft</button>
@@ -81,9 +85,7 @@ export default function AdminBlogEdit() {
 
           <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 12, padding: 20 }}>
             <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: 10 }}>Content *</label>
-            <Suspense fallback={<div style={{ height: 300, background: '#F9FAFB', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)', fontSize: 13 }}>Loading editor...</div>}>
-              <ReactQuill theme="snow" value={form.content} onChange={content=>setForm(f=>({...f,content}))} modules={MODULES} />
-            </Suspense>
+            <ReactQuill theme="snow" value={form.content} onChange={content=>setForm(f=>({...f,content}))} modules={MODULES} />
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+'use client'
 import { Helmet } from "react-helmet-async";
 
 export default function SEOHead({
@@ -7,7 +8,7 @@ export default function SEOHead({
   url,
   type = "website",
 }) {
-  const siteName = import.meta.env.VITE_SITE_NAME || "TMCI Technology";
+  const siteName = process.env.NEXT_PUBLIC_SITE_NAME || "TMCI Technology";
   const fullTitle = title
     ? `${title} | ${siteName}`
     : `${siteName} — Calibration & Test Bench Solutions`;

@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom'
+'use client'
+import Link from 'next/link'
 
 export default function Footer() {
-  const waNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '919742944306'
-  const waMsg = encodeURIComponent(import.meta.env.VITE_WHATSAPP_MESSAGE || 'Hello TMCI!')
+  const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919742944306'
+  const waMsg = encodeURIComponent(process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE || 'Hello TMCI!')
 
   return (
     <footer>
@@ -55,7 +56,7 @@ export default function Footer() {
             <li><a href="#">Downloads</a></li>
             <li><a href="#">Careers</a></li>
             <li><a href="#">Contact Us</a></li>
-            <li><Link to="/blogs">Blog</Link></li>
+            <li><Link href="/blogs">Blog</Link></li>
             <li><a href="#">AMC &amp; Service</a></li>
           </ul>
         </div>

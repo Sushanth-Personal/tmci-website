@@ -1,7 +1,8 @@
+'use client'
 export default function WhatsAppButton() {
-  const number = import.meta.env.VITE_WHATSAPP_NUMBER || "919742944306";
+  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919742944306";
   const message = encodeURIComponent(
-    import.meta.env.VITE_WHATSAPP_MESSAGE ||
+    process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ||
       "Hello! I'm interested in your workbench solutions. Please contact me.",
   );
   const href = `https://wa.me/${number}?text=${message}`;

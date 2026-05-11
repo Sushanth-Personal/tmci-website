@@ -1,15 +1,17 @@
+'use client'
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     setOpen(false);
-  }, [location.pathname]);
+  }, [pathname]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -131,7 +133,7 @@ export default function Navbar() {
       >
         {/* Logo */}
         <Link
-          to="/"
+          href="/"
           style={{
             display: "flex",
             alignItems: "center",
@@ -459,7 +461,7 @@ export default function Navbar() {
           ))}
 
           <Link
-            to="/blogs"
+            href="/blogs"
             style={{
               display: "flex",
               alignItems: "center",
@@ -467,7 +469,7 @@ export default function Navbar() {
               fontSize: 13,
               fontWeight: 600,
               color:
-                location.pathname === "/blogs"
+                pathname === "/blogs"
                   ? "var(--primary-md)"
                   : navLinkColor,
               textDecoration: "none",
@@ -479,7 +481,7 @@ export default function Navbar() {
             }
             onMouseOut={(e) =>
               (e.currentTarget.style.color =
-                location.pathname === "/blogs"
+                pathname === "/blogs"
                   ? "var(--primary-md)"
                   : navLinkColor)
             }
@@ -558,7 +560,7 @@ export default function Navbar() {
           </a>
 
           <a
-            href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || "919742944306"}?text=${encodeURIComponent("Hello! I want to get a quote.")}`}
+            href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919742944306"}?text=${encodeURIComponent("Hello! I want to get a quote.")}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -664,7 +666,7 @@ export default function Navbar() {
           ].map(([href, label]) => (
             <Link
               key={label}
-              to={href}
+              href={href}
               onClick={() => setOpen(false)}
               style={{
                 display: "block",

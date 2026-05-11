@@ -1,4 +1,6 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+'use client'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useAdminStore } from '../store/adminStore'
 import { cacheClearAll } from '../lib/cache'
 import { useState } from 'react'
@@ -12,9 +14,9 @@ const MENU = [
   { href: '/admin/theme', label: 'Theme & Colours', icon: '🎨' },   // ← NEW
 ]
 
-export default function AdminLayout() {
+export default function AdminLayout({ children }) {
   const { logout } = useAdminStore()
-  const location = useLocation()
+  const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   async function handleLogout() {
@@ -37,10 +39,10 @@ export default function AdminLayout() {
       <nav style={{ flex: 1, padding: '16px 10px' }}>
         {MENU.map(item => {
           const active = item.exact
-            ? location.pathname === item.href
-            : location.pathname.startsWith(item.href)
+            ? pathname === item.href
+            : pathname.startsWith(item.href)
           return (
-            <Link key={item.href} to={item.href}
+            <Link key={item.href} href={item.href}
               onClick={() => setMobileOpen(false)}
               style={{
                 display: 'flex', alignItems: 'center', gap: 10,
@@ -62,7 +64,7 @@ export default function AdminLayout() {
       </nav>
 
       <div style={{ padding: '12px 10px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-        <Link to="/" target="_blank"
+        <Link href="/" target="_blank"
           style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11.5, color: 'rgba(255,255,255,0.3)', padding: '7px 12px', borderRadius: 6, transition: 'all 0.15s', textDecoration: 'none', marginBottom: 2 }}>
           🌐 View Live Website ↗
         </Link>
@@ -105,7 +107,7 @@ export default function AdminLayout() {
           <span style={{ fontWeight: 700, color: '#0D1117', fontSize: 14 }}>TMCI Admin</span>
         </div>
         <main style={{ flex: 1 }}>
-          <Outlet />
+          {children}
         </main>
       </div>
     </div>
