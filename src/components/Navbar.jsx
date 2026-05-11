@@ -1,23 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const location = useLocation();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
 
-  const navLinkColor = scrolled ? "#1A2332" : "rgba(255,255,255,0.78)";
-  const navLinkHover = scrolled ? "#00897B" : "#ffffff";
+  useEffect(() => {
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      if (currentY < 10) {
+        setVisible(true);
+      } else if (lastScrollY.current - currentY > 10) {
+        setVisible(true);
+      } else if (currentY - lastScrollY.current > 5) {
+        setVisible(false);
+      }
+      lastScrollY.current = currentY;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const navLinkColor = "rgba(255,255,255,0.78)";
+  const navLinkHover = "#ffffff";
 
   return (
     <>
@@ -37,7 +48,7 @@ export default function Navbar() {
           padding: "0 40px",
           fontSize: 11.5,
           color: "rgba(255,255,255,0.4)",
-          transform: scrolled ? "translateY(0)" : "translateY(-34px)",
+          transform: visible ? "translateY(0)" : "translateY(-100%)",
           transition: "transform 0.3s ease",
         }}
       >
@@ -45,7 +56,7 @@ export default function Navbar() {
           <a
             href="tel:+919742944306"
             style={{
-              color: "#00BFA5",
+              color: "var(--primary-md)",
               fontWeight: 600,
               fontSize: 12,
               textDecoration: "none",
@@ -60,31 +71,41 @@ export default function Navbar() {
             +91 80 4895 7300
           </a>
           <a
-            href="mailto:info@tmci.in"
+            href="mailto:info@tazkmazter.com"
             style={{ color: "inherit", textDecoration: "none" }}
           >
-            info@tmci.in
-          </a>
-          <a
-            href="#careers"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            Careers
+            info@tazkmazter.com
           </a>
         </div>
-        <div
-          style={{
-            background: "rgba(0,137,123,0.3)",
-            border: "1px solid rgba(0,191,165,0.25)",
-            color: "#4DD0C4",
-            fontSize: 10,
-            fontWeight: 700,
-            padding: "2px 10px",
-            borderRadius: 20,
-            letterSpacing: "0.5px",
-          }}
-        >
-          Manufacturer · Exporter · Est. 2012
+        <div style={{ display: "flex", gap: 8 }}>
+          <div
+            style={{
+              background: "rgba(0,137,123,0.3)",
+              border: "1px solid rgba(0,191,165,0.25)",
+              color: "#4DD0C4",
+              fontSize: 10,
+              fontWeight: 700,
+              padding: "2px 10px",
+              borderRadius: 20,
+              letterSpacing: "0.5px",
+            }}
+          >
+            ISO 9001:2015 Certified
+          </div>
+          <div
+            style={{
+              background: "rgba(0,137,123,0.3)",
+              border: "1px solid rgba(0,191,165,0.25)",
+              color: "#4DD0C4",
+              fontSize: 10,
+              fontWeight: 700,
+              padding: "2px 10px",
+              borderRadius: 20,
+              letterSpacing: "0.5px",
+            }}
+          >
+            Manufacturer · Exporter · Est. 2012
+          </div>
         </div>
       </div>
 
@@ -92,7 +113,7 @@ export default function Navbar() {
       <nav
         style={{
           position: "fixed",
-          top: scrolled ? 34 : 0,
+          top: 34,
           left: 0,
           right: 0,
           zIndex: 501,
@@ -100,13 +121,11 @@ export default function Navbar() {
           display: "flex",
           alignItems: "center",
           padding: "0 40px",
-          transition: "all 0.3s ease",
-          background: scrolled ? "rgba(255,255,255,0.97)" : "rgba(6,15,13,0.3)",
-          borderBottom: scrolled
-            ? "1px solid rgba(226,232,240,0.9)"
-            : "1px solid rgba(255,255,255,0.06)",
-          boxShadow: scrolled ? "0 1px 24px rgba(0,0,0,0.07)" : "none",
-          backdropFilter: scrolled ? "blur(16px)" : "none",
+          background: "rgba(6,15,13,0.92)",
+          borderBottom: "1px solid rgba(0,191,140,0.08)",
+          backdropFilter: "blur(12px)",
+          transform: visible ? "translateY(0)" : "translateY(-128px)",
+          transition: "transform 0.3s ease",
         }}
       >
         {/* Logo */}
@@ -126,7 +145,7 @@ export default function Navbar() {
               width: 36,
               height: 36,
               borderRadius: 9,
-              background: "#00897B",
+              background: "var(--primary)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -144,9 +163,8 @@ export default function Navbar() {
               style={{
                 fontSize: 16,
                 fontWeight: 800,
-                color: scrolled ? "#0D1117" : "#fff",
+                color: "#fff",
                 letterSpacing: "-0.4px",
-                transition: "color 0.3s",
               }}
             >
               TMCI Technology
@@ -156,10 +174,9 @@ export default function Navbar() {
                 fontSize: 9,
                 textTransform: "uppercase",
                 letterSpacing: "1px",
-                color: scrolled ? "#8B97A5" : "rgba(255,255,255,0.38)",
+                color: "rgba(255,255,255,0.38)",
                 fontWeight: 600,
                 marginTop: 2,
-                transition: "color 0.3s",
               }}
             >
               Calibration & Test Solutions
@@ -177,7 +194,7 @@ export default function Navbar() {
           }}
           className="tmci-desktop-nav"
         >
-          {/* Products */}
+          {/* Products mega */}
           <div style={{ position: "relative" }} className="mega-parent">
             <div
               style={{
@@ -192,8 +209,6 @@ export default function Navbar() {
                 cursor: "pointer",
                 whiteSpace: "nowrap",
                 transition: "color 0.15s",
-                borderBottom: "2px solid transparent",
-                marginBottom: -1,
               }}
               className="nl-trigger"
             >
@@ -215,7 +230,7 @@ export default function Navbar() {
                 left: -20,
                 background: "#fff",
                 border: "1px solid #E2E8F0",
-                borderTop: "2px solid #00897B",
+                borderTop: "2px solid var(--primary)",
                 borderRadius: "0 0 12px 12px",
                 padding: 24,
                 minWidth: 580,
@@ -265,7 +280,7 @@ export default function Navbar() {
                       fontWeight: 700,
                       textTransform: "uppercase",
                       letterSpacing: "1.3px",
-                      color: "#00897B",
+                      color: "var(--primary)",
                       marginBottom: 10,
                       paddingBottom: 7,
                       borderBottom: "1px solid #E2E8F0",
@@ -289,7 +304,7 @@ export default function Navbar() {
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.background = "#F4FBFA";
-                        e.currentTarget.style.color = "#00695C";
+                        e.currentTarget.style.color = "var(--primary-dk)";
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.background = "";
@@ -304,7 +319,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Industries */}
+          {/* Industries mega */}
           <div style={{ position: "relative" }} className="mega-parent">
             <div
               style={{
@@ -340,7 +355,7 @@ export default function Navbar() {
                 left: -20,
                 background: "#fff",
                 border: "1px solid #E2E8F0",
-                borderTop: "2px solid #00897B",
+                borderTop: "2px solid var(--primary)",
                 borderRadius: "0 0 12px 12px",
                 padding: 24,
                 minWidth: 380,
@@ -381,7 +396,7 @@ export default function Navbar() {
                       fontWeight: 700,
                       textTransform: "uppercase",
                       letterSpacing: "1.3px",
-                      color: "#00897B",
+                      color: "var(--primary)",
                       marginBottom: 10,
                       paddingBottom: 7,
                       borderBottom: "1px solid #E2E8F0",
@@ -405,7 +420,7 @@ export default function Navbar() {
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.background = "#F4FBFA";
-                        e.currentTarget.style.color = "#00695C";
+                        e.currentTarget.style.color = "var(--primary-dk)";
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.background = "";
@@ -450,15 +465,22 @@ export default function Navbar() {
               padding: "0 13px",
               fontSize: 13,
               fontWeight: 600,
-              color: location.pathname === "/blogs" ? "#00897B" : navLinkColor,
+              color:
+                location.pathname === "/blogs"
+                  ? "var(--primary-md)"
+                  : navLinkColor,
               textDecoration: "none",
               transition: "color 0.15s",
               whiteSpace: "nowrap",
             }}
-            onMouseOver={(e) => (e.currentTarget.style.color = "#00897B")}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.color = "var(--primary-md)")
+            }
             onMouseOut={(e) =>
               (e.currentTarget.style.color =
-                location.pathname === "/blogs" ? "#00897B" : navLinkColor)
+                location.pathname === "/blogs"
+                  ? "var(--primary-md)"
+                  : navLinkColor)
             }
           >
             Blog
@@ -481,11 +503,9 @@ export default function Navbar() {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              background: scrolled ? "transparent" : "rgba(0,191,140,0.12)",
-              color: scrolled ? "#00897B" : "#00BF8C",
-              border: scrolled
-                ? "1.5px solid #00897B"
-                : "1px solid rgba(0,191,140,0.3)",
+              background: "rgba(0,191,140,0.12)",
+              color: "var(--primary-md)",
+              border: "1px solid rgba(0,191,140,0.3)",
               padding: "7px 14px",
               borderRadius: 7,
               fontSize: 12.5,
@@ -495,18 +515,14 @@ export default function Navbar() {
               whiteSpace: "nowrap",
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = "#00897B";
+              e.currentTarget.style.background = "var(--primary)";
               e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.borderColor = "#00897B";
+              e.currentTarget.style.borderColor = "var(--primary)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = scrolled
-                ? "transparent"
-                : "rgba(0,191,140,0.12)";
-              e.currentTarget.style.color = scrolled ? "#00897B" : "#00BF8C";
-              e.currentTarget.style.borderColor = scrolled
-                ? "#00897B"
-                : "rgba(0,191,140,0.3)";
+              e.currentTarget.style.background = "rgba(0,191,140,0.12)";
+              e.currentTarget.style.color = "var(--primary-md)";
+              e.currentTarget.style.borderColor = "rgba(0,191,140,0.3)";
             }}
           >
             🔧 Customize Workbench
@@ -518,10 +534,8 @@ export default function Navbar() {
               display: "flex",
               alignItems: "center",
               background: "transparent",
-              color: scrolled ? "#1A2332" : "rgba(255,255,255,0.65)",
-              border: scrolled
-                ? "1.5px solid #E2E8F0"
-                : "1px solid rgba(255,255,255,0.14)",
+              color: "rgba(255,255,255,0.65)",
+              border: "1px solid rgba(255,255,255,0.14)",
               padding: "7px 14px",
               borderRadius: 7,
               fontSize: 12.5,
@@ -531,18 +545,12 @@ export default function Navbar() {
               whiteSpace: "nowrap",
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.borderColor = scrolled
-                ? "#CBD5E0"
-                : "rgba(255,255,255,0.35)";
-              e.currentTarget.style.color = scrolled ? "#0D1117" : "#fff";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.35)";
+              e.currentTarget.style.color = "#fff";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.borderColor = scrolled
-                ? "#E2E8F0"
-                : "rgba(255,255,255,0.14)";
-              e.currentTarget.style.color = scrolled
-                ? "#1A2332"
-                : "rgba(255,255,255,0.65)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)";
+              e.currentTarget.style.color = "rgba(255,255,255,0.65)";
             }}
           >
             Download Catalogue
@@ -556,7 +564,7 @@ export default function Navbar() {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              background: 'var(--cta-hover)',
+              background: "var(--cta)",
               color: "#fff",
               padding: "8px 18px",
               borderRadius: 7,
@@ -567,11 +575,11 @@ export default function Navbar() {
               whiteSpace: "nowrap",
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = 'var(--cta-hover)';
+              e.currentTarget.style.background = "var(--cta-hover)";
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = 'var(--cta)';
+              e.currentTarget.style.background = "var(--cta)";
               e.currentTarget.style.transform = "";
             }}
           >
@@ -600,7 +608,7 @@ export default function Navbar() {
             style={{
               width: 22,
               height: 2,
-              background: scrolled ? "#0D1117" : "#fff",
+              background: "#fff",
               borderRadius: 2,
               transition: "all 0.2s",
               transform: open ? "rotate(45deg) translate(4px, 5px)" : "none",
@@ -610,7 +618,7 @@ export default function Navbar() {
             style={{
               width: 16,
               height: 2,
-              background: scrolled ? "#0D1117" : "#fff",
+              background: "#fff",
               borderRadius: 2,
               opacity: open ? 0 : 1,
               transition: "opacity 0.2s",
@@ -620,7 +628,7 @@ export default function Navbar() {
             style={{
               width: 22,
               height: 2,
-              background: scrolled ? "#0D1117" : "#fff",
+              background: "#fff",
               borderRadius: 2,
               transition: "all 0.2s",
               transform: open ? "rotate(-45deg) translate(4px, -5px)" : "none",
@@ -634,14 +642,16 @@ export default function Navbar() {
         <div
           style={{
             position: "fixed",
-            top: scrolled ? 98 : 64,
+            top: 98,
             left: 0,
             right: 0,
-            background: "#fff",
-            borderTop: "1px solid #E2E8F0",
+            background: "#0D1A14",
+            borderTop: "1px solid rgba(0,191,140,0.12)",
             padding: "8px 16px 20px",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
             zIndex: 499,
+            transform: visible ? "translateY(0)" : "translateY(-200%)",
+            transition: "transform 0.3s ease",
           }}
         >
           {[
@@ -660,7 +670,7 @@ export default function Navbar() {
                 padding: "12px",
                 fontSize: 15,
                 fontWeight: 600,
-                color: "#1A2332",
+                color: "rgba(255,255,255,0.8)",
                 textDecoration: "none",
               }}
             >
@@ -673,7 +683,7 @@ export default function Navbar() {
             style={{
               display: "block",
               marginTop: 10,
-              background: "#00897B",
+              background: "var(--primary)",
               color: "#fff",
               padding: "13px",
               borderRadius: 8,
@@ -690,14 +700,9 @@ export default function Navbar() {
 
       <style>{`
         .mega-parent:hover .mega-menu { opacity: 1 !important; pointer-events: all !important; }
-        .mega-parent:hover .nl-trigger { color: #00897B !important; }
-        @media (max-width: 1080px) {
-          .tmci-desktop-nav { display: none !important; }
-          .tmci-burger { display: flex !important; }
-        }
-        @media (max-width: 640px) {
-          nav { padding: 0 16px !important; }
-        }
+        .mega-parent:hover .nl-trigger { color: var(--primary-md) !important; }
+        @media (max-width: 1080px) { .tmci-desktop-nav { display: none !important; } .tmci-burger { display: flex !important; } }
+        @media (max-width: 640px) { nav { padding: 0 16px !important; } }
       `}</style>
     </>
   );
