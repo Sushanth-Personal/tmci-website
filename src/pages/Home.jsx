@@ -5,6 +5,10 @@ import { cacheGet, cacheSet } from "../lib/cache";
 import SEOHead from "../components/SEOHead";
 import DOMPurify from "dompurify";
 
+// ─────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────
+
 function SectionRenderer({ section, fallback }) {
   if (!section) return fallback || null;
   if (section.content_type === "html") {
@@ -29,7 +33,11 @@ function SectionRenderer({ section, fallback }) {
   return fallback || null;
 }
 
-// ── BENCH 3D SVG (from original design) ──
+// ─────────────────────────────────────────────
+// COMPONENT: BENCH SVG ILLUSTRATION
+// Used in: Section 5 (Why TMCI), Blog preview
+// ─────────────────────────────────────────────
+
 function BenchSVG() {
   return (
     <svg
@@ -302,7 +310,12 @@ function BenchSVG() {
   );
 }
 
-// ── WORKBENCH CONFIGURATOR (matching discovery flow design) ──
+// ─────────────────────────────────────────────
+// COMPONENT: WORKBENCH CONFIGURATOR
+// Used in: Section 4 (Customize Workbench)
+// Steps: 0=Intent, 1=BenchType, 2=Addons, 3=Contact, 4=Success
+// ─────────────────────────────────────────────
+
 function WorkbenchConfigurator() {
   const [step, setStep] = useState(0);
   const [selections, setSelections] = useState({
@@ -314,8 +327,9 @@ function WorkbenchConfigurator() {
     email: "",
     phone: "",
   });
-  const waNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "919876543210";
+  const waNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "919742944306";
 
+  // 4a. Intent options
   const intentOptions = [
     {
       val: "blank",
@@ -343,6 +357,7 @@ function WorkbenchConfigurator() {
     },
   ];
 
+  // 4b. Bench type options
   const benchTypes = [
     {
       val: "calibration",
@@ -382,6 +397,7 @@ function WorkbenchConfigurator() {
     },
   ];
 
+  // 4c. Add-on options
   const addonOptions = [
     "Electronic signal module",
     "Temperature module",
@@ -395,24 +411,136 @@ function WorkbenchConfigurator() {
     "ESD grounding",
   ];
 
-  const totalSteps = 4;
-
   function buildWhatsAppMessage() {
-    const lines = [
-      "🔧 *TMCI Workbench Enquiry*",
-      "",
-      `*Intent:* ${intentOptions.find((i) => i.val === selections.intent)?.title || "-"}`,
-      `*Bench Type:* ${benchTypes.find((b) => b.val === selections.benchType)?.title || "-"}`,
-      `*Add-ons:* ${selections.addons.length ? selections.addons.join(", ") : "None selected"}`,
-      `*Name:* ${selections.name}`,
-      `*Company:* ${selections.company}`,
-      `*Email:* ${selections.email}`,
-      `*Phone:* ${selections.phone}`,
-      "",
-      "Please contact me with a quote.",
-    ];
-    return encodeURIComponent(lines.join("\n"));
+    return encodeURIComponent(
+      [
+        "🔧 *TMCI Workbench Enquiry*",
+        "",
+        `*Intent:* ${intentOptions.find((i) => i.val === selections.intent)?.title || "-"}`,
+        `*Bench Type:* ${benchTypes.find((b) => b.val === selections.benchType)?.title || "-"}`,
+        `*Add-ons:* ${selections.addons.length ? selections.addons.join(", ") : "None selected"}`,
+        `*Name:* ${selections.name}`,
+        `*Company:* ${selections.company}`,
+        `*Email:* ${selections.email}`,
+        `*Phone:* ${selections.phone}`,
+        "",
+        "Please contact me with a quote.",
+      ].join("\n"),
+    );
   }
+
+  // 4d. Reusable card renderer for steps 0 and 1
+  const OptionCard = ({ selected, onClick, icon, title, desc, iconColor }) => (
+    <div
+      onClick={onClick}
+      style={{
+        background: selected ? "var(--selected-bg)" : "var(--glass)",
+        border: `1px solid ${selected ? "var(--selected-border)" : "var(--border-dark)"}`,
+        borderRadius: 12,
+        padding: "16px 18px",
+        cursor: "pointer",
+        transition: "all 0.2s",
+        position: "relative",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          width: 18,
+          height: 18,
+          borderRadius: "50%",
+          border: `1.5px solid ${selected ? "var(--primary-md)" : "var(--border-dark)"}`,
+          background: selected ? "var(--primary-md)" : "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {selected && (
+          <span style={{ color: "#fff", fontSize: 9, fontWeight: 900 }}>✓</span>
+        )}
+      </div>
+      <div
+        style={{
+          fontSize: 20,
+          marginBottom: 10,
+          color: iconColor || "inherit",
+        }}
+      >
+        {icon}
+      </div>
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 600,
+          color: "var(--text-1)",
+          marginBottom: 4,
+        }}
+      >
+        {title}
+      </div>
+      <div style={{ fontSize: 12, color: "var(--text-2)", lineHeight: 1.55 }}>
+        {desc}
+      </div>
+    </div>
+  );
+
+  // 4e. Nav row (Back + Continue buttons)
+  const NavRow = ({
+    backFn,
+    nextFn,
+    nextDisabled,
+    nextLabel = "Continue →",
+  }) => (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: backFn ? "space-between" : "flex-end",
+        paddingTop: 20,
+        borderTop: "1px solid rgba(255,255,255,0.07)",
+      }}
+    >
+      {backFn && (
+        <button
+          onClick={backFn}
+          style={{
+            background: "none",
+            border: "1px solid var(--border-dark)",
+            color: "var(--text-2)",
+            padding: "9px 18px",
+            borderRadius: 8,
+            cursor: "pointer",
+            fontSize: 13,
+            fontFamily: "var(--ff)",
+            transition: "all 0.18s",
+          }}
+        >
+          ← Back
+        </button>
+      )}
+      <button
+        disabled={nextDisabled}
+        onClick={nextFn}
+        style={{
+          background: "var(--primary)",
+          border: "none",
+          color: "#fff",
+          padding: "10px 24px",
+          borderRadius: 8,
+          cursor: nextDisabled ? "not-allowed" : "pointer",
+          fontSize: 13.5,
+          fontWeight: 700,
+          fontFamily: "var(--ff)",
+          opacity: nextDisabled ? 0.35 : 1,
+          transition: "all 0.18s",
+        }}
+      >
+        {nextLabel}
+      </button>
+    </div>
+  );
 
   return (
     <div className="wb-root" style={{ maxWidth: 680, margin: "0 auto" }}>
@@ -455,7 +583,7 @@ function WorkbenchConfigurator() {
               marginLeft: 8,
             }}
           >
-            Step {step + 1} of {totalSteps}
+            Step {step + 1} of 4
           </span>
         </div>
 
@@ -495,103 +623,22 @@ function WorkbenchConfigurator() {
               }}
             >
               {intentOptions.map((opt) => (
-                <div
+                <OptionCard
                   key={opt.val}
+                  selected={selections.intent === opt.val}
                   onClick={() =>
                     setSelections((s) => ({ ...s, intent: opt.val }))
                   }
-                  style={{
-                    background:
-                      selections.intent === opt.val
-                        ? "var(--selected-bg)"
-                        : "var(--glass)",
-                    border: `1px solid ${selections.intent === opt.val ? "var(--selected-border)" : "var(--border-dark)"}`,
-                    borderRadius: 12,
-                    padding: "16px 18px",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    position: "relative",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 12,
-                      right: 12,
-                      width: 18,
-                      height: 18,
-                      borderRadius: "50%",
-                      border: `1.5px solid ${selections.intent === opt.val ? "var(--primary-md)" : "var(--border-dark)"}`,
-                      background:
-                        selections.intent === opt.val
-                          ? "var(--primary-md)"
-                          : "transparent",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {selections.intent === opt.val && (
-                      <span
-                        style={{ color: "#fff", fontSize: 9, fontWeight: 900 }}
-                      >
-                        ✓
-                      </span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: 20, marginBottom: 10 }}>
-                    {opt.icon}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: "var(--text-1)",
-                      marginBottom: 4,
-                    }}
-                  >
-                    {opt.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 12,
-                      color: "var(--text-2)",
-                      lineHeight: 1.55,
-                    }}
-                  >
-                    {opt.desc}
-                  </div>
-                </div>
+                  icon={opt.icon}
+                  title={opt.title}
+                  desc={opt.desc}
+                />
               ))}
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                paddingTop: 20,
-                borderTop: "1px solid rgba(255,255,255,0.07)",
-              }}
-            >
-              <button
-                disabled={!selections.intent}
-                onClick={() => setStep(1)}
-                style={{
-                  background: "var(--primary)",
-                  border: "none",
-                  color: "#fff",
-                  padding: "10px 24px",
-                  borderRadius: 8,
-                  cursor: selections.intent ? "pointer" : "not-allowed",
-                  fontSize: 13.5,
-                  fontWeight: 700,
-                  fontFamily: "var(--ff)",
-                  opacity: selections.intent ? 1 : 0.35,
-                  transition: "all 0.18s",
-                }}
-              >
-                Continue →
-              </button>
-            </div>
+            <NavRow
+              nextFn={() => setStep(1)}
+              nextDisabled={!selections.intent}
+            />
           </div>
         )}
 
@@ -630,125 +677,24 @@ function WorkbenchConfigurator() {
               }}
             >
               {benchTypes.map((opt) => (
-                <div
+                <OptionCard
                   key={opt.val}
+                  selected={selections.benchType === opt.val}
                   onClick={() =>
                     setSelections((s) => ({ ...s, benchType: opt.val }))
                   }
-                  style={{
-                    background:
-                      selections.benchType === opt.val
-                        ? "var(--selected-bg)"
-                        : "var(--glass)",
-                    border: `1px solid ${selections.benchType === opt.val ? "var(--selected-border)" : "var(--border-dark)"}`,
-                    borderRadius: 12,
-                    padding: "16px 18px",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                    position: "relative",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 12,
-                      right: 12,
-                      width: 18,
-                      height: 18,
-                      borderRadius: "50%",
-                      border: `1.5px solid ${selections.benchType === opt.val ? "var(--primary-md)" : "var(--border-dark)"}`,
-                      background:
-                        selections.benchType === opt.val
-                          ? "var(--primary-md)"
-                          : "transparent",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {selections.benchType === opt.val && (
-                      <span
-                        style={{ color: "#fff", fontSize: 9, fontWeight: 900 }}
-                      >
-                        ✓
-                      </span>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 20,
-                      color: "var(--primary-lt)",
-                      marginBottom: 10,
-                    }}
-                  >
-                    {opt.icon}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "var(--text-1)",
-                      marginBottom: 4,
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {opt.title}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 11.5,
-                      color: "var(--text-2)",
-                      lineHeight: 1.55,
-                    }}
-                  >
-                    {opt.desc}
-                  </div>
-                </div>
+                  icon={opt.icon}
+                  iconColor="var(--primary-lt)"
+                  title={opt.title}
+                  desc={opt.desc}
+                />
               ))}
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                paddingTop: 20,
-                borderTop: "1px solid rgba(255,255,255,0.07)",
-              }}
-            >
-              <button
-                onClick={() => setStep(0)}
-                style={{
-                  background: "none",
-                  border: "1px solid var(--border-dark)",
-                  color: "var(--text-2)",
-                  padding: "9px 18px",
-                  borderRadius: 8,
-                  cursor: "pointer",
-                  fontSize: 13,
-                  fontFamily: "var(--ff)",
-                  transition: "all 0.18s",
-                }}
-              >
-                ← Back
-              </button>
-              <button
-                disabled={!selections.benchType}
-                onClick={() => setStep(2)}
-                style={{
-                  background: "var(--primary)",
-                  border: "none",
-                  color: "#fff",
-                  padding: "10px 24px",
-                  borderRadius: 8,
-                  cursor: selections.benchType ? "pointer" : "not-allowed",
-                  fontSize: 13.5,
-                  fontWeight: 700,
-                  fontFamily: "var(--ff)",
-                  opacity: selections.benchType ? 1 : 0.35,
-                }}
-              >
-                Continue →
-              </button>
-            </div>
+            <NavRow
+              backFn={() => setStep(0)}
+              nextFn={() => setStep(2)}
+              nextDisabled={!selections.benchType}
+            />
           </div>
         )}
 
@@ -824,46 +770,7 @@ function WorkbenchConfigurator() {
                 </div>
               ))}
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                paddingTop: 20,
-                borderTop: "1px solid rgba(255,255,255,0.07)",
-              }}
-            >
-              <button
-                onClick={() => setStep(1)}
-                style={{
-                  background: "none",
-                  border: "1px solid var(--border-dark)",
-                  color: "var(--text-2)",
-                  padding: "9px 18px",
-                  borderRadius: 8,
-                  cursor: "pointer",
-                  fontSize: 13,
-                  fontFamily: "var(--ff)",
-                }}
-              >
-                ← Back
-              </button>
-              <button
-                onClick={() => setStep(3)}
-                style={{
-                  background: "var(--primary)",
-                  border: "none",
-                  color: "#fff",
-                  padding: "10px 24px",
-                  borderRadius: 8,
-                  cursor: "pointer",
-                  fontSize: 13.5,
-                  fontWeight: 700,
-                  fontFamily: "var(--ff)",
-                }}
-              >
-                Continue →
-              </button>
-            </div>
+            <NavRow backFn={() => setStep(1)} nextFn={() => setStep(3)} />
           </div>
         )}
 
@@ -894,7 +801,6 @@ function WorkbenchConfigurator() {
               Our engineers will review your requirements and get back within 24
               hours.
             </p>
-
             <div
               style={{
                 background: "rgba(201,152,58,0.08)",
@@ -921,7 +827,6 @@ function WorkbenchConfigurator() {
                 submitting.
               </div>
             </div>
-
             <div
               style={{
                 display: "grid",
@@ -972,7 +877,6 @@ function WorkbenchConfigurator() {
                 </div>
               ))}
             </div>
-
             <div
               style={{
                 display: "flex",
@@ -1013,7 +917,6 @@ function WorkbenchConfigurator() {
                     borderRadius: 8,
                     fontSize: 13,
                     fontWeight: 600,
-                    cursor: "pointer",
                     fontFamily: "var(--ff)",
                     textDecoration: "none",
                   }}
@@ -1024,7 +927,7 @@ function WorkbenchConfigurator() {
                   onClick={() => setStep(4)}
                   disabled={!selections.name || !selections.email}
                   style={{
-                    background: "#C9983A",
+                    background: "var(--cta)",
                     border: "none",
                     color: "#fff",
                     padding: "10px 24px",
@@ -1112,11 +1015,15 @@ function WorkbenchConfigurator() {
   );
 }
 
+// ─────────────────────────────────────────────
+// MAIN PAGE COMPONENT
+// ─────────────────────────────────────────────
+
 export default function Home() {
   const [sections, setSections] = useState({});
   const [faqs, setFaqs] = useState([]);
   const [openFaq, setOpenFaq] = useState(null);
-  const waNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "919876543210";
+  const waNumber = import.meta.env.VITE_WHATSAPP_NUMBER || "919742944306";
 
   useEffect(() => {
     loadData();
@@ -1128,12 +1035,10 @@ export default function Home() {
     if (cachedSections) setSections(cachedSections);
     if (cachedFaqs) setFaqs(cachedFaqs);
     if (cachedSections && cachedFaqs) return;
-
     const [{ data: sectionsData }, { data: faqsData }] = await Promise.all([
       supabase.from("site_sections").select("*"),
       supabase.from("faqs").select("*").order("sort_order"),
     ]);
-
     const map = {};
     sectionsData?.forEach((s) => {
       map[s.id] = s;
@@ -1147,7 +1052,15 @@ export default function Home() {
   return (
     <>
       <SEOHead />
-      {/* ── NEW HERO ── */}
+
+      {/* ════════════════════════════════════════
+          SECTION 1 — HERO
+          1a. Background (grid + glow orbs)
+          1b. Left column (eyebrow, headline, subheadline, CTAs, stats)
+          1c. Right column (bench product image)
+          1d. Bottom bar (client mentions)
+          1e. Animations (tmci-blink keyframe)
+      ════════════════════════════════════════ */}
       <div
         style={{
           background: "#060F0D",
@@ -1159,6 +1072,7 @@ export default function Home() {
           flexDirection: "column",
         }}
       >
+        {/* 1a. Background layers */}
         <div
           style={{
             position: "absolute",
@@ -1193,6 +1107,8 @@ export default function Home() {
             pointerEvents: "none",
           }}
         />
+
+        {/* Hero grid — 1b (left) + 1c (right) */}
         <div
           style={{
             display: "grid",
@@ -1203,6 +1119,7 @@ export default function Home() {
             height: "calc(100vh - 52px)",
           }}
         >
+          {/* 1b. Left column */}
           <div
             style={{
               display: "flex",
@@ -1211,6 +1128,7 @@ export default function Home() {
               padding: "100px 56px 56px 64px",
             }}
           >
+            {/* Eyebrow */}
             <div
               style={{
                 display: "inline-flex",
@@ -1258,16 +1176,18 @@ export default function Home() {
                 Bengaluru · Est. 2012
               </span>
             </div>
+
+            {/* Headline — edit text here */}
             <SectionRenderer
               section={null}
               fallback={
                 <h1
                   style={{
-                    fontFamily: "'Syne', Georgia, serif",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontWeight: 800,
+                    letterSpacing: "-1px",
                     fontSize: "clamp(32px, 3.8vw, 48px)",
-                    fontWeight: 700,
                     lineHeight: 1.08,
-                    letterSpacing: "-1.5px",
                     color: "#ffffff",
                     margin: "0 0 8px 0",
                     display: "block",
@@ -1284,6 +1204,8 @@ export default function Home() {
                 </h1>
               }
             />
+
+            {/* Rule */}
             <div
               style={{
                 width: 40,
@@ -1294,6 +1216,8 @@ export default function Home() {
                 margin: "24px 0",
               }}
             />
+
+            {/* Subheadline — edit text here */}
             <p
               style={{
                 fontSize: 15.5,
@@ -1303,11 +1227,11 @@ export default function Home() {
                 margin: "0 0 40px 0",
               }}
             >
-              TMCI builds calibration benches, ESD workstations, and test
-              systems that transform messy, improvised setups into clean,
-              professional workspaces — configured precisely to your process,
-              your instruments, your space.
+              TMCI modernizes industrial labs with custom calibration benches,
+              ESD workstations and test systems.
             </p>
+
+            {/* CTAs */}
             <div
               style={{
                 display: "flex",
@@ -1376,6 +1300,8 @@ export default function Home() {
                 Talk to an Engineer
               </a>
             </div>
+
+            {/* Stats row — edit values here */}
             <div
               style={{
                 display: "flex",
@@ -1432,28 +1358,37 @@ export default function Home() {
               ))}
             </div>
           </div>
+
+          {/* 1c. Right column — product image
+              TO CHANGE IMAGE: update the backgroundImage URL below
+              TO ADJUST POSITION: change backgroundPosition (e.g. "75% 30%")
+              TO ADJUST SIZE: change backgroundSize (e.g. "160%")
+          */}
           <div
             style={{
               position: "relative",
               overflow: "hidden",
               backgroundImage: `url(https://res.cloudinary.com/dkhmnkxzo/image/upload/v1778324996/hero-bench_oq3kb0.png)`,
-              backgroundSize: "130%",
-              backgroundPosition: "20% 15%",
+              backgroundSize: "150%",
+              backgroundPosition: "75% 40%",
               backgroundRepeat: "no-repeat",
               mixBlendMode: "lighten",
+              filter: "brightness(1.4) saturate(1.1) contrast(1.05)",
             }}
           >
+            {/* Left fade — blends image into dark bg */}
             <div
               style={{
                 position: "absolute",
                 left: 0,
                 top: 0,
                 bottom: 0,
-                width: 400,
+                width: 100,
                 background: "linear-gradient(90deg, #060F0D 40%, transparent)",
                 zIndex: 3,
               }}
             />
+            {/* Bottom fade */}
             <div
               style={{
                 position: "absolute",
@@ -1467,10 +1402,14 @@ export default function Home() {
             />
           </div>
         </div>
+
+        {/* 1d. Bottom bar — client mentions
+            TO ADD/REMOVE CLIENTS: edit the spans below
+        */}
         <div
           style={{
-            background: "rgba(0,191,140,0.06)",
-            borderTop: "1px solid rgba(0,191,140,0.12)",
+            background: "rgba(255,255,255,0.04)",
+            borderTop: "1px solid rgba(255,255,255,0.07)",
             padding: "14px 64px",
             display: "flex",
             alignItems: "center",
@@ -1482,63 +1421,61 @@ export default function Home() {
         >
           <div
             style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "rgba(255,255,255,0.28)",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
+              fontSize: 13,
+              color: "rgba(255,255,255,0.45)",
+              letterSpacing: "0.02em",
+              fontWeight: 400,
             }}
           >
-            Sectors We Serve
-          </div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {[
-              "🛡️ Defence",
-              "✈️ Aerospace",
-              "⛽ Oil & Gas",
-              "⚡ Power Gen",
-              "🚢 Marine",
-              "💊 Pharma",
-              "🚗 Automotive",
-              "🎓 R&D Labs",
-            ].map((s) => (
-              <div
-                key={s}
-                style={{
-                  fontSize: 11.5,
-                  fontWeight: 500,
-                  color: "rgba(255,255,255,0.55)",
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  padding: "5px 13px",
-                  borderRadius: 20,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {s}
-              </div>
-            ))}
+            Supplied to{" "}
+            <span style={{ color: "rgba(255,255,255,0.75)", fontWeight: 600 }}>
+              Indian Navy
+            </span>
+            {" · "}
+            <span style={{ color: "rgba(255,255,255,0.75)", fontWeight: 600 }}>
+              ISRO
+            </span>
+            {" · "}
+            <span style={{ color: "rgba(255,255,255,0.75)", fontWeight: 600 }}>
+              BPCL
+            </span>
+            {" · "}
+            <span style={{ color: "rgba(255,255,255,0.75)", fontWeight: 600 }}>
+              NTPC
+            </span>
+            {" · "}
+            <span style={{ color: "rgba(255,255,255,0.75)", fontWeight: 600 }}>
+              Tata Steel
+            </span>
+            <span style={{ color: "rgba(255,255,255,0.3)", marginLeft: 8 }}>
+              and more, across India and internationally
+            </span>
           </div>
         </div>
+
+        {/* 1e. Animations */}
         <style>{`@keyframes tmci-blink { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.3; transform:scale(1.6); } }`}</style>
       </div>
 
-      {/* TICKER */}
+      {/* ════════════════════════════════════════
+          SECTION 2 — TICKER
+          Edit ticker items array to change text
+      ════════════════════════════════════════ */}
       <div className="ticker-wrap">
         <div className="ticker-inner">
           {[
-            "Calibration Test Benches — Made in Bengaluru",
-            "Shipped to Saudi Arabia, South Africa & beyond",
-            "Custom-built to your exact specification",
-            "13+ years · 11+ industries served",
+            "Calibration Test Benches · Made in Bengaluru",
+            "Supplied to ISRO · NTPC · BPCL · Tata Steel · Siemens",
+            "ISO 9001:2015 Certified · CE · ROHS · BIFMA",
             "ESD Workstations · Pressure Benches · Gas Analyzers",
-            "Calibration Test Benches — Made in Bengaluru",
-            "Shipped to Saudi Arabia, South Africa & beyond",
-            "Custom-built to your exact specification",
-            "13+ years · 11+ industries served",
+            "13+ Years · 11+ Industries · Ships Internationally",
+            "Authorized Dealer — Fluke & Karogic",
+            "Calibration Test Benches · Made in Bengaluru",
+            "Supplied to ISRO · NTPC · BPCL · Tata Steel · Siemens",
+            "ISO 9001:2015 Certified · CE · ROHS · BIFMA",
             "ESD Workstations · Pressure Benches · Gas Analyzers",
+            "13+ Years · 11+ Industries · Ships Internationally",
+            "Authorized Dealer — Fluke & Karogic",
           ].map((t, i) => (
             <div key={i} className="ticker-item">
               <span className="ticker-dot" />
@@ -1547,111 +1484,37 @@ export default function Home() {
           ))}
         </div>
       </div>
-      {/* CLIENT STRIP */}
-      <div className="client-strip">
-        <div className="cs-lbl">Sectors we serve</div>
-        <div className="cs-pills">
-          {[
-            "🛡️ Defence",
-            "✈️ Aerospace",
-            "⛽ Oil & Gas",
-            "⚡ Power Gen",
-            "🚢 Marine",
-            "🚗 Automotive",
-            "💊 Pharma",
-            "🎓 R&D Labs",
-          ].map((s) => (
-            <div key={s} className="cs-pill">
-              {s}
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* PAIN SECTION */}
-      <div className="pain-band">
-        <div className="pain-inner">
-          <div className="pain-text">
-            <div className="overline-red">Sound familiar?</div>
-            <h2>
-              Your lab is running instruments that haven't been calibrated in
-              months.
-            </h2>
-            <p>
-              You didn't set out to search for a calibration bench. But the
-              problem is real — and it's quietly costing you. Without an
-              in-house calibration and test setup, you're:
-            </p>
-            <div className="pain-list">
-              {[
-                [
-                  "⏱️",
-                  "Sending instruments out for every calibration",
-                  "Wait days or weeks for third-party labs. Miss production deadlines. Pay premium service charges every single time.",
-                ],
-                [
-                  "📉",
-                  "Working with measurement uncertainty you can't quantify",
-                  "Unverified instruments mean your results are only as reliable as your last external calibration. Audits become a stress event.",
-                ],
-                [
-                  "🔧",
-                  "Improvising with benches cobbled together from different vendors",
-                  "No unified workspace. No ergonomic setup. No proper cable management or grounding — especially painful for electronics labs.",
-                ],
-              ].map(([icon, title, desc]) => (
-                <div key={title} className="pain-item">
-                  <div className="pain-icon">{icon}</div>
-                  <div className="pain-item-text">
-                    <strong>{title}</strong>
-                    {desc}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="pain-visual">
-            <div className="pain-card red">
-              <div className="pain-stat">3×</div>
-              <div className="pain-card-tag">Hidden Cost</div>
-              <div className="pain-card-title">
-                External calibration costs 3–5× more than in-house over 3 years
-              </div>
-              <div className="pain-card-sub">
-                Every time you send a pressure transmitter or temperature sensor
-                out, you pay service charges, transit risk, and 7–21 days of
-                downtime.
-              </div>
-            </div>
-            <div className="pain-card">
-              <div className="pain-card-tag">The fix</div>
-              <div className="pain-card-title">
-                One properly built bench changes everything
-              </div>
-              <div className="pain-card-sub">
-                A TMCI calibration test bench brings the full calibration
-                capability in-house — temperature, pressure, electronic signal,
-                loop — custom-configured to your exact requirements.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* PRODUCTS */}
-      <div style={{ background: "var(--white)" }}>
+
+      {/* ════════════════════════════════════════
+          SECTION 3 — WHAT WE MAKE (Products)
+          3a. Section header
+          3b. Product mosaic grid (6 tiles)
+          3c. IMAGE PLACEHOLDER — add product photos here
+          TO ADD IMAGES: add a cloudinary URL to each tile
+      ════════════════════════════════════════ */}
+      <div id="products" style={{ background: "var(--white)" }}>
         <div className="sec">
           <SectionRenderer
             section={sections.products}
             fallback={
               <>
+                {/* 3a. Header */}
                 <div className="sec-hd">
-                  <div className="overline">Our Products</div>
-                  <h2>Complete instrumentation, built to your specification</h2>
+                  <div className="overline">What We Make</div>
+                  <h2>
+                    Custom instrumentation for every industrial application
+                  </h2>
                   <p>
-                    Every TMCI product is custom-engineered — material, size,
-                    display, power source, and module configuration are all
-                    tailored to your exact process requirements.
+                    Every TMCI product is engineered from scratch — no generic
+                    solutions. Material, size, modules, power source and layout
+                    are all configured to your exact requirements.
                   </p>
                 </div>
+
+                {/* 3b. Product tiles
+                  TO REORDER: move objects in the array
+                  TO EDIT: change title, desc, tag values
+              */}
                 <div className="product-mosaic">
                   {[
                     {
@@ -1659,6 +1522,7 @@ export default function Home() {
                       title: "Calibration Test Benches & Systems",
                       desc: "Temperature, pressure, electrical and electronic calibration benches. Modular consoles with ergonomic workspaces for on-site and lab calibration. Our flagship product.",
                       tag: "Core product · Most ordered",
+                      /* 3c. IMAGE: add imageUrl: "https://..." to show product photo */
                     },
                     {
                       title: "ESD Workstations & Tables",
@@ -1667,7 +1531,7 @@ export default function Home() {
                     },
                     {
                       title: "Pneumatic & Pressure Test Benches",
-                      desc: "SS-grade pressure calibration systems with automatic grade. Customisable signal, temperature, loop, and pressure modules for demanding industrial applications.",
+                      desc: "SS-grade pressure calibration systems. Customisable signal, temperature, loop, and pressure modules for demanding industrial applications.",
                       tag: "Custom config",
                     },
                     {
@@ -1682,7 +1546,7 @@ export default function Home() {
                     },
                     {
                       title: "Predictive Maintenance Systems",
-                      desc: "Condition monitoring and predictive maintenance solutions to detect equipment degradation before failures occur — reducing unplanned downtime and repair costs.",
+                      desc: "Condition monitoring solutions to detect equipment degradation before failures occur — reducing unplanned downtime and repair costs.",
                       tag: "Reduce downtime",
                     },
                   ].map((p, i) => (
@@ -1690,6 +1554,8 @@ export default function Home() {
                       key={i}
                       className={`pm-tile${p.accent ? " accent" : ""}`}
                     >
+                      {/* Product image placeholder — uncomment when image URL is available */}
+                      {/* {p.imageUrl && <img src={p.imageUrl} alt={p.title} style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 6, marginBottom: 12 }} />} */}
                       <div className="pm-title">{p.title}</div>
                       <div className="pm-desc">{p.desc}</div>
                       <div className="pm-tag">{p.tag}</div>
@@ -1702,50 +1568,393 @@ export default function Home() {
           />
         </div>
       </div>
-      {/* CUSTOMIZE WORKBENCH */}
-      <section
-        id="workbench"
-        style={{ background: "var(--ink)", padding: "72px 40px" }}
-      >
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div className="overline" style={{ color: "var(--primary-lt)" }}>
-              Configurator
+
+      {/* ════════════════════════════════════════
+          SECTION 4 — WHY OUR PRODUCTS
+          4a. Left — benefits text
+          4b. Right — IMAGE PLACEHOLDER (add product photo)
+          Content from catalogue "Why Test Bench" page
+      ════════════════════════════════════════ */}
+      <div style={{ background: "var(--surface)" }}>
+        <div className="sec" style={{ maxWidth: 1200 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 64,
+              alignItems: "center",
+            }}
+          >
+            {/* 4a. Benefits */}
+            <div>
+              <div className="overline">Why Our Products</div>
+              <h2
+                style={{
+                  fontSize: "clamp(22px,2.8vw,34px)",
+                  fontWeight: 800,
+                  letterSpacing: -1,
+                  lineHeight: 1.18,
+                  color: "var(--ink)",
+                  marginBottom: 14,
+                }}
+              >
+                Integration. Efficiency. Space Optimisation.
+              </h2>
+              <p
+                style={{
+                  fontSize: 15,
+                  color: "var(--mid)",
+                  lineHeight: 1.8,
+                  marginBottom: 28,
+                }}
+              >
+                A properly built test bench does more than hold instruments — it
+                transforms how your lab operates. Centralising your instruments
+                into a single, configured platform minimises variability,
+                enhances repeatability, and ensures seamless workflows.
+              </p>
+              {/* Benefits list — edit items here */}
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 14 }}
+              >
+                {[
+                  [
+                    "Space optimisation",
+                    "Compact, modular systems consolidate multiple instruments — reducing clutter and improving organisation across your lab floor.",
+                  ],
+                  [
+                    "Safety built in",
+                    "Emergency stops, overload protection, ESD safeguards and ergonomic layouts ensure secure, comfortable operation even in high-stakes testing.",
+                  ],
+                  [
+                    "Automation ready",
+                    "Modern test benches support software integration for real-time data acquisition, automated testing, and compliance with industry standards like ISO/IEC 17025.",
+                  ],
+                  [
+                    "Fully modular",
+                    "Accommodates customisation at any stage — add modules, swap instruments, reconfigure layout as your requirements evolve.",
+                  ],
+                ].map(([title, desc]) => (
+                  <div
+                    key={title}
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 22,
+                        height: 22,
+                        borderRadius: "50%",
+                        background: "var(--primary-pale-solid)",
+                        color: "var(--primary)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 11,
+                        fontWeight: 900,
+                        flexShrink: 0,
+                        marginTop: 2,
+                      }}
+                    >
+                      ✓
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13.5,
+                        color: "var(--mid)",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      <strong style={{ color: "var(--ink)", fontWeight: 700 }}>
+                        {title}.{" "}
+                      </strong>
+                      {desc}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h2
+
+            {/* 4b. IMAGE PLACEHOLDER
+                Replace the div below with an <img> tag when product photo is ready
+                Suggested: a clean shot of the calibration bench from the catalogue page 3
+                Upload to Cloudinary first, then use:
+                <img src="YOUR_CLOUDINARY_URL" alt="TMCI Calibration Test Bench" style={{ width: "100%", borderRadius: 12, boxShadow: "0 8px 40px rgba(0,0,0,0.12)" }} />
+            */}
+            <div
               style={{
-                fontSize: "clamp(22px,3vw,36px)",
-                fontWeight: 800,
-                color: "#fff",
-                letterSpacing: -1,
-                lineHeight: 1.13,
-                marginBottom: 10,
+                background: "var(--ink2)",
+                borderRadius: 14,
+                aspectRatio: "4/3",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              Customize Your Workbench
-            </h2>
-            <p
-              style={{
-                fontSize: 15,
-                color: "rgba(255,255,255,0.5)",
-                maxWidth: 500,
-                margin: "0 auto",
-              }}
-            >
-              Tell us your requirements — our engineers will design exactly what
-              you need.
-            </p>
+              <div
+                style={{
+                  position: "absolute",
+                  width: 300,
+                  height: 300,
+                  borderRadius: "50%",
+                  background:
+                    "radial-gradient(circle, rgba(0,137,123,0.25) 0%, transparent 70%)",
+                  bottom: -80,
+                  right: -60,
+                  pointerEvents: "none",
+                }}
+              />
+              {/* Placeholder content — remove when image is added */}
+              <div
+                style={{
+                  textAlign: "center",
+                  color: "rgba(255,255,255,0.2)",
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                <div style={{ fontSize: 40, marginBottom: 12 }}>📷</div>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  PRODUCT PHOTO
+                  <br />
+                  Add from Cloudinary
+                </div>
+              </div>
+            </div>
           </div>
-          <WorkbenchConfigurator />
         </div>
-      </section>
-      {/* WHY TMCI */}
+      </div>
+
+      {/* ════════════════════════════════════════
+          SECTION 5 — IS THIS FOR YOU?
+          5a. Section header
+          5b. Scenario checklist (self-identification)
+          5c. Right side — quick facts card
+      ════════════════════════════════════════ */}
+      <div style={{ background: "var(--white)" }}>
+        <div className="sec" style={{ maxWidth: 1200 }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 64,
+              alignItems: "start",
+            }}
+          >
+            {/* 5a + 5b. Left — who this is for */}
+            <div>
+              <div className="overline">Is This For You?</div>
+              <h2
+                style={{
+                  fontSize: "clamp(22px,2.8vw,34px)",
+                  fontWeight: 800,
+                  letterSpacing: -1,
+                  lineHeight: 1.18,
+                  color: "var(--ink)",
+                  marginBottom: 14,
+                }}
+              >
+                You might need a TMCI bench if...
+              </h2>
+              <p
+                style={{
+                  fontSize: 15,
+                  color: "var(--mid)",
+                  lineHeight: 1.8,
+                  marginBottom: 28,
+                }}
+              >
+                Whether you're setting up a new lab from scratch or replacing an
+                improvised setup — TMCI builds the bench that fits your exact
+                process.
+              </p>
+              {/* 5b. Scenario checklist — edit scenarios here */}
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+              >
+                {[
+                  "You're setting up a new calibration or test lab",
+                  "Your instruments go out for calibration every month to a third-party lab",
+                  "Your team works on benches assembled from multiple vendors with no unified workspace",
+                  "You need an NABL-ready, audit-compliant workstation",
+                  "You're an OEM or systems integrator needing integrated test solutions",
+                  "Your current bench doesn't meet ESD, safety or ergonomic standards",
+                  "You want to bring calibration capability fully in-house",
+                ].map((scenario) => (
+                  <div
+                    key={scenario}
+                    style={{
+                      display: "flex",
+                      gap: 12,
+                      alignItems: "flex-start",
+                      padding: "12px 16px",
+                      background: "var(--surface)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 8,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: "50%",
+                        background: "var(--primary-pale-solid)",
+                        color: "var(--primary)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 10,
+                        fontWeight: 900,
+                        flexShrink: 0,
+                        marginTop: 1,
+                      }}
+                    >
+                      ✓
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13.5,
+                        color: "var(--mid)",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {scenario}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 5c. Right — quick facts + CTA */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                paddingTop: 8,
+              }}
+            >
+              {/* Fact cards — edit facts here */}
+              {[
+                {
+                  icon: "🏭",
+                  label: "Manufacturer",
+                  value:
+                    "Direct from our Bengaluru facility — no middlemen, no resellers.",
+                },
+                {
+                  icon: "🔧",
+                  label: "100% Custom",
+                  value:
+                    "Every bench is built to your specification. No off-the-shelf compromise.",
+                },
+                {
+                  icon: "🌏",
+                  label: "Ships Internationally",
+                  value:
+                    "Delivered across India and to international locations including Saudi Arabia and South Africa.",
+                },
+                {
+                  icon: "📋",
+                  label: "ISO 9001:2015",
+                  value:
+                    "Quality management certified. CE, ROHS, BIFMA, ANSI-ESD and more.",
+                },
+              ].map(({ icon, label, value }) => (
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    gap: 14,
+                    padding: "16px 18px",
+                    border: "1px solid var(--border)",
+                    borderRadius: 10,
+                    background: "var(--white)",
+                  }}
+                >
+                  <div style={{ fontSize: 24, flexShrink: 0 }}>{icon}</div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        color: "var(--primary)",
+                        marginBottom: 3,
+                      }}
+                    >
+                      {label}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "var(--mid)",
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      {value}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {/* CTA inside section */}
+              <a
+                href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hello! I want to discuss a requirement for a test bench.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  background: "var(--primary)",
+                  color: "#fff",
+                  padding: "13px 24px",
+                  borderRadius: 8,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  transition: "background 0.18s",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background = "var(--primary-dk)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.background = "var(--primary)")
+                }
+              >
+                Talk to an Engineer →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════
+          SECTION 6 — WHY TMCI
+          6a. Left — checklist (manufacturer advantages)
+          6b. Right — bench SVG illustration
+          (replace SVG with real image when available)
+      ════════════════════════════════════════ */}
       <div style={{ background: "var(--surface)" }}>
         <div className="sec" style={{ maxWidth: 1200 }}>
           <SectionRenderer
             section={sections.why}
             fallback={
               <div className="solution-grid">
+                {/* 6a. Left — why TMCI */}
                 <div>
                   <div className="overline">Why TMCI</div>
                   <h2
@@ -1775,6 +1984,7 @@ export default function Home() {
                     and build instruments configured precisely to your
                     operation.
                   </p>
+                  {/* 6a. Checklist — edit items here */}
                   <div className="checklist">
                     {[
                       [
@@ -1807,6 +2017,11 @@ export default function Home() {
                     ))}
                   </div>
                 </div>
+
+                {/* 6b. Right — illustration
+                  REPLACE with real photo:
+                  <img src="YOUR_URL" alt="TMCI bench" style={{ width: "100%", borderRadius: 12 }} />
+              */}
                 <div className="bench-3d-wrap">
                   <div className="bench-glow-inner" />
                   <BenchSVG />
@@ -1816,60 +2031,24 @@ export default function Home() {
           />
         </div>
       </div>
-      {/* HOW IT WORKS */}
+
+      {/* ════════════════════════════════════════
+          SECTION 7 — WHO WE SERVE (Industries)
+          7a. Section header
+          7b. Industry grid (8 sectors)
+          TO ADD/REMOVE: edit the array below
+      ════════════════════════════════════════ */}
       <div style={{ background: "var(--white)" }}>
-        <div className="sec">
-          <div className="sec-hd ctr">
-            <div className="overline">Our Process</div>
-            <h2>From requirement to installation — we handle it all</h2>
-            <p>
-              A straightforward process designed around your operational
-              requirements and timeline.
-            </p>
-          </div>
-          <div className="steps-grid">
-            {[
-              [
-                "01",
-                "Requirement Analysis",
-                "We begin with a thorough understanding of your application, compliance requirements, site conditions, and budget constraints.",
-              ],
-              [
-                "02",
-                "Engineering & Design",
-                "Our engineers design an innovative, cost-effective solution — configured precisely to your specification.",
-              ],
-              [
-                "03",
-                "Manufacturing & QA",
-                "Built at our Bengaluru facility using quality-tested materials with stringent quality checks at every stage.",
-              ],
-              [
-                "04",
-                "Delivery & Support",
-                "On-site installation, commissioning, and ongoing AMC / maintenance services to keep your systems running precisely.",
-              ],
-            ].map(([num, title, desc]) => (
-              <div key={num} className="step-block">
-                <div className="step-num">{num}</div>
-                <h4>{title}</h4>
-                <p>{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      {/* INDUSTRIES */}
-      <div className="sec-alt">
         <div className="sec" style={{ maxWidth: 1200 }}>
           <div className="sec-hd ctr">
-            <div className="overline">Industries We Serve</div>
+            <div className="overline">Who We Serve</div>
             <h2>Built for India's most demanding industrial sectors</h2>
             <p>
               Our solutions meet the rigorous standards of safety, precision,
               and reliability required across 11+ sectors.
             </p>
           </div>
+          {/* 7b. Industry grid — edit sectors here */}
           <div className="ind-grid">
             {[
               [
@@ -1922,17 +2101,103 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {/* BRANDS */}
+
+      {/* ════════════════════════════════════════
+          SECTION 8 — CERTIFICATIONS
+          8a. Section header
+          8b. Certification badges grid
+          TO ADD: add to the certs array below
+      ════════════════════════════════════════ */}
+      <div style={{ background: "var(--surface)", padding: "56px 40px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <div className="overline">Certifications & Compliance</div>
+            <h2
+              style={{
+                fontSize: "clamp(20px,2.5vw,30px)",
+                fontWeight: 800,
+                letterSpacing: -1,
+                color: "var(--ink)",
+              }}
+            >
+              Built to international standards
+            </h2>
+          </div>
+          {/* 8b. Cert grid — edit certifications here */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: 12,
+            }}
+          >
+            {[
+              { name: "ISO 9001:2015", desc: "Quality Management" },
+              { name: "ISO 14001:2015", desc: "Environmental Management" },
+              { name: "ISO 45001:2018", desc: "Occupational Health & Safety" },
+              { name: "CE Certified", desc: "European Conformity" },
+              { name: "ROHS", desc: "Restriction of Hazardous Substances" },
+              { name: "BIFMA", desc: "Furniture & Safety Standards" },
+              { name: "ANSI-ESD S20.20", desc: "Electrostatic Discharge" },
+              { name: "IEC 61340-5-1", desc: "ESD Protection" },
+              { name: "Make in India", desc: "Manufactured in Bengaluru" },
+              {
+                name: "MSME Registered",
+                desc: "Micro, Small & Medium Enterprise",
+              },
+            ].map(({ name, desc }) => (
+              <div
+                key={name}
+                style={{
+                  background: "var(--white)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 8,
+                  padding: "16px 14px",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 800,
+                    color: "var(--ink)",
+                    marginBottom: 4,
+                  }}
+                >
+                  {name}
+                </div>
+                <div
+                  style={{
+                    fontSize: 10.5,
+                    color: "var(--muted)",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {desc}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════
+          SECTION 9 — AUTHORIZED DEALER & BRANDS
+          9a. Authorized dealer strip
+          9b. Brands we work with
+          TO ADD BRANDS: edit the arrays below
+      ════════════════════════════════════════ */}
       <div className="brands-band">
-        <div className="bb-lbl">Instruments & brands we work with</div>
+        <div className="bb-lbl">Authorized Dealer & Brands We Work With</div>
         <div className="bb-logos">
+          {/* 9a. Authorized dealer highlighted */}
           {[
-            "Fluke",
+            "Fluke ★ Authorized Dealer",
+            "Karogic ★ Authorized Dealer",
             "Yokogawa",
             "Endress+Hauser",
             "Beamex",
             "WIKA",
-            "Emerson",
           ].map((b) => (
             <div key={b} className="bb-logo">
               {b}
@@ -1940,10 +2205,17 @@ export default function Home() {
           ))}
         </div>
       </div>
-      {/* SOCIAL PROOF */}
+
+      {/* ════════════════════════════════════════
+          SECTION 10 — SOCIAL PROOF
+          10a. Stats row
+          10b. Testimonials grid (3 cards)
+          TO EDIT: change quotes, authors, locations below
+      ════════════════════════════════════════ */}
       <div className="proof-band">
         <div className="proof-inner">
-          <div className="proof-overline">Customer proof</div>
+          <div className="proof-overline">Trusted by Industry</div>
+          {/* 10a. Stats — edit values here */}
           <div className="proof-stats">
             {[
               ["13+", "Years manufacturing"],
@@ -1957,6 +2229,7 @@ export default function Home() {
               </div>
             ))}
           </div>
+          {/* 10b. Testimonials — edit quotes here */}
           <div className="proof-grid">
             {[
               [
@@ -1986,7 +2259,54 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {/* FAQ */}
+
+      {/* ════════════════════════════════════════
+          SECTION 11 — CUSTOMIZE WORKBENCH
+          Configurator component (4-step form)
+          See WorkbenchConfigurator component above
+      ════════════════════════════════════════ */}
+      <section
+        id="workbench"
+        style={{ background: "var(--ink)", padding: "72px 40px" }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div className="overline" style={{ color: "var(--primary-lt)" }}>
+              Configurator
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(22px,3vw,36px)",
+                fontWeight: 800,
+                color: "#fff",
+                letterSpacing: -1,
+                lineHeight: 1.13,
+                marginBottom: 10,
+              }}
+            >
+              Customize Your Workbench
+            </h2>
+            <p
+              style={{
+                fontSize: 15,
+                color: "rgba(255,255,255,0.5)",
+                maxWidth: 500,
+                margin: "0 auto",
+              }}
+            >
+              Tell us your requirements — our engineers will design exactly what
+              you need.
+            </p>
+          </div>
+          <WorkbenchConfigurator />
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════
+          SECTION 12 — FAQ
+          Loaded from Supabase (admin managed)
+          Add FAQs via admin panel → FAQ Manager
+      ════════════════════════════════════════ */}
       <div style={{ background: "var(--white)", padding: "72px 40px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <div className="sec-hd ctr" style={{ marginBottom: 40 }}>
@@ -2060,7 +2380,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {/* BLOG PREVIEW */}
+
+      {/* ════════════════════════════════════════
+          SECTION 13 — BLOG PREVIEW
+          Shows 3 latest articles
+          Actual blogs loaded from /blogs page
+      ════════════════════════════════════════ */}
       <div className="sec-alt" style={{ padding: "72px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div
@@ -2160,7 +2485,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-      {/* CTA BANNER */}
+
+      {/* ════════════════════════════════════════
+          SECTION 14 — CTA BANNER
+          Final conversion section
+          Edit headline, body, button text below
+      ════════════════════════════════════════ */}
       <div className="cta-banner">
         <div className="cta-inner">
           <div>
