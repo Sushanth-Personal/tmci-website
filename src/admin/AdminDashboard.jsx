@@ -1,5 +1,6 @@
+'use client'
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 import { supabase } from '../lib/supabase'
 
 export default function AdminDashboard() {
@@ -40,7 +41,7 @@ export default function AdminDashboard() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14, marginBottom: 32 }}>
         {cards.map(card => (
-          <Link key={card.label} to={card.href} style={{ background: card.bg, border: `1px solid ${card.border}`, borderRadius: 12, padding: 20, textDecoration: 'none', transition: 'transform 0.15s' }}
+          <Link key={card.label} href={card.href} style={{ background: card.bg, border: `1px solid ${card.border}`, borderRadius: 12, padding: 20, textDecoration: 'none', transition: 'transform 0.15s' }}
             onMouseOver={e => e.currentTarget.style.transform='translateY(-2px)'}
             onMouseOut={e => e.currentTarget.style.transform=''}>
             <div style={{ fontSize: 28, marginBottom: 10 }}>{card.icon}</div>
@@ -53,7 +54,7 @@ export default function AdminDashboard() {
       <h2 style={{ fontSize: 14, fontWeight: 700, color: 'var(--ink)', marginBottom: 12 }}>Quick Actions</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12 }}>
         {actions.map(action => (
-          <Link key={action.label} to={action.href} target={action.target} style={{ background: action.bg, color: '#fff', borderRadius: 12, padding: '18px 16px', textAlign: 'center', textDecoration: 'none', transition: 'opacity 0.15s' }}
+          <Link key={action.label} href={action.href} target={action.target} style={{ background: action.bg, color: '#fff', borderRadius: 12, padding: '18px 16px', textAlign: 'center', textDecoration: 'none', transition: 'opacity 0.15s' }}
             onMouseOver={e => e.currentTarget.style.opacity='0.85'}
             onMouseOut={e => e.currentTarget.style.opacity='1'}>
             <div style={{ fontSize: 28, marginBottom: 8 }}>{action.icon}</div>

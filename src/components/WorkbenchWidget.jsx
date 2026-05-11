@@ -1,8 +1,9 @@
+'use client'
 import { useState } from 'react'
 
 export default function WorkbenchWidget() {
   const [expanded, setExpanded] = useState(false)
-  const waNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '919742944306'
+  const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919742944306'
   const waMsg = encodeURIComponent('Hello TMCI! I want to configure a custom workbench. Can you help me get started?')
 
   return (

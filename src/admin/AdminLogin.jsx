@@ -1,5 +1,6 @@
+'use client'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRouter } from 'next/navigation'
 import { useAdminStore } from '../store/adminStore'
 
 const ATTEMPTS_KEY = 'tmci_login_attempts'
@@ -29,7 +30,7 @@ export default function AdminLogin() {
   const [locked, setLocked] = useState(false)
   const [lockRemaining, setLockRemaining] = useState(0)
   const { login, session, init } = useAdminStore()
-  const navigate = useNavigate()
+  const router = useRouter()
 
   useEffect(() => {
     init()
@@ -40,7 +41,7 @@ export default function AdminLogin() {
     }
   }, [])
 
-  useEffect(() => { if (session) navigate('/admin', { replace: true }) }, [session])
+  useEffect(() => { if (session) router.replace('/admin') }, [session])
 
   useEffect(() => {
     if (!locked) return
@@ -62,7 +63,7 @@ export default function AdminLogin() {
     try {
       await login(email, password)
       resetAttempts()
-      navigate('/admin', { replace: true })
+      router.replace('/admin')
     } catch {
       const updated = recordAttempt()
       if (updated.count >= MAX_ATTEMPTS) {
