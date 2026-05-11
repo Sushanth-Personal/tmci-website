@@ -12,8 +12,6 @@
   --primary-lt: #4DD0C4;
   --primary-pale: rgba(0,191,165,0.08);
   --primary-pale-solid: #E0F2F0;
-  --cta: #F59E0B;
---cta-hover: #D97706;
 
   --accent: #F59E0B;
   --accent-lt: #FCD34D;
@@ -249,14 +247,9 @@ img { display: block; }
   display: flex; gap: 32px; flex-wrap: wrap;
   padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.07);
 }
-.hs-val { font-size: 22px; font-weight: 500; color: #fff; letter-spacing: -0.5px; font-family: var(--mono); }
-.hs-lbl { 
-  font-size: 9px; 
-  color: rgba(255,255,255,0.38); 
-  margin-top: 2px; 
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-}
+.hs-val { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -1px; font-family: var(--mono); }
+.hs-lbl { font-size: 10.5px; color: rgba(255,255,255,0.38); margin-top: 2px; letter-spacing: 0.3px; }
+
 /* Hero right panel */
 .hero-right {
   background: #040D15;
@@ -448,7 +441,7 @@ img { display: block; }
 .proof-stats { display: flex; margin-bottom: 40px; border: 1px solid rgba(255,255,255,0.07); border-radius: 10px; overflow: hidden; }
 .ps-item { flex: 1; padding: 24px; text-align: center; border-right: 1px solid rgba(255,255,255,0.07); }
 .ps-item:last-child { border-right: none; }
-.ps-val { font-size: 26px; font-weight: 500; color: #fff; letter-spacing: -0.5px; font-family: var(--mono); }
+.ps-val { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -1px; font-family: var(--mono); }
 .ps-lbl { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 4px; letter-spacing: 0.3px; }
 
 /* ── NEWS ── */
@@ -575,4 +568,219 @@ footer { background: var(--ink); color: rgba(255,255,255,0.45); padding: 52px 40
   .sec, .pain-band, .cta-banner, .brands-band, .proof-band { padding-left: 20px; padding-right: 20px; }
   .hero-left { padding: 52px 20px; }
   .client-strip { padding: 12px 20px; }
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE — added for full mobile support
+   Breakpoints: 768px (tablet), 480px (mobile)
+   These override inline styles via className where possible.
+   For inline-style grids, we use .tmci-* wrapper classes.
+============================================================ */
+
+/* ── HERO MOBILE OVERRIDES ── */
+/* Hero uses inline styles so we need specific class overrides */
+.tmci-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 700px;
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  height: calc(100vh - 52px);
+}
+.tmci-hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 56px 56px 64px;
+}
+.tmci-hero-right {
+  position: relative;
+  overflow: hidden;
+}
+.tmci-hero-bottom {
+  padding: 14px 64px;
+}
+.tmci-stats-row {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 28px;
+}
+
+/* ── SECTION 4 — WHY OUR PRODUCTS ── */
+.tmci-benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+.tmci-img-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── SECTION 5 — IS THIS FOR YOU ── */
+.tmci-scenarios-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+/* ── SECTION 8 — CERTIFICATIONS ── */
+.tmci-certs-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.tmci-dealer-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 24px;
+}
+
+/* ── TABLET: 768px ── */
+@media (max-width: 768px) {
+
+  /* Hero */
+  .tmci-hero-grid { grid-template-columns: 1fr !important; height: auto !important; min-height: 100vh; }
+  .tmci-hero-left { padding: 120px 24px 48px !important; }
+  .tmci-hero-right { display: none !important; }
+  .tmci-hero-bottom { padding: 14px 24px !important; flex-wrap: wrap; }
+  .tmci-stats-row { gap: 0; flex-wrap: nowrap; }
+
+  /* Navbar topbar */
+  .tmci-topbar-badges { display: none !important; }
+
+  /* Sections padding */
+  .sec { padding: 48px 20px !important; }
+  .sec-alt { padding-left: 0 !important; padding-right: 0 !important; }
+  .sec-alt .sec { padding: 48px 20px !important; }
+
+  /* Products mosaic */
+  .product-mosaic { grid-template-columns: 1fr 1fr !important; }
+
+  /* Benefits grid */
+  .tmci-benefits-grid { grid-template-columns: 1fr !important; }
+  .tmci-img-pair { grid-template-columns: 1fr !important; }
+
+  /* Scenarios */
+  .tmci-scenarios-grid { grid-template-columns: 1fr !important; }
+
+  /* Certifications */
+  .tmci-certs-grid { grid-template-columns: repeat(3, 1fr) !important; }
+
+  /* Why TMCI solution grid */
+  .solution-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .bench-3d-wrap { display: none !important; }
+
+  /* Industries */
+  .ind-grid { grid-template-columns: 1fr 1fr !important; }
+
+  /* Brands */
+  .bb-logos { grid-template-columns: repeat(3, 1fr) !important; }
+  .tmci-dealer-strip { gap: 8px !important; }
+
+  /* Proof */
+  .proof-stats { flex-wrap: wrap !important; }
+  .ps-item { min-width: 45% !important; padding: 16px !important; }
+  .proof-grid { grid-template-columns: 1fr !important; }
+
+  /* Steps */
+  .steps-grid { grid-template-columns: 1fr 1fr !important; }
+  .step-block::after { display: none !important; }
+
+  /* News */
+  .news-grid { grid-template-columns: 1fr !important; }
+
+  /* Footer */
+  .ft-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+
+  /* CTA banner */
+  .cta-inner { flex-direction: column !important; text-align: center; }
+  .cta-btns { justify-content: center; }
+  .cta-banner { padding: 48px 20px !important; }
+
+  /* Workbench configurator */
+  .wb-root { border-radius: 12px !important; }
+
+  /* Pain band */
+  .pain-inner { grid-template-columns: 1fr !important; }
+  .pain-band { padding: 40px 20px !important; }
+
+  /* Brands band */
+  .brands-band { padding: 28px 20px !important; }
+
+  /* Proof band */
+  .proof-band { padding: 40px 20px !important; }
+}
+
+/* ── MOBILE: 480px ── */
+@media (max-width: 480px) {
+
+  /* Hero text sizing */
+  .tmci-hero-left { padding: 100px 20px 40px !important; }
+
+  /* Stats — 2x2 grid on very small screens */
+  .tmci-stats-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 20px !important; border-top: 1px solid rgba(255,255,255,0.07) !important; padding-top: 24px !important; }
+  .tmci-stats-row > div { padding-right: 0 !important; margin-right: 0 !important; border-right: none !important; }
+
+  /* Products — single column */
+  .product-mosaic { grid-template-columns: 1fr !important; }
+
+  /* Industries — single column */
+  .ind-grid { grid-template-columns: 1fr !important; }
+
+  /* Certifications — 2 column */
+  .tmci-certs-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Steps — single column */
+  .steps-grid { grid-template-columns: 1fr !important; }
+
+  /* Footer — single column */
+  .ft-grid { grid-template-columns: 1fr !important; }
+  .ft-bot { flex-direction: column; gap: 12px; text-align: center; }
+
+  /* Workbench configurator inner grids */
+  .wb-root .grid-2col { grid-template-columns: 1fr !important; }
+
+  /* Section headings */
+  .sec-hd h2 { font-size: 22px !important; }
+
+  /* Ticker */
+  .ticker-item { font-size: 10px !important; padding: 0 20px !important; }
+
+  /* Proof stats */
+  .ps-item { min-width: 100% !important; }
+
+  /* CTA buttons stack */
+  .cta-btns { flex-direction: column !important; width: 100%; }
+  .btn-cw, .btn-co { width: 100% !important; text-align: center !important; }
+
+  /* Brands */
+  .bb-logos { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Sections padding */
+  .sec { padding: 40px 16px !important; }
+  .proof-band, .brands-band, .cta-banner { padding-left: 16px !important; padding-right: 16px !important; }
+}
+
+/* ── NAVBAR MOBILE (already handled by tmci-desktop-nav class) ── */
+/* Nav hides at 1080px via existing CSS */
+/* Ensure mobile menu looks right */
+@media (max-width: 480px) {
+  .topbar { padding: 0 16px !important; font-size: 10px !important; }
+  .topbar .tb-right { display: none !important; }
+}
+
+/* ── WORKBENCH CONFIGURATOR MOBILE ── */
+@media (max-width: 600px) {
+  .wb-root > div:last-child { padding: 20px 16px !important; }
 }

@@ -1109,7 +1109,9 @@ export default function Home() {
         />
 
         {/* Hero grid — 1b (left) + 1c (right) */}
+        {/* ↓ CHANGE 1: added className="tmci-hero-grid" */}
         <div
+          className="tmci-hero-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 700px",
@@ -1120,7 +1122,9 @@ export default function Home() {
           }}
         >
           {/* 1b. Left column */}
+          {/* ↓ CHANGE 2: added className="tmci-hero-left" */}
           <div
+            className="tmci-hero-left"
             style={{
               display: "flex",
               flexDirection: "column",
@@ -1302,7 +1306,9 @@ export default function Home() {
             </div>
 
             {/* Stats row — edit values here */}
+            {/* ↓ CHANGE 5: added className="tmci-stats-row" */}
             <div
+              className="tmci-stats-row"
               style={{
                 display: "flex",
                 gap: 0,
@@ -1364,7 +1370,9 @@ export default function Home() {
               TO ADJUST POSITION: change backgroundPosition (e.g. "75% 30%")
               TO ADJUST SIZE: change backgroundSize (e.g. "160%")
           */}
+          {/* ↓ CHANGE 3: added className="tmci-hero-right" */}
           <div
+            className="tmci-hero-right"
             style={{
               position: "relative",
               overflow: "hidden",
@@ -1406,7 +1414,9 @@ export default function Home() {
         {/* 1d. Bottom bar — client mentions
             TO ADD/REMOVE CLIENTS: edit the spans below
         */}
+        {/* ↓ CHANGE 4: added className="tmci-hero-bottom" */}
         <div
+          className="tmci-hero-bottom"
           style={{
             background: "rgba(255,255,255,0.04)",
             borderTop: "1px solid rgba(255,255,255,0.07)",
@@ -2124,7 +2134,9 @@ export default function Home() {
             </h2>
           </div>
           {/* 8b. Cert grid — edit certifications here */}
+          {/* ↓ CHANGE 6: added className="tmci-certs-grid" */}
           <div
+            className="tmci-certs-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(5, 1fr)",
