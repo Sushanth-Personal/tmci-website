@@ -34,6 +34,7 @@ export default function Navbar() {
     <>
       {/* TOPBAR */}
       <div
+        className="tmci-topbar"
         style={{
           position: "fixed",
           top: 0,
@@ -77,7 +78,7 @@ export default function Navbar() {
             info@tazkmazter.com
           </a>
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="tmci-topbar-badges" style={{ display: "flex", gap: 8 }}>
           <div
             style={{
               background: "rgba(0,137,123,0.3)",
