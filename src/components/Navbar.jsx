@@ -556,7 +556,7 @@ export default function Navbar() {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              background: "#00897B",
+              background: 'var(--cta-hover)',
               color: "#fff",
               padding: "8px 18px",
               borderRadius: 7,
@@ -567,11 +567,11 @@ export default function Navbar() {
               whiteSpace: "nowrap",
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.background = "#00695C";
+              e.currentTarget.style.background = 'var(--cta-hover)';
               e.currentTarget.style.transform = "translateY(-1px)";
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.background = "#00897B";
+              e.currentTarget.style.background = 'var(--cta)';
               e.currentTarget.style.transform = "";
             }}
           >

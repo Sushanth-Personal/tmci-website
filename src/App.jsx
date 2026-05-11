@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import WorkbenchWidget from "./components/WorkbenchWidget";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { useAdminStore } from "./store/adminStore";
 
@@ -56,7 +55,6 @@ function PublicLayout({ children }) {
       <Navbar />
       {children}
       <Footer />
-      <WorkbenchWidget />
       <WhatsAppButton />
     </>
   );

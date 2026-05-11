@@ -1147,7 +1147,6 @@ export default function Home() {
   return (
     <>
       <SEOHead />
-
       {/* ── NEW HERO ── */}
       <div
         style={{
@@ -1194,18 +1193,16 @@ export default function Home() {
             pointerEvents: "none",
           }}
         />
-
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 480px",
+            gridTemplateColumns: "1fr 700px",
             flex: 1,
             position: "relative",
             zIndex: 2,
-            minHeight: "calc(100vh - 52px)",
+            height: "calc(100vh - 52px)",
           }}
         >
-          {/* LEFT */}
           <div
             style={{
               display: "flex",
@@ -1227,7 +1224,7 @@ export default function Home() {
                   width: 6,
                   height: 6,
                   borderRadius: "50%",
-                  background: "#00BF8C",
+                  background: "var(--primary-md)",
                   animation: "tmci-blink 2.2s ease-in-out infinite",
                 }}
               />
@@ -1237,7 +1234,7 @@ export default function Home() {
                   fontWeight: 600,
                   letterSpacing: "0.16em",
                   textTransform: "uppercase",
-                  color: "#00BF8C",
+                  color: "var(--primary-md)",
                 }}
               >
                 Manufacturer & Exporter
@@ -1255,23 +1252,22 @@ export default function Home() {
                   fontWeight: 600,
                   letterSpacing: "0.16em",
                   textTransform: "uppercase",
-                  color: "#00BF8C",
+                  color: "var(--primary-md)",
                 }}
               >
                 Bengaluru · Est. 2012
               </span>
             </div>
-
             <SectionRenderer
               section={null}
               fallback={
                 <h1
                   style={{
                     fontFamily: "'Syne', Georgia, serif",
-                    fontSize: "clamp(32px, 3.8vw, 48px)", // was 56px — reduce this
-                    fontWeight: 700, // was 800 — reduce this
+                    fontSize: "clamp(32px, 3.8vw, 48px)",
+                    fontWeight: 700,
                     lineHeight: 1.08,
-                    letterSpacing: "-1.5px", // was -2.5px — less tight
+                    letterSpacing: "-1.5px",
                     color: "#ffffff",
                     margin: "0 0 8px 0",
                     display: "block",
@@ -1282,22 +1278,22 @@ export default function Home() {
                   should be something
                   <br />
                   you're{" "}
-                  <span style={{ color: "#00BF8C" }}>proud to show.</span>
+                  <span style={{ color: "var(--primary-md)" }}>
+                    proud to show.
+                  </span>
                 </h1>
               }
             />
-
             <div
               style={{
                 width: 40,
                 height: 2,
-                background: "#00BF8C",
+                background: "var(--primary)",
                 opacity: 0.5,
                 borderRadius: 2,
                 margin: "24px 0",
               }}
             />
-
             <p
               style={{
                 fontSize: 15.5,
@@ -1312,7 +1308,6 @@ export default function Home() {
               professional workspaces — configured precisely to your process,
               your instruments, your space.
             </p>
-
             <div
               style={{
                 display: "flex",
@@ -1327,7 +1322,7 @@ export default function Home() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
-                  background: "#00BF8C",
+                  background: "var(--cta)",
                   color: "#fff",
                   fontFamily: "'DM Sans', sans-serif",
                   fontSize: 14,
@@ -1338,11 +1333,11 @@ export default function Home() {
                   transition: "background 0.18s, transform 0.18s",
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.background = "#00A87A";
+                  e.currentTarget.style.background = "var(--cta-hover)";
                   e.currentTarget.style.transform = "translateY(-1px)";
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.style.background = "#00BF8C";
+                  e.currentTarget.style.background = "var(--cta)";
                   e.currentTarget.style.transform = "";
                 }}
               >
@@ -1381,7 +1376,6 @@ export default function Home() {
                 Talk to an Engineer
               </a>
             </div>
-
             <div
               style={{
                 display: "flex",
@@ -1400,12 +1394,12 @@ export default function Home() {
                   key={label}
                   style={{
                     flex: 1,
-                    paddingRight: i < arr.length - 1 ? 24 : 0,
+                    paddingRight: i < arr.length - 1 ? 16 : 0,
                     borderRight:
                       i < arr.length - 1
                         ? "1px solid rgba(255,255,255,0.07)"
                         : "none",
-                    marginRight: i < arr.length - 1 ? 24 : 0,
+                    marginRight: i < arr.length - 1 ? 16 : 0,
                   }}
                 >
                   <div
@@ -1420,15 +1414,16 @@ export default function Home() {
                     }}
                   >
                     {val}
-                    <span style={{ color: "#00BF8C" }}>{sup}</span>
+                    <span style={{ color: "var(--primary-md)" }}>{sup}</span>
                   </div>
                   <div
                     style={{
-                      fontSize: 11,
+                      fontSize: 9,
                       color: "rgba(255,255,255,0.38)",
-                      letterSpacing: "0.06em",
+                      letterSpacing: "0.03em",
                       textTransform: "uppercase",
                       fontWeight: 500,
+                      whiteSpace: "nowrap",
                     }}
                   >
                     {label}
@@ -1437,129 +1432,41 @@ export default function Home() {
               ))}
             </div>
           </div>
-
-          {/* RIGHT */}
           <div
             style={{
               position: "relative",
-              display: "flex",
-              flexDirection: "column",
               overflow: "hidden",
+              backgroundImage: `url(https://res.cloudinary.com/dkhmnkxzo/image/upload/v1778324996/hero-bench_oq3kb0.png)`,
+              backgroundSize: "130%",
+              backgroundPosition: "20% 15%",
+              backgroundRepeat: "no-repeat",
+              mixBlendMode: "lighten",
             }}
           >
             <div
               style={{
-                position: "relative",
-                flex: 1,
-                display: "flex",
-                alignItems: "flex-end",
-                justifyContent: "center",
-                padding: "80px 24px 0",
+                position: "absolute",
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: 400,
+                background: "linear-gradient(90deg, #060F0D 40%, transparent)",
+                zIndex: 3,
               }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: 120,
-                  background: "linear-gradient(90deg, #060F0D, transparent)",
-                  zIndex: 3,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: 80,
-                  background: "linear-gradient(transparent, #060F0D)",
-                  zIndex: 3,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%,-50%)",
-                  width: 340,
-                  height: 300,
-                  background:
-                    "radial-gradient(ellipse, rgba(0,191,140,0.12) 0%, transparent 70%)",
-                  zIndex: 1,
-                }}
-              />
-              <div
-                style={{
-                  position: "relative",
-                  zIndex: 2,
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  paddingBottom: 24,
-                }}
-              >
-                <BenchSVG />
-              </div>
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 90,
-                  right: 28,
-                  zIndex: 10,
-                  background: "rgba(10,25,20,0.88)",
-                  border: "1px solid rgba(0,191,140,0.2)",
-                  borderRadius: 10,
-                  padding: "14px 18px",
-                  backdropFilter: "blur(8px)",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 600,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    color: "#00BF8C",
-                    marginBottom: 4,
-                  }}
-                >
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      background: "#22C55E",
-                      marginRight: 6,
-                      verticalAlign: "middle",
-                      animation: "tmci-blink 1.8s ease-in-out infinite",
-                    }}
-                  />
-                  Featured Product
-                </div>
-                <div
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: "#fff",
-                    marginBottom: 2,
-                  }}
-                >
-                  Calibration Test Bench
-                </div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>
-                  Modular · Custom configured · NABL ready
-                </div>
-              </div>
-            </div>
+            />
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: 120,
+                background: "linear-gradient(transparent, #060F0D)",
+                zIndex: 3,
+              }}
+            />
           </div>
         </div>
-
-        {/* BOTTOM BAR */}
         <div
           style={{
             background: "rgba(0,191,140,0.06)",
@@ -1615,11 +1522,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-
-        <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap');
-    @keyframes tmci-blink { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.3; transform:scale(1.6); } }
-  `}</style>
+        <style>{`@keyframes tmci-blink { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.3; transform:scale(1.6); } }`}</style>
       </div>
 
       {/* TICKER */}
@@ -1644,7 +1547,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-
       {/* CLIENT STRIP */}
       <div className="client-strip">
         <div className="cs-lbl">Sectors we serve</div>
@@ -1665,7 +1567,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-
       {/* PAIN SECTION */}
       <div className="pain-band">
         <div className="pain-inner">
@@ -1735,7 +1636,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* PRODUCTS */}
       <div style={{ background: "var(--white)" }}>
         <div className="sec">
@@ -1802,7 +1702,6 @@ export default function Home() {
           />
         </div>
       </div>
-
       {/* CUSTOMIZE WORKBENCH */}
       <section
         id="workbench"
@@ -1840,7 +1739,6 @@ export default function Home() {
           <WorkbenchConfigurator />
         </div>
       </section>
-
       {/* WHY TMCI */}
       <div style={{ background: "var(--surface)" }}>
         <div className="sec" style={{ maxWidth: 1200 }}>
@@ -1918,7 +1816,6 @@ export default function Home() {
           />
         </div>
       </div>
-
       {/* HOW IT WORKS */}
       <div style={{ background: "var(--white)" }}>
         <div className="sec">
@@ -1962,7 +1859,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* INDUSTRIES */}
       <div className="sec-alt">
         <div className="sec" style={{ maxWidth: 1200 }}>
@@ -2026,7 +1922,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* BRANDS */}
       <div className="brands-band">
         <div className="bb-lbl">Instruments & brands we work with</div>
@@ -2045,7 +1940,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-
       {/* SOCIAL PROOF */}
       <div className="proof-band">
         <div className="proof-inner">
@@ -2092,7 +1986,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* FAQ */}
       <div style={{ background: "var(--white)", padding: "72px 40px" }}>
         <div style={{ maxWidth: 760, margin: "0 auto" }}>
@@ -2167,7 +2060,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* BLOG PREVIEW */}
       <div className="sec-alt" style={{ padding: "72px 40px" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
@@ -2268,7 +2160,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* CTA BANNER */}
       <div className="cta-banner">
         <div className="cta-inner">
