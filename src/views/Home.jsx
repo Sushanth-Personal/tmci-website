@@ -1,5 +1,5 @@
-'use client'
-import { useState, useEffect } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
 import { cacheGet, cacheSet } from "../lib/cache";
@@ -1016,6 +1016,675 @@ function WorkbenchConfigurator() {
 }
 
 // ─────────────────────────────────────────────
+// COMPONENT: WHAT WE MAKE — PRODUCT CATEGORIES
+// Place this above the Home() export, below BenchSVG
+// ─────────────────────────────────────────────
+
+const PRODUCT_CATEGORIES = [
+  {
+    id: "calibration",
+    icon: "🎛️",
+    label: "Calibration Benches",
+    headline: "Calibration Bench Systems",
+    tagline:
+      "Our flagship product line — built for in-house calibration of every parameter",
+    accent: true,
+    products: [
+      {
+        name: "Electrical & Electronics Calibration Test Bench",
+        desc: "Modular ergonomic platform for precise testing, calibration, and maintenance of electrical and electronic equipment. Integrates multimeters, oscilloscopes, LCR meters, and power analyzers.",
+        tag: "Most ordered",
+      },
+      {
+        name: "Temperature Calibration Test Bench",
+        desc: "Specialized platform for accurate calibration of temperature instruments — sensors, transmitters, and controllers. Equipped with dry block calibrators, liquid baths, and reference thermometers.",
+        tag: "ISO/IEC 17025 ready",
+      },
+      {
+        name: "Pressure & Pneumatic Calibration Test Bench",
+        desc: "Advanced modular solution for calibration and testing of pressure devices used in oil & gas, manufacturing, and power sectors. Features pressure controllers, digital gauges, and pneumatic pumps.",
+        tag: "SS grade",
+      },
+      {
+        name: "Mobile Testing & Calibration Van",
+        desc: "Compact, fully equipped mobile lab for on-site calibration across industrial locations. Outfitted with multifunction testers, calibrators, and portable analyzers for high-precision field operations.",
+        tag: "Field deployment",
+      },
+      {
+        name: "Instruments & Calibration Rack",
+        desc: "Modular system for organized housing, management, and operation of calibration and testing instruments. Adjustable racks, power distribution units, and cooling systems.",
+        tag: "Custom config",
+      },
+    ],
+  },
+  {
+    id: "testbench",
+    icon: "🔬",
+    label: "Test Bench Systems",
+    headline: "Test Bench Systems",
+    tagline:
+      "Purpose-built test systems for motors, drives, EVs, relays and electronics",
+    products: [
+      {
+        name: "Electrical & Electronics Test Bench",
+        desc: "Modular ergonomic platform for testing, calibration, and maintenance of electrical and electronic equipment. Precision tools include multimeters, oscilloscopes, power analyzers, and signal generators.",
+        tag: "R&D · Manufacturing · Training",
+      },
+      {
+        name: "Motor & Drive Test Bench",
+        desc: "Advanced modular system for testing, calibration, and evaluation of motors and drive systems — AC, DC, servo, and stepper motors. Integrated with dynamometers, VFDs, and torque transducers.",
+        tag: "Automation ready",
+      },
+      {
+        name: "Electric Vehicle (EV) Test Bench",
+        desc: "Specialized modular platform for testing EV components and systems — motors, inverters, BMS, and power electronics. Features motor dynamometers, battery simulators, and regenerative power supplies.",
+        tag: "EV · R&D",
+      },
+      {
+        name: "Relay & PLC Test Bench",
+        desc: "Configurable test system for testing, calibration, and maintenance of protective relays and PLC systems. Advanced relay test sets, multimeters, and insulation testers for power plants and substations.",
+        tag: "Power · Substation",
+      },
+    ],
+  },
+  {
+    id: "esd",
+    icon: "⚡",
+    label: "ESD Workstations",
+    headline: "ESD Table Systems",
+    tagline:
+      "Static-controlled workspaces for electronics assembly and sensitive device handling",
+    products: [
+      {
+        name: "ESD Tables & Benches",
+        desc: "Contamination-free, static-controlled environment for precision tasks — PCB assembly, semiconductor handling, and testing. ESD-safe flooring, mats, grounding systems, and ionizing blowers.",
+        tag: "ANSI-ESD S20.20",
+      },
+      {
+        name: "ESD Clean Room & Accessories",
+        desc: "Modular workstations for safe handling of sensitive electronic components. Built with aluminium or mild steel frames, ESD-safe laminations, anti-static surfaces, and adjustable ergonomic layouts.",
+        tag: "IEC 61340 compliant",
+      },
+      {
+        name: "ESD Workstation — Full Configuration",
+        desc: "Complete ESD workstation with 230V/415V power, RCCB, MCCB, VAF meter, banana sockets, AC/DC power supplies, signal generators, oscilloscopes, and optional PC and printer.",
+        tag: "Full fit-out",
+      },
+    ],
+  },
+  {
+    id: "lab",
+    icon: "🧪",
+    label: "Laboratory Tables",
+    headline: "Laboratory Tables & Benches",
+    tagline:
+      "Durable, ergonomic, customizable workspaces for research, education, and industrial labs",
+    products: [
+      {
+        name: "Laboratory Work Tables",
+        desc: "Built with mild steel frames and chemical-resistant surfaces. Adjustable heights, ample storage, and optional accessories including lighting and cable management. Clean room-compatible designs.",
+        tag: "Education · R&D · Industrial",
+      },
+      {
+        name: "Heavy Duty Industrial Bench",
+        desc: "Robust industrial benches designed for demanding environments. Heavy-gauge steel construction with customizable surface materials, load ratings, and integrated tool storage.",
+        tag: "Custom load rating",
+      },
+      {
+        name: "Aluminium Profile Workstation",
+        desc: "Lightweight yet strong aluminium profile frame system. Modular assembly allows rapid reconfiguration. Ideal for electronics assembly lines, cleanrooms, and precision workspaces.",
+        tag: "Modular · Lightweight",
+      },
+    ],
+  },
+  {
+    id: "instruments",
+    icon: "📡",
+    label: "Instruments",
+    headline: "Test & Measurement Instruments",
+    tagline:
+      "Authorised dealer for Fluke and Karogic — full range of precision instruments",
+    products: [
+      {
+        name: "Gas Analyzers & Monitors",
+        desc: "Process and portable gas analysis for safety, compliance, and quality monitoring. Covers toxic gas, O₂, combustible, and multi-gas configurations for industrial safety and environmental compliance.",
+        tag: "Safety critical",
+      },
+      {
+        name: "Portable Calibrators & DMMs",
+        desc: "Handheld and benchtop digital multimeters, loop calibrators, clamp meters, and multifunction calibrators. Fluke authorized dealer — full range of precision handheld instruments.",
+        tag: "Fluke Authorized Dealer",
+      },
+      {
+        name: "Power Supplies & Signal Sources",
+        desc: "Fixed and variable AC/DC power supplies — 5V to 220V DC, single and three phase AC. Signal generators, waveform generators, and function generators for bench and field use.",
+        tag: "Full range",
+      },
+      {
+        name: "Predictive Maintenance Systems",
+        desc: "Condition monitoring solutions to detect equipment degradation before failures occur — vibration analysis, thermal imaging, and ultrasonic testing to reduce unplanned downtime.",
+        tag: "Reduce downtime",
+      },
+    ],
+  },
+  {
+    id: "software",
+    icon: "💻",
+    label: "Software & Services",
+    headline: "Testing & Calibration Software",
+    tagline:
+      "Automate calibration workflows, maintain records, and generate compliance reports",
+    products: [
+      {
+        name: "Testing & Calibration Software",
+        desc: "Automates data capture, calibration, and report generation in compliance with ISO/IEC 17025. Streamlines workflows, maintains calibration records, sets reminders, and ensures result traceability.",
+        tag: "ISO/IEC 17025",
+      },
+      {
+        name: "Installation & Commissioning",
+        desc: "On-site installation and commissioning services for all TMCI products. Our engineers travel to your facility to set up, configure, and validate every system.",
+        tag: "Pan India · International",
+      },
+      {
+        name: "Annual Maintenance Contract (AMC)",
+        desc: "Ongoing maintenance and support services to keep your systems running at peak precision. Scheduled servicing, emergency callouts, and calibration renewals — all under a single contract.",
+        tag: "AMC available",
+      },
+    ],
+  },
+];
+
+function WhatWeMakeSection() {
+  const [activeTab, setActiveTab] = React.useState("calibration");
+  const active = PRODUCT_CATEGORIES.find((c) => c.id === activeTab);
+
+  return (
+    <div>
+      {/* Category tab strip */}
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          flexWrap: "wrap",
+          marginBottom: 32,
+          borderBottom: "2px solid var(--border)",
+          paddingBottom: 0,
+        }}
+      >
+        {PRODUCT_CATEGORIES.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveTab(cat.id)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              padding: "10px 18px",
+              fontSize: 13,
+              fontWeight: 700,
+              fontFamily: "var(--ff)",
+              cursor: "pointer",
+              border: "none",
+              borderBottom:
+                activeTab === cat.id
+                  ? "2px solid var(--primary)"
+                  : "2px solid transparent",
+              marginBottom: -2,
+              background: "none",
+              color: activeTab === cat.id ? "var(--primary)" : "var(--mid)",
+              transition: "all 0.15s",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span style={{ fontSize: 16 }}>{cat.icon}</span>
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Active category content */}
+      {active && (
+        <div>
+          {/* Category headline */}
+          <div style={{ marginBottom: 28 }}>
+            <h3
+              style={{
+                fontSize: "clamp(20px, 2.5vw, 28px)",
+                fontWeight: 800,
+                color: "var(--ink)",
+                letterSpacing: -0.5,
+                marginBottom: 6,
+              }}
+            >
+              {active.headline}
+            </h3>
+            <p style={{ fontSize: 14, color: "var(--mid)", lineHeight: 1.7 }}>
+              {active.tagline}
+            </p>
+          </div>
+
+          {/* Product cards grid */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 2,
+              background: "var(--border)",
+              border: "1px solid var(--border)",
+              borderRadius: 12,
+              overflow: "hidden",
+            }}
+            className="wmm-grid"
+          >
+            {active.products.map((p, i) => (
+              <div
+                key={p.name}
+                style={{
+                  background:
+                    i === 0 && active.accent
+                      ? "var(--primary)"
+                      : "var(--white)",
+                  padding: "28px 24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  minHeight: 200,
+                  cursor: "pointer",
+                  transition: "background 0.18s",
+                  position: "relative",
+                }}
+                onMouseOver={(e) => {
+                  if (!(i === 0 && active.accent))
+                    e.currentTarget.style.background = "var(--primary-pale)";
+                }}
+                onMouseOut={(e) => {
+                  if (!(i === 0 && active.accent))
+                    e.currentTarget.style.background = "var(--white)";
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 800,
+                    color: i === 0 && active.accent ? "#fff" : "var(--ink)",
+                    marginBottom: 8,
+                    lineHeight: 1.3,
+                    paddingRight: 24,
+                  }}
+                >
+                  {p.name}
+                </div>
+                <div
+                  style={{
+                    fontSize: 12.5,
+                    color:
+                      i === 0 && active.accent
+                        ? "rgba(255,255,255,0.75)"
+                        : "var(--mid)",
+                    lineHeight: 1.65,
+                    flex: 1,
+                  }}
+                >
+                  {p.desc}
+                </div>
+                <div
+                  style={{
+                    display: "inline-block",
+                    marginTop: 14,
+                    background:
+                      i === 0 && active.accent
+                        ? "rgba(255,255,255,0.18)"
+                        : "var(--primary-pale-solid)",
+                    color:
+                      i === 0 && active.accent
+                        ? "rgba(255,255,255,0.9)"
+                        : "var(--primary-dk)",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    padding: "3px 9px",
+                    borderRadius: 4,
+                    width: "fit-content",
+                  }}
+                >
+                  {p.tag}
+                </div>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 20,
+                    right: 20,
+                    fontSize: 13,
+                    color:
+                      i === 0 && active.accent
+                        ? "rgba(255,255,255,0.5)"
+                        : "var(--primary)",
+                    opacity: 0,
+                    transition: "all 0.18s",
+                  }}
+                  className="wmm-arrow"
+                >
+                  ↗
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Bottom CTA strip */}
+          <div
+            style={{
+              marginTop: 20,
+              padding: "16px 20px",
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderRadius: 8,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 12,
+            }}
+          >
+            <div style={{ fontSize: 13, color: "var(--mid)" }}>
+              <strong style={{ color: "var(--ink)" }}>
+                Need a custom configuration?
+              </strong>{" "}
+              Every product is built to your exact specification — size,
+              modules, power, materials.
+            </div>
+            <a
+              href="#workbench"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: "var(--primary)",
+                color: "#fff",
+                padding: "9px 20px",
+                borderRadius: 7,
+                fontSize: 13,
+                fontWeight: 700,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+                transition: "background 0.18s",
+              }}
+              onMouseOver={(e) =>
+                (e.currentTarget.style.background = "var(--primary-dk)")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.background = "var(--primary)")
+              }
+            >
+              Configure Yours →
+            </a>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+// COMPONENT: CERTIFICATION BADGES
+// Place above Home() export
+// Badge strip — hover reveals popover with explanation
+// ─────────────────────────────────────────────
+
+const CERTS = [
+  {
+    code: "ISO 9001:2015",
+    name: "Quality Management",
+    color: "#00897B",
+    what: "The world's most recognised quality standard. Over 1 million companies in 170 countries hold it.",
+    means:
+      "Every TMCI product goes through a documented, audited quality process — verified at every stage of manufacturing. If something goes wrong, there's a traceable record and a process to fix it.",
+    matters:
+      "Your procurement team can approve TMCI as a vendor without hesitation. Many defence and government tenders require this.",
+  },
+  {
+    code: "ISO 14001:2015",
+    name: "Environmental Management",
+    color: "#16A34A",
+    what: "International standard for how a company manages its environmental impact.",
+    means:
+      "TMCI monitors and reduces the environmental footprint of its manufacturing operations. Waste, energy use, emissions — all tracked and controlled.",
+    matters:
+      "Required for export to European markets and increasingly demanded by large Indian corporates with ESG commitments.",
+  },
+  {
+    code: "ISO 45001:2018",
+    name: "Occupational Health & Safety",
+    color: "#D97706",
+    what: "International standard for workplace safety management.",
+    means:
+      "TMCI's facility meets international safety standards. The people building your bench work in a safe, regulated environment — which directly affects the quality and consistency of what they make.",
+    matters:
+      "Signals operational maturity. Companies that manage safety well manage quality well.",
+  },
+  {
+    code: "CE Certified",
+    name: "European Conformity",
+    color: "#2563EB",
+    what: "Mandatory marking for products sold in the European Economic Area.",
+    means:
+      "TMCI products meet European safety, health and environmental requirements — tested and verified against EU directives.",
+    matters:
+      "Required if your facility operates to European standards or if you're an OEM exporting to Europe.",
+  },
+  {
+    code: "ROHS",
+    name: "Restriction of Hazardous Substances",
+    color: "#7C3AED",
+    what: "Restricts the use of specific hazardous materials in electrical and electronic equipment.",
+    means:
+      "No lead, mercury, cadmium, or other harmful substances in TMCI products. Safe for the people who use them and for disposal at end of life.",
+    matters:
+      "Required for electronics export. Increasingly required in pharma and food processing environments.",
+  },
+  {
+    code: "BIFMA",
+    name: "Furniture Safety Standard",
+    color: "#0891B2",
+    what: "Business and Institutional Furniture Manufacturers Association standard for strength, durability and safety.",
+    means:
+      "TMCI's workbenches and lab tables have been tested for structural integrity, load capacity, and stability.",
+    matters:
+      "Critical for lab tables and ESD workstations. A bench that isn't structurally certified is a liability in a calibration or electronics environment.",
+  },
+  {
+    code: "ANSI-ESD S20.20",
+    name: "Electrostatic Discharge Control",
+    color: "#DC2626",
+    what: "American National Standard for developing ESD control programs.",
+    means:
+      "TMCI's ESD workstations meet the specific requirements for controlling electrostatic discharge in electronics manufacturing and handling environments.",
+    matters:
+      "Non-negotiable for anyone handling PCBs, semiconductors, or sensitive electronic components.",
+  },
+  {
+    code: "Make in India",
+    name: "Government of India",
+    color: "#B45309",
+    what: "Government recognition that the product is designed, developed and manufactured in India.",
+    means:
+      "Every TMCI bench is built at their Bengaluru facility by Indian engineers. Not assembled from imported parts — manufactured.",
+    matters:
+      "Eligible for government and PSU tenders that mandate Make in India compliance.",
+  },
+  {
+    code: "MSME Registered",
+    name: "Micro, Small & Medium Enterprise",
+    color: "#047857",
+    what: "Government of India registration for qualifying manufacturing businesses.",
+    means:
+      "TMCI is a registered MSME manufacturer — verified turnover, investment and manufacturing credentials.",
+    matters:
+      "Preferred vendor status in many government and PSU procurement processes.",
+  },
+];
+
+function CertificationBadges() {
+  const [active, setActive] = React.useState(null);
+  const [pos, setPos] = React.useState({ top: 0, left: 0 });
+  const containerRef = React.useRef(null);
+
+  function handleEnter(e, cert) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const containerRect = containerRef.current.getBoundingClientRect();
+    setPos({
+      top: rect.bottom - containerRect.top + 8,
+      left: Math.min(rect.left - containerRect.left, containerRect.width - 340),
+    });
+    setActive(cert);
+  }
+
+  function handleLeave() {
+    setActive(null);
+  }
+
+  return (
+    <div ref={containerRef} style={{ position: "relative" }}>
+      {/* Badge strip */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+        {CERTS.map((cert) => (
+          <div
+            key={cert.code}
+            onMouseEnter={(e) => handleEnter(e, cert)}
+            onMouseLeave={handleLeave}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "10px 18px",
+              background: "var(--white)",
+              border: `1.5px solid ${active?.code === cert.code ? cert.color : "var(--border)"}`,
+              borderRadius: 8,
+              cursor: "default",
+              transition: "all 0.15s",
+              boxShadow:
+                active?.code === cert.code
+                  ? `0 4px 16px ${cert.color}22`
+                  : "none",
+            }}
+          >
+            {/* Colored dot */}
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: cert.color,
+                flexShrink: 0,
+              }}
+            />
+            <div>
+              <div
+                style={{
+                  fontSize: 12.5,
+                  fontWeight: 800,
+                  color: "var(--ink)",
+                  letterSpacing: "-0.2px",
+                }}
+              >
+                {cert.code}
+              </div>
+              <div
+                style={{
+                  fontSize: 10.5,
+                  color: "var(--muted)",
+                  fontWeight: 500,
+                }}
+              >
+                {cert.name}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Popover */}
+      {active && (
+        <div
+          style={{
+            position: "absolute",
+            top: pos.top,
+            left: pos.left,
+            width: 340,
+            background: "var(--ink)",
+            border: `1px solid ${active.color}44`,
+            borderTop: `3px solid ${active.color}`,
+            borderRadius: "0 0 10px 10px",
+            padding: "20px 22px",
+            zIndex: 50,
+            boxShadow: "0 12px 40px rgba(0,0,0,0.25)",
+          }}
+        >
+          {/* Code + name */}
+          <div style={{ marginBottom: 14 }}>
+            <div
+              style={{
+                fontSize: 13,
+                fontWeight: 800,
+                color: "#fff",
+                marginBottom: 2,
+              }}
+            >
+              {active.code}
+            </div>
+            <div
+              style={{
+                fontSize: 11,
+                color: "rgba(255,255,255,0.4)",
+                fontWeight: 500,
+              }}
+            >
+              {active.name}
+            </div>
+          </div>
+
+          {/* What it is */}
+          <p
+            style={{
+              fontSize: 12.5,
+              color: "rgba(255,255,255,0.55)",
+              lineHeight: 1.65,
+              marginBottom: 14,
+              paddingBottom: 14,
+              borderBottom: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            {active.what}
+          </p>
+
+          {/* What it means */}
+          <div style={{ marginBottom: 12 }}>
+            <div
+              style={{
+                fontSize: 9.5,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "1px",
+                color: active.color,
+                marginBottom: 5,
+              }}
+            >
+              What it means for you
+            </div>
+            <p
+              style={{
+                fontSize: 12.5,
+                color: "rgba(255,255,255,0.55)",
+                lineHeight: 1.65,
+              }}
+            >
+              {active.means}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 // MAIN PAGE COMPONENT
 // ─────────────────────────────────────────────
 
@@ -1316,7 +1985,7 @@ export default function Home() {
             >
               {[
                 ["13", "+", "Years Manufacturing"],
-                ["11", "+", "Industry Sectors"],
+                ["350", "+", "Clients Served"],
                 ["100", "%", "Custom Built"],
                 ["↗", "INT", "Ships Internationally"],
               ].map(([val, sup, label], i, arr) => (
@@ -1344,7 +2013,7 @@ export default function Home() {
                     }}
                   >
                     {val}
-                    <span style={{ color: "var(--primary-md)" }}>{sup}</span>
+                    <span style={{ color: "#fff" }}>{sup}</span>{" "}
                   </div>
                   <div
                     style={{
@@ -1464,7 +2133,6 @@ export default function Home() {
         {/* 1e. Animations */}
         <style>{`@keyframes tmci-blink { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.3; transform:scale(1.6); } }`}</style>
       </div>
-
       {/* ════════════════════════════════════════
           SECTION 2 — TICKER
           Edit ticker items array to change text
@@ -1476,13 +2144,13 @@ export default function Home() {
             "Supplied to ISRO · NTPC · BPCL · Tata Steel · Siemens",
             "ISO 9001:2015 Certified · CE · ROHS · BIFMA",
             "ESD Workstations · Pressure Benches · Gas Analyzers",
-            "13+ Years · 11+ Industries · Ships Internationally",
+            "13+ Years · 350+ Industries · Ships Internationally",
             "Authorized Dealer — Fluke & Karogic",
             "Calibration Test Benches · Made in Bengaluru",
             "Supplied to ISRO · NTPC · BPCL · Tata Steel · Siemens",
             "ISO 9001:2015 Certified · CE · ROHS · BIFMA",
             "ESD Workstations · Pressure Benches · Gas Analyzers",
-            "13+ Years · 11+ Industries · Ships Internationally",
+            "13+ Years · 350+ Industries · Ships Internationally",
             "Authorized Dealer — Fluke & Karogic",
           ].map((t, i) => (
             <div key={i} className="ticker-item">
@@ -1492,267 +2160,130 @@ export default function Home() {
           ))}
         </div>
       </div>
-
       {/* ════════════════════════════════════════
           SECTION 3 — WHAT WE MAKE (Products)
           3a. Section header
-          3b. Product mosaic grid (6 tiles)
-          3c. IMAGE PLACEHOLDER — add product photos here
-          TO ADD IMAGES: add a cloudinary URL to each tile
+          3b. Category tabs
+          3c. Product grid per category
       ════════════════════════════════════════ */}
       <div id="products" style={{ background: "var(--white)" }}>
         <div className="sec">
-          <SectionRenderer
-            section={sections.products}
-            fallback={
-              <>
-                {/* 3a. Header */}
-                <div className="sec-hd">
-                  <div className="overline">What We Make</div>
-                  <h2>
-                    Custom instrumentation for every industrial application
-                  </h2>
-                  <p>
-                    Every TMCI product is engineered from scratch — no generic
-                    solutions. Material, size, modules, power source and layout
-                    are all configured to your exact requirements.
-                  </p>
-                </div>
-
-                {/* 3b. Product tiles
-                  TO REORDER: move objects in the array
-                  TO EDIT: change title, desc, tag values
-              */}
-                <div className="product-mosaic">
-                  {[
-                    {
-                      accent: true,
-                      title: "Calibration Test Benches & Systems",
-                      desc: "Temperature, pressure, electrical and electronic calibration benches. Modular consoles with ergonomic workspaces for on-site and lab calibration. Our flagship product.",
-                      tag: "Core product · Most ordered",
-                      /* 3c. IMAGE: add imageUrl: "https://..." to show product photo */
-                    },
-                    {
-                      title: "ESD Workstations & Tables",
-                      desc: "Electrostatic discharge-safe modular workstations in aluminium or mild steel. Essential for electronics assembly, sensitive device handling, and ESD-controlled environments.",
-                      tag: "₹1,00,000 onwards",
-                    },
-                    {
-                      title: "Pneumatic & Pressure Test Benches",
-                      desc: "SS-grade pressure calibration systems. Customisable signal, temperature, loop, and pressure modules for demanding industrial applications.",
-                      tag: "Custom config",
-                    },
-                    {
-                      title: "Test & Measurement Instruments",
-                      desc: "Analytical test instruments, portable calibrators, power packs, DMMs, oscilloscopes, and digital stopwatches for precision measurement at bench or field.",
-                      tag: "Full range",
-                    },
-                    {
-                      title: "Gas Analyzers & Monitors",
-                      desc: "Process and portable gas analysis for safety, compliance, and quality monitoring. Covers toxic gas, O₂, combustible, and multi-gas configurations.",
-                      tag: "Safety critical",
-                    },
-                    {
-                      title: "Predictive Maintenance Systems",
-                      desc: "Condition monitoring solutions to detect equipment degradation before failures occur — reducing unplanned downtime and repair costs.",
-                      tag: "Reduce downtime",
-                    },
-                  ].map((p, i) => (
-                    <div
-                      key={i}
-                      className={`pm-tile${p.accent ? " accent" : ""}`}
-                    >
-                      {/* Product image placeholder — uncomment when image URL is available */}
-                      {/* {p.imageUrl && <img src={p.imageUrl} alt={p.title} style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 6, marginBottom: 12 }} />} */}
-                      <div className="pm-title">{p.title}</div>
-                      <div className="pm-desc">{p.desc}</div>
-                      <div className="pm-tag">{p.tag}</div>
-                      <div className="pm-arrow">↗</div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            }
-          />
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-          SECTION 4 — WHY OUR PRODUCTS
-          4a. Left — benefits text
-          4b. Right — IMAGE PLACEHOLDER (add product photo)
-          Content from catalogue "Why Test Bench" page
-      ════════════════════════════════════════ */}
-      <div style={{ background: "var(--surface)" }}>
-        <div className="sec" style={{ maxWidth: 1200 }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 64,
-              alignItems: "center",
-            }}
-          >
-            {/* 4a. Benefits */}
-            <div>
-              <div className="overline">Why Our Products</div>
-              <h2
-                style={{
-                  fontSize: "clamp(22px,2.8vw,34px)",
-                  fontWeight: 800,
-                  letterSpacing: -1,
-                  lineHeight: 1.18,
-                  color: "var(--ink)",
-                  marginBottom: 14,
-                }}
-              >
-                Integration. Efficiency. Space Optimisation.
-              </h2>
-              <p
-                style={{
-                  fontSize: 15,
-                  color: "var(--mid)",
-                  lineHeight: 1.8,
-                  marginBottom: 28,
-                }}
-              >
-                A properly built test bench does more than hold instruments — it
-                transforms how your lab operates. Centralising your instruments
-                into a single, configured platform minimises variability,
-                enhances repeatability, and ensures seamless workflows.
-              </p>
-              {/* Benefits list — edit items here */}
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 14 }}
-              >
-                {[
-                  [
-                    "Space optimisation",
-                    "Compact, modular systems consolidate multiple instruments — reducing clutter and improving organisation across your lab floor.",
-                  ],
-                  [
-                    "Safety built in",
-                    "Emergency stops, overload protection, ESD safeguards and ergonomic layouts ensure secure, comfortable operation even in high-stakes testing.",
-                  ],
-                  [
-                    "Automation ready",
-                    "Modern test benches support software integration for real-time data acquisition, automated testing, and compliance with industry standards like ISO/IEC 17025.",
-                  ],
-                  [
-                    "Fully modular",
-                    "Accommodates customisation at any stage — add modules, swap instruments, reconfigure layout as your requirements evolve.",
-                  ],
-                ].map(([title, desc]) => (
-                  <div
-                    key={title}
-                    style={{
-                      display: "flex",
-                      gap: 12,
-                      alignItems: "flex-start",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: "50%",
-                        background: "var(--primary-pale-solid)",
-                        color: "var(--primary)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 11,
-                        fontWeight: 900,
-                        flexShrink: 0,
-                        marginTop: 2,
-                      }}
-                    >
-                      ✓
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 13.5,
-                        color: "var(--mid)",
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      <strong style={{ color: "var(--ink)", fontWeight: 700 }}>
-                        {title}.{" "}
-                      </strong>
-                      {desc}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 4b. IMAGE PLACEHOLDER
-                Replace the div below with an <img> tag when product photo is ready
-                Suggested: a clean shot of the calibration bench from the catalogue page 3
-                Upload to Cloudinary first, then use:
-                <img src="YOUR_CLOUDINARY_URL" alt="TMCI Calibration Test Bench" style={{ width: "100%", borderRadius: 12, boxShadow: "0 8px 40px rgba(0,0,0,0.12)" }} />
-            */}
-            <div
+          {/* 3a. Header */}
+          <div className="sec-hd" style={{ marginBottom: 48 }}>
+            <div className="overline">What We Make</div>
+            <h2
               style={{
-                background: "var(--ink2)",
-                borderRadius: 14,
-                aspectRatio: "4/3",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                overflow: "hidden",
+                fontSize: "clamp(36px, 5vw, 64px)",
+                letterSpacing: "-2px",
+                lineHeight: 1.05,
+                marginBottom: 16,
               }}
             >
-              <div
-                style={{
-                  position: "absolute",
-                  width: 300,
-                  height: 300,
-                  borderRadius: "50%",
-                  background:
-                    "radial-gradient(circle, rgba(0,137,123,0.25) 0%, transparent 70%)",
-                  bottom: -80,
-                  right: -60,
-                  pointerEvents: "none",
-                }}
-              />
-              {/* Placeholder content — remove when image is added */}
-              <div
-                style={{
-                  textAlign: "center",
-                  color: "rgba(255,255,255,0.2)",
-                  position: "relative",
-                  zIndex: 1,
-                }}
-              >
-                <div style={{ fontSize: 40, marginBottom: 12 }}>📷</div>
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  PRODUCT PHOTO
-                  <br />
-                  Add from Cloudinary
-                </div>
-              </div>
-            </div>
+              Six product lines. One promise.
+              <br />A lab your team is proud to work in.
+            </h2>
+            <p
+              style={{
+                fontSize: 16,
+                maxWidth: 620,
+                lineHeight: 1.7,
+                color: "var(--mid)",
+              }}
+            >
+              From a single ESD workstation to a fully equipped test facility.
+              <br />
+              TMCI makes it, ships it, and installs it. Everything configured to
+              how your team actually works.
+            </p>
           </div>
+
+          {/* 3b+3c. Category groups */}
+          <WhatWeMakeSection />
         </div>
       </div>
-
       {/* ════════════════════════════════════════
-          SECTION 5 — IS THIS FOR YOU?
-          5a. Section header
-          5b. Scenario checklist (self-identification)
-          5c. Right side — quick facts card
+          SECTION 4 — WHY OUR PRODUCTS
+          Emotional copy — dark dramatic treatment
+          Full width CTA bar at bottom
       ════════════════════════════════════════ */}
-      <div style={{ background: "var(--white)" }}>
-        <div className="sec" style={{ maxWidth: 1200 }}>
+      <div
+        style={{
+          background: "#060F0D",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Background grid */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(rgba(0,191,140,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,191,140,0.03) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Glow orbs */}
+        <div
+          style={{
+            position: "absolute",
+            top: -100,
+            right: -100,
+            width: 600,
+            height: 600,
+            background:
+              "radial-gradient(ellipse, rgba(0,191,140,0.08) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -80,
+            left: -60,
+            width: 400,
+            height: 400,
+            background:
+              "radial-gradient(ellipse, rgba(0,140,191,0.06) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div
+          className="sec"
+          style={{ maxWidth: 1100, position: "relative", zIndex: 2 }}
+        >
+          {/* Overline */}
           <div
+            className="overline"
+            style={{ color: "var(--primary-lt)", marginBottom: 24 }}
+          >
+            Why Our Products
+          </div>
+
+          {/* Main headline */}
+          <h2
+            style={{
+              fontSize: "clamp(28px, 4vw, 52px)",
+              fontWeight: 800,
+              letterSpacing: "-1.5px",
+              lineHeight: 1.1,
+              color: "#fff",
+              maxWidth: 780,
+              marginBottom: 48,
+            }}
+          >
+            There's a difference between a lab that works and a lab that{" "}
+            <span style={{ color: "var(--primary-md)" }}>
+              commands respect.
+            </span>
+          </h2>
+
+          {/* Two column grid */}
+          <div
+            className="why-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
@@ -1760,176 +2291,361 @@ export default function Home() {
               alignItems: "start",
             }}
           >
-            {/* 5a + 5b. Left — who this is for */}
+            {/* Left — main copy */}
             <div>
-              <div className="overline">Is This For You?</div>
-              <h2
-                style={{
-                  fontSize: "clamp(22px,2.8vw,34px)",
-                  fontWeight: 800,
-                  letterSpacing: -1,
-                  lineHeight: 1.18,
-                  color: "var(--ink)",
-                  marginBottom: 14,
-                }}
-              >
-                You might need a TMCI bench if...
-              </h2>
               <p
                 style={{
-                  fontSize: 15,
-                  color: "var(--mid)",
-                  lineHeight: 1.8,
+                  fontSize: 17,
+                  lineHeight: 1.85,
+                  color: "rgba(255,255,255,0.65)",
                   marginBottom: 28,
                 }}
               >
-                Whether you're setting up a new lab from scratch or replacing an
-                improvised setup — TMCI builds the bench that fits your exact
-                process.
+                One gets the job done. The other tells every client, every
+                auditor, every new hire that you take your work seriously.
               </p>
-              {/* 5b. Scenario checklist — edit scenarios here */}
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 10 }}
+              <p
+                style={{
+                  fontSize: 15,
+                  lineHeight: 1.85,
+                  color: "rgba(255,255,255,0.45)",
+                  marginBottom: 28,
+                }}
               >
-                {[
-                  "You're setting up a new calibration or test lab",
-                  "Your instruments go out for calibration every month to a third-party lab",
-                  "Your team works on benches assembled from multiple vendors with no unified workspace",
-                  "You need an NABL-ready, audit-compliant workstation",
-                  "You're an OEM or systems integrator needing integrated test solutions",
-                  "Your current bench doesn't meet ESD, safety or ergonomic standards",
-                  "You want to bring calibration capability fully in-house",
-                ].map((scenario) => (
-                  <div
-                    key={scenario}
-                    style={{
-                      display: "flex",
-                      gap: 12,
-                      alignItems: "flex-start",
-                      padding: "12px 16px",
-                      background: "var(--surface)",
-                      border: "1px solid var(--border)",
-                      borderRadius: 8,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: "50%",
-                        background: "var(--primary-pale-solid)",
-                        color: "var(--primary)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 10,
-                        fontWeight: 900,
-                        flexShrink: 0,
-                        marginTop: 1,
-                      }}
-                    >
-                      ✓
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 13.5,
-                        color: "var(--mid)",
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {scenario}
-                    </div>
-                  </div>
-                ))}
+                Most labs don't get there in one step. They start with
+                whatever's available. Instruments on folding tables, cables
+                taped down, equipment borrowed from other departments. It works,
+                until it doesn't. Until an audit flags it. Until a new client
+                visits. Until a good engineer leaves because the setup isn't
+                worth their time.
+              </p>
+
+              {/* Highlighted statement */}
+              <div
+                style={{
+                  borderLeft: "3px solid var(--primary-md)",
+                  paddingLeft: 20,
+                  marginBottom: 28,
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 700,
+                    color: "#fff",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  TMCI exists for the moment you decide to fix that permanently.
+                </p>
               </div>
             </div>
 
-            {/* 5c. Right — quick facts + CTA */}
+            {/* Right — proof card only */}
+            <div>
+              <div
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(0,191,140,0.15)",
+                  borderRadius: 16,
+                  padding: "32px 28px",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Glow inside card */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: -40,
+                    right: -40,
+                    width: 200,
+                    height: 200,
+                    background:
+                      "radial-gradient(circle, rgba(0,191,140,0.1) 0%, transparent 70%)",
+                    pointerEvents: "none",
+                  }}
+                />
+                <p
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 600,
+                    lineHeight: 1.85,
+                    color: "rgba(255,255,255,0.75)",
+                  }}
+                >
+                  The labs that trust us don't just perform better.
+                </p>
+                <p
+                  style={{
+                    fontSize: 15,
+                    lineHeight: 1.85,
+                    color: "rgba(255,255,255,0.55)",
+                    marginBottom: 24,
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  ISRO doesn't compromise on its workspace. Neither does the
+                  Indian Navy. Neither does Kochi Metro. Not because they had
+                  budget to spare, but because the people who run those
+                  facilities understand that precision starts before the
+                  instrument is even switched on.
+                </p>
+                <p
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.35)",
+                    marginBottom: 24,
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  It starts with the environment you create around it.
+                </p>
+
+                {/* Client tags */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    flexWrap: "wrap",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  {[
+                    "ISRO",
+                    "Indian Navy",
+                    "Kochi Metro",
+                    "NTPC",
+                    "BPCL",
+                    "Tata Steel",
+                  ].map((name) => (
+                    <div
+                      key={name}
+                      style={{
+                        background: "rgba(0,191,140,0.08)",
+                        border: "1px solid rgba(0,191,140,0.2)",
+                        color: "var(--primary-lt)",
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: "4px 12px",
+                        borderRadius: 20,
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      {name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Full width CTA bar */}
+          <div
+            style={{
+              marginTop: 64,
+              borderTop: "1px solid rgba(0,191,140,0.15)",
+              paddingTop: 40,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 24,
+            }}
+          >
+            <p
+              style={{
+                fontSize: 20,
+                fontWeight: 700,
+                color: "#fff",
+                lineHeight: 1.5,
+                maxWidth: 560,
+              }}
+            >
+              When you're ready to build that lab, we're ready to build it with
+              you.
+            </p>
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
-                gap: 16,
-                paddingTop: 8,
+                gap: 10,
+                flexShrink: 0,
+                flexWrap: "wrap",
               }}
             >
-              {/* Fact cards — edit facts here */}
-              {[
-                {
-                  icon: "🏭",
-                  label: "Manufacturer",
-                  value:
-                    "Direct from our Bengaluru facility — no middlemen, no resellers.",
-                },
-                {
-                  icon: "🔧",
-                  label: "100% Custom",
-                  value:
-                    "Every bench is built to your specification. No off-the-shelf compromise.",
-                },
-                {
-                  icon: "🌏",
-                  label: "Ships Internationally",
-                  value:
-                    "Delivered across India and to international locations including Saudi Arabia and South Africa.",
-                },
-                {
-                  icon: "📋",
-                  label: "ISO 9001:2015",
-                  value:
-                    "Quality management certified. CE, ROHS, BIFMA, ANSI-ESD and more.",
-                },
-              ].map(({ icon, label, value }) => (
-                <div
-                  key={label}
-                  style={{
-                    display: "flex",
-                    gap: 14,
-                    padding: "16px 18px",
-                    border: "1px solid var(--border)",
-                    borderRadius: 10,
-                    background: "var(--white)",
-                  }}
-                >
-                  <div style={{ fontSize: 24, flexShrink: 0 }}>{icon}</div>
-                  <div>
-                    <div
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        color: "var(--primary)",
-                        marginBottom: 3,
-                      }}
-                    >
-                      {label}
-                    </div>
-                    <div
-                      style={{
-                        fontSize: 13,
-                        color: "var(--mid)",
-                        lineHeight: 1.6,
-                      }}
-                    >
-                      {value}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {/* CTA inside section */}
               <a
-                href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hello! I want to discuss a requirement for a test bench.")}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#workbench"
                 style={{
-                  display: "flex",
+                  display: "inline-flex",
                   alignItems: "center",
-                  justifyContent: "center",
                   gap: 8,
                   background: "var(--primary)",
                   color: "#fff",
-                  padding: "13px 24px",
+                  padding: "13px 26px",
+                  borderRadius: 8,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  transition: "background 0.18s",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background = "var(--primary-dk)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.background = "var(--primary)")
+                }
+              >
+                Configure Your Bench →
+              </a>
+              <a
+                href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hello! I want to discuss building a proper lab setup.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "transparent",
+                  color: "rgba(255,255,255,0.6)",
+                  padding: "12px 22px",
+                  borderRadius: 8,
+                  fontWeight: 500,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  transition: "all 0.18s",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.color = "#fff";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.color = "rgba(255,255,255,0.6)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
+                }}
+              >
+                Talk to an Engineer
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ════════════════════════════════════════
+          SECTION 5 — IS THIS FOR YOU?
+          Emotional — speaks to mental load of testing
+          No checklist, no specs, just feeling
+      ════════════════════════════════════════ */}
+      <div style={{ background: "var(--white)" }}>
+        <div className="sec" style={{ maxWidth: 1100 }}>
+          {/* Overline */}
+          <div className="overline" style={{ marginBottom: 24 }}>
+            Is This For You?
+          </div>
+
+          {/* Two column layout */}
+          <div
+            className="isfor-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 80,
+              alignItems: "start",
+            }}
+          >
+            {/* Left — emotional copy */}
+            <div>
+              <h2
+                style={{
+                  fontSize: "clamp(26px, 3.5vw, 42px)",
+                  fontWeight: 800,
+                  letterSpacing: "-1px",
+                  lineHeight: 1.15,
+                  color: "var(--ink)",
+                  marginBottom: 32,
+                }}
+              >
+                Most of our customers didn't plan to call us. Something made
+                them.
+              </h2>
+
+              <p
+                style={{
+                  fontSize: 16,
+                  lineHeight: 1.85,
+                  color: "var(--mid)",
+                  marginBottom: 22,
+                }}
+              >
+                Testing and calibration is already demanding work. You're making
+                precision judgments that affect everything downstream.
+              </p>
+
+              <p
+                style={{
+                  fontSize: 16,
+                  lineHeight: 1.85,
+                  color: "var(--mid)",
+                  marginBottom: 22,
+                }}
+              >
+                The last thing you need is your workspace adding to that load.
+                Improvised setups do exactly that. Every loose connection is a
+                question mark. Every unlabelled socket is a risk. Every
+                workaround is something else to hold in your head while you're
+                trying to concentrate.
+              </p>
+
+              <p
+                style={{
+                  fontSize: 16,
+                  lineHeight: 1.85,
+                  color: "var(--mid)",
+                  marginBottom: 36,
+                }}
+              >
+                A TMCI bench takes that away. Safety is built in. Connections
+                are organised. Everything is where it should be. You sit down
+                and do the work.
+              </p>
+
+              {/* Closing question — bold, pulled out */}
+              <div
+                style={{
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  borderLeft: "3px solid var(--primary)",
+                  borderRadius: "0 8px 8px 0",
+                  padding: "20px 24px",
+                  marginBottom: 36,
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 700,
+                    color: "var(--ink)",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  Is that the kind of lab you're running right now?
+                </p>
+              </div>
+
+              <a
+                href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hello! I want to discuss my lab setup requirements.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "var(--primary)",
+                  color: "#fff",
+                  padding: "13px 26px",
                   borderRadius: 8,
                   fontWeight: 700,
                   fontSize: 14,
@@ -1946,330 +2662,1053 @@ export default function Home() {
                 Talk to an Engineer →
               </a>
             </div>
+
+            {/* Right — who specifically this is for */}
+            <div style={{ paddingTop: 8 }}>
+              <p
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "1.3px",
+                  color: "var(--muted)",
+                  marginBottom: 20,
+                }}
+              >
+                We work with people who
+              </p>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                {[
+                  {
+                    title: "Run calibration labs",
+                    desc: "In-house calibration of temperature, pressure, electrical and electronic instruments. You need a setup that's reliable, organised and audit-ready.",
+                  },
+                  {
+                    title: "Handle sensitive electronics",
+                    desc: "PCB assembly, semiconductor testing, electronics manufacturing. One static discharge can cost more than a proper ESD workstation ever would.",
+                  },
+                  {
+                    title: "Set up new facilities",
+                    desc: "New lab, new plant, new department. You want to do it right from day one instead of spending years fixing an improvised setup.",
+                  },
+                  {
+                    title: "Upgrade existing setups",
+                    desc: "You've outgrown what you have. The old bench was fine once. Now it's holding your team back.",
+                  },
+                  {
+                    title: "Need field calibration",
+                    desc: "Your instruments go where the work is. You need a mobile setup that's as capable as a permanent lab.",
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={item.title}
+                    style={{
+                      padding: "20px 24px",
+                      borderRadius:
+                        i === 0 ? "8px 8px 0 0" : i === 4 ? "0 0 8px 8px" : 0,
+                      border: "1px solid var(--border)",
+                      borderTop: i === 0 ? "1px solid var(--border)" : "none",
+                      background: "var(--white)",
+                      transition: "background 0.15s",
+                      cursor: "default",
+                    }}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.background = "var(--surface)")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.background = "var(--white)")
+                    }
+                  >
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 700,
+                        color: "var(--ink)",
+                        marginBottom: 4,
+                      }}
+                    >
+                      {item.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: "var(--mid)",
+                        lineHeight: 1.65,
+                      }}
+                    >
+                      {item.desc}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
       {/* ════════════════════════════════════════
-          SECTION 6 — WHY TMCI
-          6a. Left — checklist (manufacturer advantages)
-          6b. Right — bench SVG illustration
-          (replace SVG with real image when available)
+          SECTION 7 — WHO WE SERVE
+          Dark theme — matches Why Our Products
+          Real proof points per sector, no emojis
       ════════════════════════════════════════ */}
-      <div style={{ background: "var(--surface)" }}>
-        <div className="sec" style={{ maxWidth: 1200 }}>
-          <SectionRenderer
-            section={sections.why}
-            fallback={
-              <div className="solution-grid">
-                {/* 6a. Left — why TMCI */}
-                <div>
-                  <div className="overline">Why TMCI</div>
-                  <h2
-                    style={{
-                      fontSize: "clamp(22px,2.8vw,34px)",
-                      fontWeight: 800,
-                      letterSpacing: -1,
-                      lineHeight: 1.18,
-                      color: "var(--ink)",
-                      marginBottom: 14,
-                    }}
-                  >
-                    When precision matters, generic solutions aren't good
-                    enough.
-                  </h2>
-                  <p
-                    style={{
-                      fontSize: 15,
-                      color: "var(--mid)",
-                      lineHeight: 1.8,
-                      marginBottom: 24,
-                    }}
-                  >
-                    Off-the-shelf instruments rarely meet the exact signal,
-                    pressure, temperature, or safety requirements of your
-                    process. TMCI's engineers work directly with you to design
-                    and build instruments configured precisely to your
-                    operation.
-                  </p>
-                  {/* 6a. Checklist — edit items here */}
-                  <div className="checklist">
-                    {[
-                      [
-                        "Fully customised to your spec.",
-                        "Material, size, display type, power source — all configurable.",
-                      ],
-                      [
-                        "Direct from the manufacturer.",
-                        "No middlemen — faster delivery, better pricing, direct support.",
-                      ],
-                      [
-                        "Cross-industry expertise.",
-                        "From Defence to Food Processing — we understand your compliance needs.",
-                      ],
-                      [
-                        "Manufacturer + Exporter + Supplier.",
-                        "Full supply chain capability in one partner. Ships internationally.",
-                      ],
-                      [
-                        "Installation & AMC services.",
-                        "We stay with you after delivery — annual maintenance contracts and site support available.",
-                      ],
-                    ].map(([title, desc]) => (
-                      <div key={title} className="ch-item">
-                        <div className="ch-ic">✓</div>
-                        <div className="ch-tx">
-                          <strong>{title}</strong> {desc}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+      <div
+        style={{
+          background: "#060F0D",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Background grid */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(rgba(0,191,140,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,191,140,0.03) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            pointerEvents: "none",
+          }}
+        />
 
-                {/* 6b. Right — illustration
-                  REPLACE with real photo:
-                  <img src="YOUR_URL" alt="TMCI bench" style={{ width: "100%", borderRadius: 12 }} />
-              */}
-                <div className="bench-3d-wrap">
-                  <div className="bench-glow-inner" />
-                  <BenchSVG />
-                </div>
-              </div>
-            }
-          />
-        </div>
-      </div>
+        {/* Glow orbs */}
+        <div
+          style={{
+            position: "absolute",
+            top: -80,
+            left: -80,
+            width: 500,
+            height: 500,
+            background:
+              "radial-gradient(ellipse, rgba(0,191,140,0.07) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -60,
+            right: -60,
+            width: 400,
+            height: 400,
+            background:
+              "radial-gradient(ellipse, rgba(0,140,191,0.05) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
 
-      {/* ════════════════════════════════════════
-          SECTION 7 — WHO WE SERVE (Industries)
-          7a. Section header
-          7b. Industry grid (8 sectors)
-          TO ADD/REMOVE: edit the array below
-      ════════════════════════════════════════ */}
-      <div style={{ background: "var(--white)" }}>
-        <div className="sec" style={{ maxWidth: 1200 }}>
-          <div className="sec-hd ctr">
-            <div className="overline">Who We Serve</div>
-            <h2>Built for India's most demanding industrial sectors</h2>
-            <p>
-              Our solutions meet the rigorous standards of safety, precision,
-              and reliability required across 11+ sectors.
+        <div
+          className="sec"
+          style={{ maxWidth: 1200, position: "relative", zIndex: 2 }}
+        >
+          {/* Header */}
+          <div className="sec-hd ctr" style={{ marginBottom: 56 }}>
+            <div className="overline" style={{ color: "var(--primary-lt)" }}>
+              Who We Serve
+            </div>
+            <h2
+              style={{
+                fontSize: "clamp(26px, 3.5vw, 42px)",
+                letterSpacing: "-1px",
+                color: "#fff",
+              }}
+            >
+              Your industry has specific standards.
+              <br />
+              We know them.
+            </h2>
+            <p style={{ marginTop: 12, color: "rgba(255,255,255,0.45)" }}>
+              Thirteen years supplying calibration and test systems to India's
+              most regulated industries — defence, energy, marine, and more.
             </p>
           </div>
-          {/* 7b. Industry grid — edit sectors here */}
-          <div className="ind-grid">
+
+          {/* Primary sectors — 3 column */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 2,
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 16,
+              overflow: "hidden",
+              marginBottom: 2,
+            }}
+            className="ind-primary-grid"
+          >
             {[
-              [
-                "🛡️",
-                "Defence & Aerospace",
-                "Mission-critical instrumentation for precision applications",
-              ],
-              [
-                "⛽",
-                "Oil, Gas & Petrochemical",
-                "Reliable testing for high-pressure, hazardous environments",
-              ],
-              [
-                "⚡",
-                "Power Generation",
-                "Conventional and renewable energy testing solutions",
-              ],
-              [
-                "🚢",
-                "Shipbuilding & Marine",
-                "Naval and commercial marine instrumentation",
-              ],
-              [
-                "💊",
-                "Pharma & Biotech",
-                "Compliance-driven testing and lab automation",
-              ],
-              [
-                "🚗",
-                "Automotive & EV",
-                "Quality and safety testing for next-gen mobility",
-              ],
-              [
-                "🍞",
-                "Food Processing",
-                "Compliance and hygiene-grade testing solutions",
-              ],
-              [
-                "🎓",
-                "Education & R&D Labs",
-                "Trainer kits and lab instruments for institutions",
-              ],
-            ].map(([icon, name, sub]) => (
-              <div key={name} className="ind-card">
-                <div className="ind-ic">{icon}</div>
-                <div className="ind-name">{name}</div>
-                <div className="ind-sub">{sub}</div>
+              {
+                sector: "Defence & Aerospace",
+                desc: "Precision calibration and test benches for mission-critical applications. Built to withstand defence-grade quality assurance.",
+                clients: ["ISRO", "Indian Navy", "DRDO"],
+              },
+              {
+                sector: "Oil, Gas & Petrochemical",
+                desc: "Pressure, temperature and signal calibration for high-stakes process environments where instrument failure is not an option.",
+                clients: ["BPCL", "ONGC", "NTPC"],
+              },
+              {
+                sector: "Power Generation",
+                desc: "Test and calibration systems for conventional and renewable energy facilities. Built for continuous, demanding operation.",
+                clients: ["NTPC", "SAIL", "IndianOil"],
+              },
+              {
+                sector: "Shipbuilding & Marine",
+                desc: "Naval and commercial marine instrumentation built to withstand the demands of marine environments and compliance requirements.",
+                clients: ["Kochi Metro", "WED", "Naval facilities"],
+              },
+              {
+                sector: "Pharma & Biotech",
+                desc: "GMP-compliant calibration workstations for pharmaceutical manufacturing and biotech research facilities.",
+                clients: ["Compliance driven", "GMP ready", "Audit friendly"],
+              },
+              {
+                sector: "Automotive & EV",
+                desc: "Quality and safety testing for next-generation mobility. Motor test benches, EV component testing and electronics QA.",
+                clients: ["TVS", "ATC Tyres", "EV manufacturers"],
+              },
+            ].map((item, i) => (
+              <div
+                key={item.sector}
+                style={{
+                  background: "rgba(255,255,255,0.02)",
+                  padding: "32px 28px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                  transition: "background 0.2s",
+                  cursor: "default",
+                  minHeight: 220,
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background = "rgba(0,191,140,0.06)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.background = "rgba(255,255,255,0.02)")
+                }
+              >
+                {/* Sector number */}
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    color: "var(--primary-md)",
+                    letterSpacing: "1px",
+                    fontFamily: "var(--mono)",
+                    marginBottom: 4,
+                  }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </div>
+
+                {/* Sector name */}
+                <div
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 800,
+                    color: "#fff",
+                    lineHeight: 1.25,
+                  }}
+                >
+                  {item.sector}
+                </div>
+
+                {/* Description */}
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: "rgba(255,255,255,0.45)",
+                    lineHeight: 1.7,
+                    flex: 1,
+                  }}
+                >
+                  {item.desc}
+                </div>
+
+                {/* Client tags */}
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 6,
+                    flexWrap: "wrap",
+                    marginTop: 8,
+                  }}
+                >
+                  {item.clients.map((c) => (
+                    <span
+                      key={c}
+                      style={{
+                        fontSize: 10.5,
+                        fontWeight: 600,
+                        color: "var(--primary-lt)",
+                        background: "rgba(0,191,140,0.08)",
+                        border: "1px solid rgba(0,191,140,0.18)",
+                        padding: "3px 10px",
+                        borderRadius: 20,
+                      }}
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* ════════════════════════════════════════
-          SECTION 8 — CERTIFICATIONS
-          8a. Section header
-          8b. Certification badges grid
-          TO ADD: add to the certs array below
-      ════════════════════════════════════════ */}
-      <div style={{ background: "var(--surface)", padding: "56px 40px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <div className="overline">Certifications & Compliance</div>
-            <h2
-              style={{
-                fontSize: "clamp(20px,2.5vw,30px)",
-                fontWeight: 800,
-                letterSpacing: -1,
-                color: "var(--ink)",
-              }}
-            >
-              Built to international standards
-            </h2>
-          </div>
-          {/* 8b. Cert grid — edit certifications here */}
-          {/* ↓ CHANGE 6: added className="tmci-certs-grid" */}
+          {/* Secondary sectors — compact strip */}
           <div
-            className="tmci-certs-grid"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(5, 1fr)",
+              display: "flex",
+              alignItems: "center",
               gap: 12,
+              padding: "20px 24px",
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 10,
+              flexWrap: "wrap",
             }}
           >
+            <span
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "1px",
+                color: "rgba(255,255,255,0.25)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Also serving
+            </span>
             {[
-              { name: "ISO 9001:2015", desc: "Quality Management" },
-              { name: "ISO 14001:2015", desc: "Environmental Management" },
-              { name: "ISO 45001:2018", desc: "Occupational Health & Safety" },
-              { name: "CE Certified", desc: "European Conformity" },
-              { name: "ROHS", desc: "Restriction of Hazardous Substances" },
-              { name: "BIFMA", desc: "Furniture & Safety Standards" },
-              { name: "ANSI-ESD S20.20", desc: "Electrostatic Discharge" },
-              { name: "IEC 61340-5-1", desc: "ESD Protection" },
-              { name: "Make in India", desc: "Manufactured in Bengaluru" },
-              {
-                name: "MSME Registered",
-                desc: "Micro, Small & Medium Enterprise",
-              },
-            ].map(({ name, desc }) => (
+              "Food Processing",
+              "Education & R&D",
+              "Mining & Metallurgy",
+              "Construction",
+              "Mineral Processing",
+            ]
+              .map((s) => (
+                <span
+                  key={s}
+                  style={{
+                    fontSize: 12.5,
+                    color: "rgba(255,255,255,0.4)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {s}
+                </span>
+              ))
+              .reduce(
+                (acc, el, i) =>
+                  i === 0
+                    ? [el]
+                    : [
+                        ...acc,
+                        <span
+                          key={`dot-${i}`}
+                          style={{
+                            color: "rgba(255,255,255,0.15)",
+                            fontSize: 10,
+                          }}
+                        >
+                          ·
+                        </span>,
+                        el,
+                      ],
+                [],
+              )}
+          </div>
+        </div>
+      </div>
+      {/* ════════════════════════════════════════
+          SECTION 8 — CERTIFICATIONS
+          Light background
+          Badge strip with hover popover
+      ════════════════════════════════════════ */}
+      <div
+        style={{
+          background: "var(--surface)",
+          borderTop: "1px solid var(--border)",
+        }}
+      >
+        <div className="sec" style={{ maxWidth: 1200 }}>
+          {/* Header */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 64,
+              alignItems: "start",
+              marginBottom: 48,
+            }}
+            className="cert-header-grid"
+          >
+            <div>
+              <div className="overline" style={{ marginBottom: 16 }}>
+                Certifications
+              </div>
+              <h2
+                style={{
+                  fontSize: "clamp(26px, 3.5vw, 42px)",
+                  fontWeight: 800,
+                  letterSpacing: "-1px",
+                  lineHeight: 1.15,
+                  color: "var(--ink)",
+                  marginBottom: 16,
+                }}
+              >
+                These aren't just badges.
+                <br />
+                They're proof.
+              </h2>
+              <p style={{ fontSize: 15, color: "var(--mid)", lineHeight: 1.8 }}>
+                Every certification TMCI holds was earned through independent
+                third-party audits. Not self-declared. Not inherited. Audited,
+                verified, and renewed annually.
+              </p>
+            </div>
+            <div style={{ paddingTop: 8 }}>
               <div
-                key={name}
                 style={{
                   background: "var(--white)",
                   border: "1px solid var(--border)",
-                  borderRadius: 8,
-                  padding: "16px 14px",
+                  borderLeft: "3px solid var(--primary)",
+                  borderRadius: "0 8px 8px 0",
+                  padding: "20px 24px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "var(--ink)",
+                    marginBottom: 8,
+                  }}
+                >
+                  Why this matters when choosing a manufacturer
+                </p>
+                <p
+                  style={{
+                    fontSize: 13.5,
+                    color: "var(--mid)",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  A certification means a third-party auditor walked through
+                  TMCI's facility, reviewed every process, checked every record,
+                  and confirmed it meets international standards. That auditor
+                  comes back every year. If TMCI slips, they lose the
+                  certification. That accountability is what you're buying into.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Badge strip with popovers */}
+          <CertificationBadges />
+
+          {/* Bottom note */}
+          <div
+            style={{
+              textAlign: "center",
+              padding: "20px 24px",
+              background: "var(--white)",
+              border: "1px solid var(--border)",
+              borderRadius: 10,
+              marginTop: 24,
+            }}
+          >
+            <p style={{ fontSize: 13.5, color: "var(--mid)", lineHeight: 1.7 }}>
+              All certifications are independently audited and renewed annually.{" "}
+              <strong style={{ color: "var(--ink)" }}>
+                Copies available on request.
+              </strong>
+            </p>
+          </div>
+        </div>
+      </div>
+      {/* ════════════════════════════════════════
+          SECTION 10 — SOCIAL PROOF
+          Dark theme — stats + KMRL case study
+          No fake testimonials
+      ════════════════════════════════════════ */}
+      <div
+        style={{
+          background: "#060F0D",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Background grid */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(rgba(0,191,140,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,191,140,0.03) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            pointerEvents: "none",
+          }}
+        />
+
+        {/* Glow orbs */}
+        <div
+          style={{
+            position: "absolute",
+            top: -80,
+            right: -80,
+            width: 500,
+            height: 500,
+            background:
+              "radial-gradient(ellipse, rgba(0,191,140,0.07) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -60,
+            left: -60,
+            width: 400,
+            height: 400,
+            background:
+              "radial-gradient(ellipse, rgba(0,140,191,0.05) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div
+          className="sec"
+          style={{ maxWidth: 1200, position: "relative", zIndex: 2 }}
+        >
+          {/* Overline */}
+          <div
+            className="overline"
+            style={{ color: "var(--primary-lt)", marginBottom: 24 }}
+          >
+            Trusted by Industry
+          </div>
+
+          {/* Stats row */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 2,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 12,
+              overflow: "hidden",
+              marginBottom: 40,
+            }}
+            className="proof-stats-grid"
+          >
+            {[
+              {
+                val: "13+",
+                label: "Years Manufacturing",
+                sub: "Est. 2012, Bengaluru",
+              },
+              {
+                val: "350+",
+                label: "Clients Served",
+                sub: "Direct & through partners",
+              },
+              {
+                val: "11",
+                label: "Industry Sectors",
+                sub: "Defence to Pharma",
+              },
+              {
+                val: "INT'L",
+                label: "Exports",
+                sub: "Saudi Arabia, South Africa & more",
+              },
+            ].map((stat, i, arr) => (
+              <div
+                key={stat.label}
+                style={{
+                  padding: "32px 28px",
+                  borderRight:
+                    i < arr.length - 1
+                      ? "1px solid rgba(255,255,255,0.06)"
+                      : "none",
                   textAlign: "center",
                 }}
               >
                 <div
                   style={{
-                    fontSize: 12,
+                    fontFamily: "var(--mono)",
+                    fontSize: "clamp(28px, 3vw, 40px)",
                     fontWeight: 800,
-                    color: "var(--ink)",
-                    marginBottom: 4,
+                    color: "#fff",
+                    letterSpacing: "-1px",
+                    lineHeight: 1,
+                    marginBottom: 8,
                   }}
                 >
-                  {name}
+                  {stat.val}
                 </div>
                 <div
                   style={{
-                    fontSize: 10.5,
-                    color: "var(--muted)",
-                    lineHeight: 1.4,
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "rgba(255,255,255,0.6)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.8px",
+                    marginBottom: 4,
                   }}
                 >
-                  {desc}
+                  {stat.label}
+                </div>
+                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>
+                  {stat.sub}
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* ════════════════════════════════════════
-          SECTION 9 — AUTHORIZED DEALER & BRANDS
-          9a. Authorized dealer strip
-          9b. Brands we work with
-          TO ADD BRANDS: edit the arrays below
-      ════════════════════════════════════════ */}
-      <div className="brands-band">
-        <div className="bb-lbl">Authorized Dealer & Brands We Work With</div>
-        <div className="bb-logos">
-          {/* 9a. Authorized dealer highlighted */}
-          {[
-            "Fluke ★ Authorized Dealer",
-            "Karogic ★ Authorized Dealer",
-            "Yokogawa",
-            "Endress+Hauser",
-            "Beamex",
-            "WIKA",
-          ].map((b) => (
-            <div key={b} className="bb-logo">
-              {b}
+          {/* Case study header */}
+          <div style={{ marginBottom: 32 }}>
+            <div
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "1.3px",
+                color: "rgba(255,255,255,0.25)",
+                marginBottom: 12,
+              }}
+            >
+              From the field
             </div>
-          ))}
+            <h3
+              style={{
+                fontSize: "clamp(20px, 2.5vw, 32px)",
+                fontWeight: 800,
+                color: "#fff",
+                letterSpacing: "-0.5px",
+                lineHeight: 1.2,
+              }}
+            >
+              A single static discharge can destroy ₹5 lakh worth of components.{" "}
+              <span style={{ color: "var(--primary-md)" }}>
+                Here's how Kochi Metro made sure that never happens.
+              </span>
+            </h3>
+          </div>
+
+          {/* KMRL Case study */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 2,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(0,191,140,0.12)",
+              borderRadius: 16,
+              overflow: "hidden",
+              marginBottom: 32,
+            }}
+            className="case-study-grid"
+          >
+            {/* Left — story */}
+            <div
+              style={{
+                padding: "40px 36px",
+                borderRight: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              {/* Client badge */}
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 10,
+                  background: "rgba(0,191,140,0.08)",
+                  border: "1px solid rgba(0,191,140,0.2)",
+                  borderRadius: 8,
+                  padding: "8px 16px",
+                  marginBottom: 28,
+                }}
+              >
+                <div
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "var(--primary-md)",
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    color: "var(--primary-lt)",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  KOCHI METRO RAIL LIMITED
+                </span>
+                <span style={{ fontSize: 11, color: "rgba(255,255,255,0.25)" }}>
+                  · Ernakulam, Kerala
+                </span>
+              </div>
+
+              <h4
+                style={{
+                  fontSize: 18,
+                  fontWeight: 800,
+                  color: "#fff",
+                  lineHeight: 1.3,
+                  marginBottom: 20,
+                }}
+              >
+                Complete ESD-controlled laboratory for electronics maintenance
+                operations
+              </h4>
+
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.85,
+                  color: "rgba(255,255,255,0.55)",
+                  marginBottom: 20,
+                }}
+              >
+                Kochi Metro needed a fully controlled electrostatic discharge
+                environment for their electronics maintenance and assembly
+                operations. The sensitivity of the components being handled
+                meant that a standard workspace was not an option — any
+                uncontrolled static discharge risked damaging equipment worth
+                significantly more than the lab itself.
+              </p>
+
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.85,
+                  color: "rgba(255,255,255,0.55)",
+                  marginBottom: 20,
+                }}
+              >
+                TMCI designed and installed a complete ESD-proof laboratory.
+                Every surface, every workstation, every accessory — flooring,
+                mats, benches, grounding points, wrist strap testers —
+                configured to ANSI-ESD S20.20 standards.
+              </p>
+
+              <p
+                style={{
+                  fontSize: 14,
+                  lineHeight: 1.85,
+                  color: "rgba(255,255,255,0.55)",
+                }}
+              >
+                Entry to the lab requires ESD shoes and protective coats. The
+                environment is controlled from the moment you walk in. The lab
+                has been operational since 2020 and remains in active daily use.
+              </p>
+            </div>
+
+            {/* Right — specs */}
+            <div
+              style={{
+                padding: "40px 36px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "1.3px",
+                  color: "rgba(255,255,255,0.25)",
+                  marginBottom: 24,
+                }}
+              >
+                Project details
+              </div>
+
+              {[
+                { label: "Client", value: "Kochi Metro Rail Limited (KMRL)" },
+                { label: "Location", value: "Ernakulam, Kerala" },
+                {
+                  label: "Project type",
+                  value: "Complete ESD laboratory setup",
+                },
+                { label: "Standard", value: "ANSI-ESD S20.20 compliant" },
+                { label: "Delivered", value: "2020" },
+                { label: "Status", value: "Operational — active daily use" },
+              ].map((item, i, arr) => (
+                <div
+                  key={item.label}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    padding: "16px 0",
+                    borderBottom:
+                      i < arr.length - 1
+                        ? "1px solid rgba(255,255,255,0.06)"
+                        : "none",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.8px",
+                      color: "rgba(255,255,255,0.25)",
+                    }}
+                  >
+                    {item.label}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "rgba(255,255,255,0.75)",
+                    }}
+                  >
+                    {item.value}
+                  </div>
+                </div>
+              ))}
+
+              {/* What was delivered */}
+              <div
+                style={{
+                  marginTop: 24,
+                  background: "rgba(0,191,140,0.06)",
+                  border: "1px solid rgba(0,191,140,0.15)",
+                  borderRadius: 8,
+                  padding: "16px 20px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.8px",
+                    color: "var(--primary-lt)",
+                    marginBottom: 10,
+                  }}
+                >
+                  What was installed
+                </div>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 6 }}
+                >
+                  {[
+                    "ESD workstations — full configuration",
+                    "ESD flooring and grounding system",
+                    "Wrist strap testers at every station",
+                    "Ionizing equipment",
+                    "ESD-safe storage and accessories",
+                  ].map((item) => (
+                    <div
+                      key={item}
+                      style={{ display: "flex", alignItems: "center", gap: 8 }}
+                    >
+                      <div
+                        style={{
+                          width: 4,
+                          height: 4,
+                          borderRadius: "50%",
+                          background: "var(--primary-md)",
+                          flexShrink: 0,
+                        }}
+                      />
+                      <span
+                        style={{
+                          fontSize: 12.5,
+                          color: "rgba(255,255,255,0.55)",
+                        }}
+                      >
+                        {item}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Reference offer */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "24px 28px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 10,
+              flexWrap: "wrap",
+              gap: 16,
+            }}
+          >
+            <p
+              style={{
+                fontSize: 14,
+                color: "rgba(255,255,255,0.5)",
+                lineHeight: 1.6,
+              }}
+            >
+              <strong style={{ color: "rgba(255,255,255,0.8)" }}>
+                Want to speak with an existing customer before you decide?
+              </strong>
+              <br />
+              We're confident enough in our work to put you in touch with people
+              who've been through it.
+            </p>
+            <a
+              href={`https://wa.me/${typeof waNumber !== "undefined" ? waNumber : "919742944306"}?text=${encodeURIComponent("Hello! I'd like to speak with one of your existing customers before making a decision.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "transparent",
+                color: "rgba(255,255,255,0.7)",
+                padding: "10px 20px",
+                borderRadius: 8,
+                fontWeight: 600,
+                fontSize: 13.5,
+                textDecoration: "none",
+                border: "1px solid rgba(255,255,255,0.15)",
+                transition: "all 0.18s",
+                whiteSpace: "nowrap",
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.color = "#fff";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.35)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)";
+              }}
+            >
+              Request a Reference →
+            </a>
+          </div>
         </div>
       </div>
-
+      
       {/* ════════════════════════════════════════
-          SECTION 10 — SOCIAL PROOF
-          10a. Stats row
-          10b. Testimonials grid (3 cards)
-          TO EDIT: change quotes, authors, locations below
+          SECTION 9 — AUTHORIZED DEALERS
       ════════════════════════════════════════ */}
-      <div className="proof-band">
-        <div className="proof-inner">
-          <div className="proof-overline">Trusted by Industry</div>
-          {/* 10a. Stats — edit values here */}
-          <div className="proof-stats">
-            {[
-              ["13+", "Years manufacturing"],
-              ["11+", "Industries served"],
-              ["INT'L", "Exported to Saudi Arabia & more"],
-              ["100%", "Custom-configured"],
-            ].map(([v, l]) => (
-              <div key={l} className="ps-item">
-                <div className="ps-val">{v}</div>
-                <div className="ps-lbl">{l}</div>
-              </div>
-            ))}
+      <div
+        style={{
+          background: "#060F0D",
+          padding: "56px 40px",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
+          <div
+            className="overline"
+            style={{ color: "var(--primary-lt)", marginBottom: 8 }}
+          >
+            Authorized Dealers
           </div>
-          {/* 10b. Testimonials — edit quotes here */}
-          <div className="proof-grid">
+          <p
+            style={{
+              fontSize: 14,
+              color: "rgba(255,255,255,0.35)",
+              marginBottom: 40,
+            }}
+          >
+            TMCI is an officially authorized dealer for these brands in India.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: 20,
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
             {[
-              [
-                '"The calibration test bench was delivered exactly to our specifications. Excellent build quality and the team was responsive throughout the process."',
-                "Nitin Williams",
-                "Kerala · May 2019",
-              ],
-              [
-                '"We needed a pressure test bench that could handle our specific marine application. TMCI engineered exactly what we needed — no compromises."',
-                "Marine Engineering Facility",
-                "Kochi · 2022",
-              ],
-              [
-                '"Our Oil & Gas team uses the TMCI bench daily. The modular setup has transformed our calibration workflow."',
-                "Process Instrumentation Lead",
-                "Refinery, Gujarat · 2023",
-              ],
-            ].map(([quote, author, loc], i) => (
-              <div key={i} className="proof-card">
-                <div className="proof-stars">★★★★★</div>
-                <div className="proof-quote">"{quote}"</div>
-                <div className="proof-author">
-                  {author} <span>· {loc}</span>
+              {
+                name: "Fluke",
+                tag: "Authorized Dealer",
+                logo: "https://res.cloudinary.com/dkhmnkxzo/image/upload/v1778578367/fluke-seeklogo_zrekcp.svg",
+                logoHeight: 48,
+              },
+              {
+                name: "Harogic",
+                tag: "Authorized Dealer",
+                logo: "https://res.cloudinary.com/dkhmnkxzo/image/upload/v1778578563/9c82e903-320d-4e78-847b-5ad5342c426c.png",
+                logoHeight: 72,
+              },
+            ].map((b) => (
+              <div
+                key={b.name}
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(0,191,140,0.2)",
+                  borderRadius: 12,
+                  padding: "32px 48px",
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 20,
+                  width: 280,
+                }}
+              >
+                <div
+                  style={{
+                    width: 160,
+                    height: 56,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={b.logo}
+                    alt={b.name}
+                    style={{
+                      maxWidth: 160,
+                      height: b.logoHeight,
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    width: "100%",
+                    height: 1,
+                    background: "rgba(255,255,255,0.07)",
+                  }}
+                />
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "1.2px",
+                    color: "var(--primary-lt)",
+                  }}
+                >
+                  {b.tag}
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-
+      
       {/* ════════════════════════════════════════
           SECTION 11 — CUSTOMIZE WORKBENCH
           Configurator component (4-step form)
@@ -2311,7 +3750,6 @@ export default function Home() {
           <WorkbenchConfigurator />
         </div>
       </section>
-
       {/* ════════════════════════════════════════
           SECTION 12 — FAQ
           Loaded from Supabase (admin managed)
@@ -2390,7 +3828,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* ════════════════════════════════════════
           SECTION 13 — BLOG PREVIEW
           Shows 3 latest articles
@@ -2495,7 +3932,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
       {/* ════════════════════════════════════════
           SECTION 14 — CTA BANNER
           Final conversion section
