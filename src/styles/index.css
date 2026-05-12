@@ -395,6 +395,14 @@ img { display: block; }
 @media (max-width: 768px) { 
   .why-grid { grid-template-columns: 1fr !important; gap: 32px !important; } 
 }
+/* ── WHOM WE SERVE ── */
+@media (max-width: 768px) { .ind-primary-grid { grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 480px) { .ind-primary-grid { grid-template-columns: 1fr !important; } }
+
+/* ── CERTIFICATIONS ── */
+@media (max-width: 768px) { .cert-header-grid { grid-template-columns: 1fr !important; gap: 32px !important; } .cert-grid { grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 480px) { .cert-grid { grid-template-columns: 1fr !important; } }
+
 /* ── HOW IT WORKS ── */
 .steps-grid {
   display: grid; grid-template-columns: repeat(4,1fr);
