@@ -403,6 +403,15 @@ img { display: block; }
 @media (max-width: 768px) { .cert-header-grid { grid-template-columns: 1fr !important; gap: 32px !important; } .cert-grid { grid-template-columns: 1fr 1fr !important; } }
 @media (max-width: 480px) { .cert-grid { grid-template-columns: 1fr !important; } }
 
+/* ── SOCIAL PROOF ── */
+
+@media (max-width: 768px) { 
+  .proof-stats-grid { grid-template-columns: 1fr 1fr !important; }
+  .case-study-grid { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 480px) { 
+  .proof-stats-grid { grid-template-columns: 1fr 1fr !important; }
+}
 /* ── HOW IT WORKS ── */
 .steps-grid {
   display: grid; grid-template-columns: repeat(4,1fr);
