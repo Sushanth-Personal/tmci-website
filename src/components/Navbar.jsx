@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -468,10 +468,7 @@ export default function Navbar() {
               padding: "0 13px",
               fontSize: 13,
               fontWeight: 600,
-              color:
-                pathname === "/blogs"
-                  ? "var(--primary-md)"
-                  : navLinkColor,
+              color: pathname === "/blogs" ? "var(--primary-md)" : navLinkColor,
               textDecoration: "none",
               transition: "color 0.15s",
               whiteSpace: "nowrap",
@@ -481,9 +478,7 @@ export default function Navbar() {
             }
             onMouseOut={(e) =>
               (e.currentTarget.style.color =
-                pathname === "/blogs"
-                  ? "var(--primary-md)"
-                  : navLinkColor)
+                pathname === "/blogs" ? "var(--primary-md)" : navLinkColor)
             }
           >
             Blog

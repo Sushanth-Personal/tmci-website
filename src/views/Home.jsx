@@ -1417,7 +1417,9 @@ function WhatWeMakeSection({ rawCategories }) {
                   </div>
                   {isActive && (
                     <a
-                      href="/configure"
+                      href={`https://wa.me/919742944306?text=${encodeURIComponent("Hello! I'd like to enquire about this product.")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
                       style={{
                         display: "inline-flex",
@@ -2592,7 +2594,7 @@ export default function Home() {
         </div>
       </div>
       {/* ════════════════════════════════════════
-          SECTION 3 — WHAT WE MAKE (Products)
+       — WHAT WE MAKE (Products)
           3a. Section header
           3b. Category tabs
           3c. Product grid per category
@@ -2914,7 +2916,9 @@ export default function Home() {
               }}
             >
               <a
-                href="#workbench"
+                href={`https://wa.me/919742944306?text=${encodeURIComponent("Hello! I'd like to get a quote for a calibration/test bench setup.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -2935,7 +2939,7 @@ export default function Home() {
                   (e.currentTarget.style.background = "var(--primary)")
                 }
               >
-                Configure Your Bench →
+                Get a Quote →
               </a>
               <a
                 href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hello! I want to discuss building a proper lab setup.")}`}
