@@ -501,7 +501,7 @@ export default function Navbar() {
           className="tmci-desktop-nav"
         >
           <a
-            href="#workbench"
+            href="/configure"
             style={{
               display: "flex",
               alignItems: "center",

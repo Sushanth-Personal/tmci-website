@@ -8,10 +8,11 @@ import { useState } from 'react'
 const MENU = [
   { href: '/admin', label: 'Dashboard', icon: '📊', exact: true },
   { href: '/admin/sections', label: 'Website Sections', icon: '🖥️' },
+  { href: '/admin/products', label: 'Products', icon: '🔧' },
   { href: '/admin/blogs', label: 'Blog Posts', icon: '📝' },
   { href: '/admin/faqs', label: 'FAQs', icon: '❓' },
-  { href: '/admin/workbench', label: 'Workbench Options', icon: '🔧' },
-  { href: '/admin/theme', label: 'Theme & Colours', icon: '🎨' },   // ← NEW
+  { href: '/admin/workbench', label: 'Workbench Options', icon: '⚙️' },
+  { href: '/admin/theme', label: 'Theme & Colours', icon: '🎨' },
 ]
 
 export default function AdminLayout({ children }) {
@@ -54,10 +55,6 @@ export default function AdminLayout({ children }) {
               }}>
               <span style={{ fontSize: 15 }}>{item.icon}</span>
               {item.label}
-              {/* Highlight theme item as new */}
-              {item.href === '/admin/theme' && !active && (
-                <span style={{ marginLeft: 'auto', fontSize: 9, background: 'var(--primary)', color: '#fff', padding: '1px 6px', borderRadius: 10, fontWeight: 700 }}>NEW</span>
-              )}
             </Link>
           )
         })}

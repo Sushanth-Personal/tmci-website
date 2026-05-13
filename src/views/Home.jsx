@@ -102,8 +102,8 @@ function BenchSVG() {
         width="46"
         height="26"
         rx="1"
-        fill="#00BFA5"
         opacity=".85"
+        style={{ fill: "var(--primary-md)" }}
       />
       <text
         x="95"
@@ -134,8 +134,8 @@ function BenchSVG() {
         textAnchor="middle"
         fontFamily="monospace"
         fontSize="8"
-        fill="#00BFA5"
         fontWeight="700"
+        style={{ fill: "var(--primary-md)" }}
       >
         4.000
       </text>
@@ -145,7 +145,9 @@ function BenchSVG() {
         textAnchor="middle"
         fontFamily="monospace"
         fontSize="6"
-        fill="rgba(0,191,165,.5)"
+        style={{
+          fill: "color-mix(in srgb, var(--primary-md) 50%, transparent)",
+        }}
       >
         mA LOOP
       </text>
@@ -163,9 +165,9 @@ function BenchSVG() {
         y1="157"
         x2="200"
         y2="160"
-        stroke="#4DD0C4"
         strokeWidth="1.5"
         strokeLinecap="round"
+        style={{ stroke: "var(--primary-lt)" }}
       />
       <circle
         cx="218"
@@ -181,9 +183,9 @@ function BenchSVG() {
         y1="157"
         x2="220"
         y2="159"
-        stroke="#F59E0B"
         strokeWidth="1.5"
         strokeLinecap="round"
+        style={{ stroke: "var(--accent)" }}
       />
       <circle
         cx="236"
@@ -199,9 +201,9 @@ function BenchSVG() {
         y1="157"
         x2="234"
         y2="159"
-        stroke="#4DD0C4"
         strokeWidth="1.5"
         strokeLinecap="round"
+        style={{ stroke: "var(--primary-lt)" }}
       />
       <rect
         x="70"
@@ -209,8 +211,8 @@ function BenchSVG() {
         width="8"
         height="5"
         rx="1"
-        fill="#4DD0C4"
         opacity=".7"
+        style={{ fill: "var(--primary-lt)" }}
       />
       <rect
         x="82"
@@ -218,8 +220,8 @@ function BenchSVG() {
         width="8"
         height="5"
         rx="1"
-        fill="#4DD0C4"
         opacity=".7"
+        style={{ fill: "var(--primary-lt)" }}
       />
       <rect
         x="94"
@@ -227,16 +229,16 @@ function BenchSVG() {
         width="8"
         height="5"
         rx="1"
-        fill="#F59E0B"
         opacity=".7"
+        style={{ fill: "var(--accent)" }}
       />
       <circle
         cx="248"
         cy="191"
         r="4"
-        fill="#22C55E"
         filter="url(#glow)"
         opacity=".9"
+        style={{ fill: "var(--primary-lt)" }}
       />
       <rect
         x="80"
@@ -255,8 +257,8 @@ function BenchSVG() {
         textAnchor="middle"
         fontFamily="monospace"
         fontSize="7"
-        fill="#4DD0C4"
         fontWeight="700"
+        style={{ fill: "var(--primary-lt)" }}
       >
         12.34V
       </text>
@@ -274,37 +276,39 @@ function BenchSVG() {
         y1="111"
         x2="185"
         y2="114"
-        stroke="#4DD0C4"
         strokeWidth="1"
         opacity=".6"
+        style={{ stroke: "var(--primary-lt)" }}
       />
       <line
         x1="194"
         y1="117"
         x2="192"
         y2="119"
-        stroke="#4DD0C4"
         strokeWidth="1"
         opacity=".6"
+        style={{ stroke: "var(--primary-lt)" }}
       />
       <line
         x1="185"
         y1="122"
         x2="190"
         y2="115"
-        stroke="#F59E0B"
         strokeWidth="1.5"
         strokeLinecap="round"
         filter="url(#glow)"
+        style={{ stroke: "var(--accent)" }}
       />
-      <circle cx="185" cy="122" r="2" fill="#4DD0C4" />
+      <circle cx="185" cy="122" r="2" style={{ fill: "var(--primary-lt)" }} />
       <ellipse
         cx="160"
         cy="140"
         rx="90"
         ry="8"
-        fill="rgba(0,191,165,.06)"
         filter="url(#softglow)"
+        style={{
+          fill: "color-mix(in srgb, var(--primary-md) 6%, transparent)",
+        }}
       />
     </svg>
   );
@@ -954,7 +958,8 @@ function WorkbenchConfigurator() {
                 width: 64,
                 height: 64,
                 borderRadius: "50%",
-                background: "rgba(0,191,165,0.12)",
+                background:
+                  "color-mix(in srgb, var(--primary-md) 12%, transparent)",
                 border: "2px solid var(--primary-md)",
                 display: "flex",
                 alignItems: "center",
@@ -1015,45 +1020,45 @@ function WorkbenchConfigurator() {
   );
 }
 
-// ─────────────────────────────────────────────
-// COMPONENT: WHAT WE MAKE — PRODUCT CATEGORIES
-// Place this above the Home() export, below BenchSVG
-// ─────────────────────────────────────────────
-
 const PRODUCT_CATEGORIES = [
   {
     id: "calibration",
     icon: "🎛️",
     label: "Calibration Benches",
     headline: "Calibration Bench Systems",
+    accent: true,
     tagline:
       "Our flagship product line — built for in-house calibration of every parameter",
-    accent: true,
     products: [
       {
         name: "Electrical & Electronics Calibration Test Bench",
         desc: "Modular ergonomic platform for precise testing, calibration, and maintenance of electrical and electronic equipment. Integrates multimeters, oscilloscopes, LCR meters, and power analyzers.",
         tag: "Most ordered",
+        image: "",
       },
       {
         name: "Temperature Calibration Test Bench",
         desc: "Specialized platform for accurate calibration of temperature instruments — sensors, transmitters, and controllers. Equipped with dry block calibrators, liquid baths, and reference thermometers.",
         tag: "ISO/IEC 17025 ready",
+        image: "",
       },
       {
         name: "Pressure & Pneumatic Calibration Test Bench",
-        desc: "Advanced modular solution for calibration and testing of pressure devices used in oil & gas, manufacturing, and power sectors. Features pressure controllers, digital gauges, and pneumatic pumps.",
+        desc: "Advanced modular solution for calibration and testing of pressure devices used in oil & gas, manufacturing, and power sectors.",
         tag: "SS grade",
+        image: "",
       },
       {
         name: "Mobile Testing & Calibration Van",
-        desc: "Compact, fully equipped mobile lab for on-site calibration across industrial locations. Outfitted with multifunction testers, calibrators, and portable analyzers for high-precision field operations.",
+        desc: "Compact, fully equipped mobile lab for on-site calibration across industrial locations. Outfitted with multifunction testers, calibrators, and portable analyzers.",
         tag: "Field deployment",
+        image: "",
       },
       {
         name: "Instruments & Calibration Rack",
-        desc: "Modular system for organized housing, management, and operation of calibration and testing instruments. Adjustable racks, power distribution units, and cooling systems.",
+        desc: "Modular system for organized housing, management, and operation of calibration and testing instruments.",
         tag: "Custom config",
+        image: "",
       },
     ],
   },
@@ -1067,23 +1072,27 @@ const PRODUCT_CATEGORIES = [
     products: [
       {
         name: "Electrical & Electronics Test Bench",
-        desc: "Modular ergonomic platform for testing, calibration, and maintenance of electrical and electronic equipment. Precision tools include multimeters, oscilloscopes, power analyzers, and signal generators.",
+        desc: "Modular ergonomic platform for testing, calibration, and maintenance of electrical and electronic equipment.",
         tag: "R&D · Manufacturing · Training",
+        image: "",
       },
       {
         name: "Motor & Drive Test Bench",
-        desc: "Advanced modular system for testing, calibration, and evaluation of motors and drive systems — AC, DC, servo, and stepper motors. Integrated with dynamometers, VFDs, and torque transducers.",
+        desc: "Advanced modular system for testing, calibration, and evaluation of motors and drive systems — AC, DC, servo, and stepper motors.",
         tag: "Automation ready",
+        image: "",
       },
       {
         name: "Electric Vehicle (EV) Test Bench",
-        desc: "Specialized modular platform for testing EV components and systems — motors, inverters, BMS, and power electronics. Features motor dynamometers, battery simulators, and regenerative power supplies.",
+        desc: "Specialized modular platform for testing EV components and systems — motors, inverters, BMS, and power electronics.",
         tag: "EV · R&D",
+        image: "",
       },
       {
         name: "Relay & PLC Test Bench",
-        desc: "Configurable test system for testing, calibration, and maintenance of protective relays and PLC systems. Advanced relay test sets, multimeters, and insulation testers for power plants and substations.",
+        desc: "Configurable test system for testing, calibration, and maintenance of protective relays and PLC systems.",
         tag: "Power · Substation",
+        image: "",
       },
     ],
   },
@@ -1097,18 +1106,21 @@ const PRODUCT_CATEGORIES = [
     products: [
       {
         name: "ESD Tables & Benches",
-        desc: "Contamination-free, static-controlled environment for precision tasks — PCB assembly, semiconductor handling, and testing. ESD-safe flooring, mats, grounding systems, and ionizing blowers.",
+        desc: "Contamination-free, static-controlled environment for precision tasks — PCB assembly, semiconductor handling, and testing.",
         tag: "ANSI-ESD S20.20",
+        image: "",
       },
       {
         name: "ESD Clean Room & Accessories",
-        desc: "Modular workstations for safe handling of sensitive electronic components. Built with aluminium or mild steel frames, ESD-safe laminations, anti-static surfaces, and adjustable ergonomic layouts.",
+        desc: "Modular workstations for safe handling of sensitive electronic components. Built with ESD-safe laminations and anti-static surfaces.",
         tag: "IEC 61340 compliant",
+        image: "",
       },
       {
         name: "ESD Workstation — Full Configuration",
-        desc: "Complete ESD workstation with 230V/415V power, RCCB, MCCB, VAF meter, banana sockets, AC/DC power supplies, signal generators, oscilloscopes, and optional PC and printer.",
+        desc: "Complete ESD workstation with 230V/415V power, RCCB, MCCB, VAF meter, banana sockets, AC/DC power supplies, and optional PC.",
         tag: "Full fit-out",
+        image: "",
       },
     ],
   },
@@ -1122,18 +1134,21 @@ const PRODUCT_CATEGORIES = [
     products: [
       {
         name: "Laboratory Work Tables",
-        desc: "Built with mild steel frames and chemical-resistant surfaces. Adjustable heights, ample storage, and optional accessories including lighting and cable management. Clean room-compatible designs.",
+        desc: "Built with mild steel frames and chemical-resistant surfaces. Adjustable heights, ample storage, and optional accessories.",
         tag: "Education · R&D · Industrial",
+        image: "",
       },
       {
         name: "Heavy Duty Industrial Bench",
-        desc: "Robust industrial benches designed for demanding environments. Heavy-gauge steel construction with customizable surface materials, load ratings, and integrated tool storage.",
+        desc: "Robust industrial benches designed for demanding environments. Heavy-gauge steel construction with customizable surface materials.",
         tag: "Custom load rating",
+        image: "",
       },
       {
         name: "Aluminium Profile Workstation",
-        desc: "Lightweight yet strong aluminium profile frame system. Modular assembly allows rapid reconfiguration. Ideal for electronics assembly lines, cleanrooms, and precision workspaces.",
+        desc: "Lightweight yet strong aluminium profile frame system. Modular assembly allows rapid reconfiguration.",
         tag: "Modular · Lightweight",
+        image: "",
       },
     ],
   },
@@ -1143,27 +1158,31 @@ const PRODUCT_CATEGORIES = [
     label: "Instruments",
     headline: "Test & Measurement Instruments",
     tagline:
-      "Authorised dealer for Fluke and Karogic — full range of precision instruments",
+      "Authorised dealer for Fluke and Harogic — full range of precision instruments",
     products: [
       {
         name: "Gas Analyzers & Monitors",
-        desc: "Process and portable gas analysis for safety, compliance, and quality monitoring. Covers toxic gas, O₂, combustible, and multi-gas configurations for industrial safety and environmental compliance.",
+        desc: "Process and portable gas analysis for safety, compliance, and quality monitoring.",
         tag: "Safety critical",
+        image: "",
       },
       {
         name: "Portable Calibrators & DMMs",
-        desc: "Handheld and benchtop digital multimeters, loop calibrators, clamp meters, and multifunction calibrators. Fluke authorized dealer — full range of precision handheld instruments.",
+        desc: "Handheld and benchtop digital multimeters, loop calibrators, clamp meters, and multifunction calibrators. Fluke authorized dealer.",
         tag: "Fluke Authorized Dealer",
+        image: "",
       },
       {
         name: "Power Supplies & Signal Sources",
-        desc: "Fixed and variable AC/DC power supplies — 5V to 220V DC, single and three phase AC. Signal generators, waveform generators, and function generators for bench and field use.",
+        desc: "Fixed and variable AC/DC power supplies — 5V to 220V DC, single and three phase AC. Signal and function generators.",
         tag: "Full range",
+        image: "",
       },
       {
         name: "Predictive Maintenance Systems",
-        desc: "Condition monitoring solutions to detect equipment degradation before failures occur — vibration analysis, thermal imaging, and ultrasonic testing to reduce unplanned downtime.",
+        desc: "Condition monitoring solutions to detect equipment degradation before failures occur.",
         tag: "Reduce downtime",
+        image: "",
       },
     ],
   },
@@ -1177,41 +1196,75 @@ const PRODUCT_CATEGORIES = [
     products: [
       {
         name: "Testing & Calibration Software",
-        desc: "Automates data capture, calibration, and report generation in compliance with ISO/IEC 17025. Streamlines workflows, maintains calibration records, sets reminders, and ensures result traceability.",
+        desc: "Automates data capture, calibration, and report generation in compliance with ISO/IEC 17025.",
         tag: "ISO/IEC 17025",
+        image: "",
       },
       {
         name: "Installation & Commissioning",
-        desc: "On-site installation and commissioning services for all TMCI products. Our engineers travel to your facility to set up, configure, and validate every system.",
+        desc: "On-site installation and commissioning services for all TMCI products.",
         tag: "Pan India · International",
+        image: "",
       },
       {
         name: "Annual Maintenance Contract (AMC)",
-        desc: "Ongoing maintenance and support services to keep your systems running at peak precision. Scheduled servicing, emergency callouts, and calibration renewals — all under a single contract.",
+        desc: "Ongoing maintenance and support services to keep your systems running at peak precision.",
         tag: "AMC available",
+        image: "",
       },
     ],
   },
 ];
 
-function WhatWeMakeSection() {
-  const [activeTab, setActiveTab] = React.useState("calibration");
-  const active = PRODUCT_CATEGORIES.find((c) => c.id === activeTab);
+// ─────────────────────────────────────────────
+// COMPONENT: WHAT WE MAKE — PRODUCT CATEGORIES
+// Hero image RIGHT, product list LEFT
+// Click product on left to switch hero image right
+// ─────────────────────────────────────────────
+
+function WhatWeMakeSection({ rawCategories }) {
+  const categories = React.useMemo(() => {
+    if (rawCategories) {
+      try {
+        const parsed = JSON.parse(rawCategories);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch {}
+    }
+    return PRODUCT_CATEGORIES;
+  }, [rawCategories]);
+
+  const [activeTab, setActiveTab] = React.useState(
+    categories[0]?.id || "calibration",
+  );
+  const [activeIdx, setActiveIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!categories.find((c) => c.id === activeTab)) {
+      setActiveTab(categories[0]?.id || "calibration");
+    }
+  }, [categories]);
+
+  React.useEffect(() => {
+    setActiveIdx(0);
+  }, [activeTab]);
+
+  const activeCategory = categories.find((c) => c.id === activeTab);
+  const products = activeCategory?.products || [];
+  const hero = products[activeIdx];
 
   return (
     <div>
-      {/* Category tab strip */}
+      {/* Tab strip */}
       <div
         style={{
           display: "flex",
-          gap: 8,
+          gap: 0,
           flexWrap: "wrap",
-          marginBottom: 32,
           borderBottom: "2px solid var(--border)",
-          paddingBottom: 0,
+          marginBottom: 28,
         }}
       >
-        {PRODUCT_CATEGORIES.map((cat) => (
+        {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setActiveTab(cat.id)}
@@ -1242,182 +1295,289 @@ function WhatWeMakeSection() {
         ))}
       </div>
 
-      {/* Active category content */}
-      {active && (
-        <div>
-          {/* Category headline */}
-          <div style={{ marginBottom: 28 }}>
-            <h3
-              style={{
-                fontSize: "clamp(20px, 2.5vw, 28px)",
-                fontWeight: 800,
-                color: "var(--ink)",
-                letterSpacing: -0.5,
-                marginBottom: 6,
-              }}
-            >
-              {active.headline}
-            </h3>
-            <p style={{ fontSize: 14, color: "var(--mid)", lineHeight: 1.7 }}>
-              {active.tagline}
-            </p>
-          </div>
+      {/* Section headline */}
+      {activeCategory && (
+        <div style={{ marginBottom: 20 }}>
+          <h3
+            style={{
+              fontSize: "clamp(20px, 2.5vw, 28px)",
+              fontWeight: 800,
+              color: "var(--ink)",
+              letterSpacing: -0.5,
+              marginBottom: 6,
+            }}
+          >
+            {activeCategory.headline}
+          </h3>
+          <p style={{ fontSize: 14, color: "var(--mid)", lineHeight: 1.7 }}>
+            {activeCategory.tagline}
+          </p>
+        </div>
+      )}
 
-          {/* Product cards grid */}
+      {/* Main layout — left list + right hero */}
+      {hero && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "320px 1fr",
+            gap: 2,
+            background: "var(--border)",
+            border: "1px solid var(--border)",
+            borderRadius: 12,
+            overflow: "hidden",
+            minHeight: 480,
+            boxShadow: "0 2px 16px rgba(0,0,0,0.2)",
+          }}
+          className="wmm-layout"
+        >
+          {/* LEFT — product list */}
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: 2,
-              background: "var(--border)",
-              border: "1px solid var(--border)",
-              borderRadius: 12,
-              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              gap: 0,
+              background: "var(--white)",
             }}
-            className="wmm-grid"
           >
-            {active.products.map((p, i) => (
-              <div
-                key={p.name}
+            {products.map((product, i) => {
+              const isActive = i === activeIdx;
+              return (
+                <div
+                  key={product.name}
+                  onClick={() => setActiveIdx(i)}
+                  style={{
+                    padding: "16px 20px",
+                    cursor: "pointer",
+                    transition: "all 0.15s",
+                    borderBottom: "1px solid var(--border)",
+                    background: isActive ? "var(--primary)" : "var(--white)",
+                    position: "relative",
+                  }}
+                  onMouseOver={(e) => {
+                    if (!isActive)
+                      e.currentTarget.style.background = "var(--primary-pale)";
+                  }}
+                  onMouseOut={(e) => {
+                    if (!isActive)
+                      e.currentTarget.style.background = "var(--white)";
+                  }}
+                >
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        right: 0,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        width: 3,
+                        height: "60%",
+                        background: "#fff",
+                        borderRadius: "2px 0 0 2px",
+                        opacity: 0.5,
+                      }}
+                    />
+                  )}
+                  {product.tag && (
+                    <div
+                      style={{
+                        fontSize: 9.5,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.06em",
+                        color: isActive
+                          ? "rgba(255,255,255,0.7)"
+                          : "var(--primary)",
+                        marginBottom: 5,
+                      }}
+                    >
+                      {product.tag}
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 800,
+                      color: isActive ? "#fff" : "var(--ink)",
+                      lineHeight: 1.3,
+                      marginBottom: 4,
+                    }}
+                  >
+                    {product.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11.5,
+                      color: isActive ? "rgba(255,255,255,0.75)" : "var(--mid)",
+                      lineHeight: 1.55,
+                    }}
+                  >
+                    {product.desc}
+                  </div>
+                  {isActive && (
+                    <a
+                      href="/configure"
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                        marginTop: 10,
+                        fontSize: 11.5,
+                        fontWeight: 700,
+                        color: "#fff",
+                        border: "1px solid rgba(255,255,255,0.35)",
+                        borderRadius: 5,
+                        padding: "5px 12px",
+                        textDecoration: "none",
+                        width: "fit-content",
+                      }}
+                    >
+                      Enquire →
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* RIGHT — hero image */}
+          <div
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              background: "var(--surface)",
+              minHeight: 480,
+            }}
+          >
+            {hero.image ? (
+              <img
+                key={hero.name}
+                src={hero.image}
+                alt={hero.name}
                 style={{
-                  background:
-                    i === 0 && active.accent
-                      ? "var(--primary)"
-                      : "var(--white)",
-                  padding: "28px 24px",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  objectPosition: "center",
+                  display: "block",
+                  minHeight: 480,
+                  transition: "opacity 0.2s",
+                }}
+                loading="lazy"
+              />
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  minHeight: 480,
+                  background: "var(--primary)",
                   display: "flex",
                   flexDirection: "column",
-                  minHeight: 200,
-                  cursor: "pointer",
-                  transition: "background 0.18s",
-                  position: "relative",
-                }}
-                onMouseOver={(e) => {
-                  if (!(i === 0 && active.accent))
-                    e.currentTarget.style.background = "var(--primary-pale)";
-                }}
-                onMouseOut={(e) => {
-                  if (!(i === 0 && active.accent))
-                    e.currentTarget.style.background = "var(--white)";
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 10,
+                  opacity: 0.15,
                 }}
               >
+                <span style={{ fontSize: 48 }}>📷</span>
+                <span style={{ fontSize: 12, color: "var(--ink)" }}>
+                  Add image in admin
+                </span>
+              </div>
+            )}
+
+            {/* Product name overlay at bottom right */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "20px 24px 18px",
+                background: "linear-gradient(transparent, rgba(0,0,0,0.65))",
+                pointerEvents: "none",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 800,
+                  color: "#fff",
+                  lineHeight: 1.3,
+                }}
+              >
+                {hero.name}
+              </div>
+              {hero.tag && (
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 800,
-                    color: i === 0 && active.accent ? "#fff" : "var(--ink)",
-                    marginBottom: 8,
-                    lineHeight: 1.3,
-                    paddingRight: 24,
-                  }}
-                >
-                  {p.name}
-                </div>
-                <div
-                  style={{
-                    fontSize: 12.5,
-                    color:
-                      i === 0 && active.accent
-                        ? "rgba(255,255,255,0.75)"
-                        : "var(--mid)",
-                    lineHeight: 1.65,
-                    flex: 1,
-                  }}
-                >
-                  {p.desc}
-                </div>
-                <div
-                  style={{
-                    display: "inline-block",
-                    marginTop: 14,
-                    background:
-                      i === 0 && active.accent
-                        ? "rgba(255,255,255,0.18)"
-                        : "var(--primary-pale-solid)",
-                    color:
-                      i === 0 && active.accent
-                        ? "rgba(255,255,255,0.9)"
-                        : "var(--primary-dk)",
                     fontSize: 10,
                     fontWeight: 700,
-                    padding: "3px 9px",
-                    borderRadius: 4,
-                    width: "fit-content",
+                    color: "rgba(255,255,255,0.65)",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.06em",
+                    marginTop: 3,
                   }}
                 >
-                  {p.tag}
+                  {hero.tag}
                 </div>
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 20,
-                    right: 20,
-                    fontSize: 13,
-                    color:
-                      i === 0 && active.accent
-                        ? "rgba(255,255,255,0.5)"
-                        : "var(--primary)",
-                    opacity: 0,
-                    transition: "all 0.18s",
-                  }}
-                  className="wmm-arrow"
-                >
-                  ↗
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom CTA strip */}
-          <div
-            style={{
-              marginTop: 20,
-              padding: "16px 20px",
-              background: "var(--surface)",
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 12,
-            }}
-          >
-            <div style={{ fontSize: 13, color: "var(--mid)" }}>
-              <strong style={{ color: "var(--ink)" }}>
-                Need a custom configuration?
-              </strong>{" "}
-              Every product is built to your exact specification — size,
-              modules, power, materials.
+              )}
             </div>
-            <a
-              href="#workbench"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                background: "var(--primary)",
-                color: "#fff",
-                padding: "9px 20px",
-                borderRadius: 7,
-                fontSize: 13,
-                fontWeight: 700,
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-                transition: "background 0.18s",
-              }}
-              onMouseOver={(e) =>
-                (e.currentTarget.style.background = "var(--primary-dk)")
-              }
-              onMouseOut={(e) =>
-                (e.currentTarget.style.background = "var(--primary)")
-              }
-            >
-              Configure Yours →
-            </a>
           </div>
         </div>
       )}
+
+      {/* Bottom CTA strip */}
+      <div
+        style={{
+          marginTop: 20,
+          padding: "16px 20px",
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: 8,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 12,
+        }}
+      >
+        <div style={{ fontSize: 13, color: "var(--mid)" }}>
+          <strong style={{ color: "var(--ink)" }}>
+            Need a custom configuration?
+          </strong>{" "}
+          Every product is built to your exact specification — size, modules,
+          power, materials.
+        </div>
+        <a
+          href="/configure"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            background: "var(--primary)",
+            color: "#fff",
+            padding: "9px 20px",
+            borderRadius: 7,
+            fontSize: 13,
+            fontWeight: 700,
+            textDecoration: "none",
+            whiteSpace: "nowrap",
+            transition: "background 0.18s",
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.background = "var(--primary-dk)")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.background = "var(--primary)")
+          }
+        >
+          Configure Yours →
+        </a>
+      </div>
     </div>
   );
 }
@@ -1685,6 +1845,260 @@ function CertificationBadges() {
 }
 
 // ─────────────────────────────────────────────
+// COMPONENT: SIMPLE ENQUIRY FORM — Light theme
+// Replace WorkbenchConfigurator with this
+// Place above export default function Home()
+// ─────────────────────────────────────────────
+
+function SimpleEnquiryForm({ waNumber }) {
+  const [form, setForm] = React.useState({
+    name: "",
+    company: "",
+    requirement: "",
+    contact: "",
+  });
+  const [submitted, setSubmitted] = React.useState(false);
+
+  function update(key, val) {
+    setForm((f) => ({ ...f, [key]: val }));
+  }
+
+  function buildWhatsAppMessage() {
+    return encodeURIComponent(
+      [
+        "🔧 *TMCI Enquiry*",
+        "",
+        `*Name:* ${form.name}`,
+        `*Company:* ${form.company}`,
+        `*Requirement:* ${form.requirement}`,
+        `*Contact:* ${form.contact}`,
+        "",
+        "Please get in touch.",
+      ].join("\n"),
+    );
+  }
+
+  const isValid = form.name.trim() && form.contact.trim();
+
+  const inputStyle = {
+    width: "100%",
+    background: "var(--white)", // change from "var(--surface)" to "var(--white)"
+    border: "1px solid var(--border)",
+    borderRadius: 8,
+    padding: "11px 14px",
+    fontSize: 14,
+    color: "var(--ink)",
+    fontFamily: "var(--ff)",
+    outline: "none",
+    boxSizing: "border-box",
+    transition: "border-color 0.15s",
+  };
+
+  const labelStyle = {
+    fontSize: 11,
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    color: "var(--ink)", // change from "var(--muted)" to "var(--ink)"
+    display: "block",
+    marginBottom: 8,
+  };
+
+  if (submitted) {
+    return (
+      <div style={{ textAlign: "center", padding: "32px 0" }}>
+        <div
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            background: "var(--primary-pale-solid)",
+            border: "2px solid var(--primary)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto 16px",
+            fontSize: 24,
+            color: "var(--primary)",
+            fontWeight: 900,
+          }}
+        >
+          ✓
+        </div>
+        <h3
+          style={{
+            fontSize: 20,
+            fontWeight: 800,
+            color: "var(--ink)",
+            marginBottom: 8,
+          }}
+        >
+          Got it, {form.name.split(" ")[0]}!
+        </h3>
+        <p
+          style={{
+            fontSize: 14,
+            color: "var(--mid)",
+            lineHeight: 1.7,
+            maxWidth: 340,
+            margin: "0 auto 24px",
+          }}
+        >
+          Our engineers will review your requirement and get back within 24
+          hours.
+        </p>
+        <a
+          href={`https://wa.me/${waNumber}?text=${buildWhatsAppMessage()}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            background: "rgba(37,211,102,0.1)",
+            border: "1px solid rgba(37,211,102,0.3)",
+            color: "#16a34a",
+            padding: "10px 20px",
+            borderRadius: 8,
+            fontSize: 13.5,
+            fontWeight: 600,
+            textDecoration: "none",
+          }}
+        >
+          💬 Also send on WhatsApp
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* Name + Company */}
+      <div
+        style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}
+        className="form-2col"
+      >
+        <div>
+          <label style={labelStyle}>Your Name *</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => update("name", e.target.value)}
+            placeholder="Rahul Sharma"
+            style={inputStyle}
+            onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+            onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+          />
+        </div>
+        <div>
+          <label style={labelStyle}>Company</label>
+          <input
+            type="text"
+            value={form.company}
+            onChange={(e) => update("company", e.target.value)}
+            placeholder="Acme Industries"
+            style={inputStyle}
+            onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+            onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+          />
+        </div>
+      </div>
+
+      {/* Requirement */}
+      <div>
+        <label style={labelStyle}>What are you looking to build? </label>
+        <textarea
+          value={form.requirement}
+          onChange={(e) => update("requirement", e.target.value)}
+          placeholder="e.g. We need a calibration bench for temperature and pressure instruments. Looking to set up an in-house lab at our Pune facility."
+          rows={4}
+          style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6 }}
+          onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+          onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+        />
+      </div>
+
+      {/* Contact */}
+      <div>
+        <label style={labelStyle}>Phone or Email *</label>
+        <input
+          type="text"
+          value={form.contact}
+          onChange={(e) => update("contact", e.target.value)}
+          placeholder="+91 98765 43210 or name@company.com"
+          style={inputStyle}
+          onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+          onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+        />
+      </div>
+
+      {/* Buttons */}
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+        <button
+          onClick={() => isValid && setSubmitted(true)}
+          disabled={!isValid}
+          style={{
+            flex: 1,
+            background: isValid ? "var(--cta)" : "var(--border)",
+            border: "none",
+            color: isValid ? "#fff" : "var(--muted)",
+            padding: "13px 24px",
+            borderRadius: 8,
+            cursor: isValid ? "pointer" : "not-allowed",
+            fontSize: 14,
+            fontWeight: 700,
+            fontFamily: "var(--ff)",
+            transition: "all 0.18s",
+            minWidth: 140,
+          }}
+          onMouseOver={(e) => {
+            if (isValid) e.currentTarget.style.background = "var(--cta-hover)";
+          }}
+          onMouseOut={(e) => {
+            if (isValid) e.currentTarget.style.background = "var(--cta)";
+          }}
+        >
+          Send Enquiry →
+        </button>
+        <a
+          href={`https://wa.me/${waNumber}?text=${buildWhatsAppMessage()}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            background: "rgba(37,211,102,0.08)",
+            border: "1px solid rgba(37,211,102,0.25)",
+            color: "#16a34a",
+            padding: "13px 20px",
+            borderRadius: 8,
+            fontSize: 14,
+            fontWeight: 600,
+            textDecoration: "none",
+            whiteSpace: "nowrap",
+            transition: "all 0.18s",
+          }}
+          onMouseOver={(e) =>
+            (e.currentTarget.style.background = "rgba(37,211,102,0.15)")
+          }
+          onMouseOut={(e) =>
+            (e.currentTarget.style.background = "rgba(37,211,102,0.08)")
+          }
+        >
+          💬 WhatsApp
+        </a>
+      </div>
+
+      <p style={{ fontSize: 11.5, color: "var(--muted)", lineHeight: 1.6 }}>
+        We respond within 24 hours. Your details are only used to get in touch
+        about your enquiry.
+      </p>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
 // MAIN PAGE COMPONENT
 // ─────────────────────────────────────────────
 
@@ -1692,6 +2106,8 @@ export default function Home() {
   const [sections, setSections] = useState({});
   const [faqs, setFaqs] = useState([]);
   const [openFaq, setOpenFaq] = useState(null);
+  const [productCategories, setProductCategories] =
+    useState(PRODUCT_CATEGORIES);
   const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "919742944306";
 
   useEffect(() => {
@@ -1701,7 +2117,11 @@ export default function Home() {
   async function loadData() {
     const cachedSections = cacheGet("home_sections");
     const cachedFaqs = cacheGet("faqs");
-    if (cachedSections) setSections(cachedSections);
+    if (cachedSections) {
+      setSections(cachedSections);
+      if (cachedSections.__products)
+        setProductCategories(cachedSections.__products);
+    }
     if (cachedFaqs) setFaqs(cachedFaqs);
     if (cachedSections && cachedFaqs) return;
     const [{ data: sectionsData }, { data: faqsData }] = await Promise.all([
@@ -1712,6 +2132,16 @@ export default function Home() {
     sectionsData?.forEach((s) => {
       map[s.id] = s;
     });
+    const productsSection = map["products"];
+    if (productsSection?.content) {
+      try {
+        const cats = JSON.parse(productsSection.content);
+        if (Array.isArray(cats) && cats.length > 0) {
+          setProductCategories(cats);
+          map.__products = cats;
+        }
+      } catch {}
+    }
     setSections(map);
     setFaqs(faqsData || []);
     cacheSet("home_sections", map);
@@ -1745,7 +2175,7 @@ export default function Home() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(0,191,140,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(0,191,140,0.045) 1px, transparent 1px)",
+              "linear-gradient(color-mix(in srgb, var(--primary-md) 4.5%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--primary-md) 4.5%, transparent) 1px, transparent 1px)",
             backgroundSize: "48px 48px",
             pointerEvents: "none",
           }}
@@ -1758,7 +2188,7 @@ export default function Home() {
             width: 500,
             height: 500,
             background:
-              "radial-gradient(ellipse, rgba(0,191,140,0.13) 0%, transparent 68%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-md) 13%, transparent) 0%, transparent 68%)",
             pointerEvents: "none",
           }}
         />
@@ -1770,7 +2200,7 @@ export default function Home() {
             width: 380,
             height: 380,
             background:
-              "radial-gradient(ellipse, rgba(0,140,191,0.07) 0%, transparent 68%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-lt) 7%, transparent) 0%, transparent 68%)",
             pointerEvents: "none",
           }}
         />
@@ -1832,7 +2262,8 @@ export default function Home() {
                 style={{
                   width: 1,
                   height: 12,
-                  background: "rgba(0,191,140,0.3)",
+                  background:
+                    "color-mix(in srgb, var(--primary-md) 30%, transparent)",
                 }}
               />
               <span
@@ -2196,9 +2627,10 @@ export default function Home() {
               how your team actually works.
             </p>
           </div>
-
           {/* 3b+3c. Category groups */}
-          <WhatWeMakeSection />
+          <WhatWeMakeSection
+            rawCategories={sections["products"]?.content}
+          />{" "}
         </div>
       </div>
       {/* ════════════════════════════════════════
@@ -2219,7 +2651,7 @@ export default function Home() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(0,191,140,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,191,140,0.03) 1px, transparent 1px)",
+              "linear-gradient(color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px)",
             backgroundSize: "48px 48px",
             pointerEvents: "none",
           }}
@@ -2234,7 +2666,7 @@ export default function Home() {
             width: 600,
             height: 600,
             background:
-              "radial-gradient(ellipse, rgba(0,191,140,0.08) 0%, transparent 65%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-md) 8%, transparent) 0%, transparent 65%)",
             pointerEvents: "none",
           }}
         />
@@ -2246,7 +2678,7 @@ export default function Home() {
             width: 400,
             height: 400,
             background:
-              "radial-gradient(ellipse, rgba(0,140,191,0.06) 0%, transparent 65%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-lt) 6%, transparent) 0%, transparent 65%)",
             pointerEvents: "none",
           }}
         />
@@ -2346,7 +2778,8 @@ export default function Home() {
               <div
                 style={{
                   background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(0,191,140,0.15)",
+                  border:
+                    "1px solid color-mix(in srgb, var(--primary-md) 15%, transparent)",
                   borderRadius: 16,
                   padding: "32px 28px",
                   position: "relative",
@@ -2362,7 +2795,7 @@ export default function Home() {
                     width: 200,
                     height: 200,
                     background:
-                      "radial-gradient(circle, rgba(0,191,140,0.1) 0%, transparent 70%)",
+                      "radial-gradient(circle, color-mix(in srgb, var(--primary-md) 10%, transparent) 0%, transparent 70%)",
                     pointerEvents: "none",
                   }}
                 />
@@ -2426,8 +2859,10 @@ export default function Home() {
                     <div
                       key={name}
                       style={{
-                        background: "rgba(0,191,140,0.08)",
-                        border: "1px solid rgba(0,191,140,0.2)",
+                        background:
+                          "color-mix(in srgb, var(--primary-md) 8%, transparent)",
+                        border:
+                          "1px solid color-mix(in srgb, var(--primary-md) 20%, transparent)",
                         color: "var(--primary-lt)",
                         fontSize: 11,
                         fontWeight: 700,
@@ -2448,7 +2883,8 @@ export default function Home() {
           <div
             style={{
               marginTop: 64,
-              borderTop: "1px solid rgba(0,191,140,0.15)",
+              borderTop:
+                "1px solid color-mix(in srgb, var(--primary-md) 15%, transparent)",
               paddingTop: 40,
               display: "flex",
               alignItems: "center",
@@ -2764,13 +3200,11 @@ export default function Home() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(0,191,140,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,191,140,0.03) 1px, transparent 1px)",
+              "linear-gradient(color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px)",
             backgroundSize: "48px 48px",
             pointerEvents: "none",
           }}
         />
-
-        {/* Glow orbs */}
         <div
           style={{
             position: "absolute",
@@ -2779,7 +3213,7 @@ export default function Home() {
             width: 500,
             height: 500,
             background:
-              "radial-gradient(ellipse, rgba(0,191,140,0.07) 0%, transparent 65%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-md) 7%, transparent) 0%, transparent 65%)",
             pointerEvents: "none",
           }}
         />
@@ -2791,7 +3225,7 @@ export default function Home() {
             width: 400,
             height: 400,
             background:
-              "radial-gradient(ellipse, rgba(0,140,191,0.05) 0%, transparent 65%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-lt) 5%, transparent) 0%, transparent 65%)",
             pointerEvents: "none",
           }}
         />
@@ -2801,13 +3235,13 @@ export default function Home() {
           style={{ maxWidth: 1200, position: "relative", zIndex: 2 }}
         >
           {/* Header */}
-          <div className="sec-hd ctr" style={{ marginBottom: 56 }}>
+          <div className="sec-hd ctr" style={{ marginBottom: 40 }}>
             <div className="overline" style={{ color: "var(--primary-lt)" }}>
               Who We Serve
             </div>
             <h2
               style={{
-                fontSize: "clamp(26px, 3.5vw, 42px)",
+                fontSize: "clamp(24px, 3.5vw, 42px)",
                 letterSpacing: "-1px",
                 color: "#fff",
               }}
@@ -2816,14 +3250,19 @@ export default function Home() {
               <br />
               We know them.
             </h2>
-            <p style={{ marginTop: 12, color: "rgba(255,255,255,0.45)" }}>
+            {/* Hide on mobile — className target */}
+            <p
+              className="who-serve-sub"
+              style={{ marginTop: 12, color: "rgba(255,255,255,0.45)" }}
+            >
               Thirteen years supplying calibration and test systems to India's
               most regulated industries — defence, energy, marine, and more.
             </p>
           </div>
 
-          {/* Primary sectors — 3 column */}
+          {/* Primary sectors grid */}
           <div
+            className="ind-primary-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
@@ -2834,7 +3273,6 @@ export default function Home() {
               overflow: "hidden",
               marginBottom: 2,
             }}
-            className="ind-primary-grid"
           >
             {[
               {
@@ -2870,18 +3308,20 @@ export default function Home() {
             ].map((item, i) => (
               <div
                 key={item.sector}
+                className="ind-sector-card"
                 style={{
                   background: "rgba(255,255,255,0.02)",
-                  padding: "32px 28px",
+                  padding: "28px 24px",
                   display: "flex",
                   flexDirection: "column",
-                  gap: 12,
+                  gap: 10,
                   transition: "background 0.2s",
                   cursor: "default",
                   minHeight: 220,
                 }}
                 onMouseOver={(e) =>
-                  (e.currentTarget.style.background = "rgba(0,191,140,0.06)")
+                  (e.currentTarget.style.background =
+                    "color-mix(in srgb, var(--primary-md) 6%, transparent)")
                 }
                 onMouseOut={(e) =>
                   (e.currentTarget.style.background = "rgba(255,255,255,0.02)")
@@ -2895,16 +3335,14 @@ export default function Home() {
                     color: "var(--primary-md)",
                     letterSpacing: "1px",
                     fontFamily: "var(--mono)",
-                    marginBottom: 4,
                   }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </div>
-
                 {/* Sector name */}
                 <div
                   style={{
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: 800,
                     color: "#fff",
                     lineHeight: 1.25,
@@ -2912,9 +3350,9 @@ export default function Home() {
                 >
                   {item.sector}
                 </div>
-
-                {/* Description */}
+                {/* Description — hidden on mobile */}
                 <div
+                  className="ind-sector-desc"
                   style={{
                     fontSize: 13,
                     color: "rgba(255,255,255,0.45)",
@@ -2924,15 +3362,10 @@ export default function Home() {
                 >
                   {item.desc}
                 </div>
-
-                {/* Client tags */}
+                {/* Client tags — hidden on mobile */}
                 <div
-                  style={{
-                    display: "flex",
-                    gap: 6,
-                    flexWrap: "wrap",
-                    marginTop: 8,
-                  }}
+                  className="ind-sector-tags"
+                  style={{ display: "flex", gap: 6, flexWrap: "wrap" }}
                 >
                   {item.clients.map((c) => (
                     <span
@@ -2941,8 +3374,10 @@ export default function Home() {
                         fontSize: 10.5,
                         fontWeight: 600,
                         color: "var(--primary-lt)",
-                        background: "rgba(0,191,140,0.08)",
-                        border: "1px solid rgba(0,191,140,0.18)",
+                        background:
+                          "color-mix(in srgb, var(--primary-md) 8%, transparent)",
+                        border:
+                          "1px solid color-mix(in srgb, var(--primary-md) 18%, transparent)",
                         padding: "3px 10px",
                         borderRadius: 20,
                       }}
@@ -2955,8 +3390,9 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Secondary sectors — compact strip */}
+          {/* Also serving strip — hidden on mobile */}
           <div
+            className="also-serving"
             style={{
               display: "flex",
               alignItems: "center",
@@ -3146,7 +3582,7 @@ export default function Home() {
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(rgba(0,191,140,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,191,140,0.03) 1px, transparent 1px)",
+              "linear-gradient(color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px)",
             backgroundSize: "48px 48px",
             pointerEvents: "none",
           }}
@@ -3161,7 +3597,7 @@ export default function Home() {
             width: 500,
             height: 500,
             background:
-              "radial-gradient(ellipse, rgba(0,191,140,0.07) 0%, transparent 65%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-md) 7%, transparent) 0%, transparent 65%)",
             pointerEvents: "none",
           }}
         />
@@ -3173,7 +3609,7 @@ export default function Home() {
             width: 400,
             height: 400,
             background:
-              "radial-gradient(ellipse, rgba(0,140,191,0.05) 0%, transparent 65%)",
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-lt) 5%, transparent) 0%, transparent 65%)",
             pointerEvents: "none",
           }}
         />
@@ -3306,7 +3742,8 @@ export default function Home() {
               gridTemplateColumns: "1fr 1fr",
               gap: 2,
               background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(0,191,140,0.12)",
+              border:
+                "1px solid color-mix(in srgb, var(--primary-md) 12%, transparent)",
               borderRadius: 16,
               overflow: "hidden",
               marginBottom: 32,
@@ -3326,8 +3763,10 @@ export default function Home() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 10,
-                  background: "rgba(0,191,140,0.08)",
-                  border: "1px solid rgba(0,191,140,0.2)",
+                  background:
+                    "color-mix(in srgb, var(--primary-md) 8%, transparent)",
+                  border:
+                    "1px solid color-mix(in srgb, var(--primary-md) 20%, transparent)",
                   borderRadius: 8,
                   padding: "8px 16px",
                   marginBottom: 28,
@@ -3485,8 +3924,10 @@ export default function Home() {
               <div
                 style={{
                   marginTop: 24,
-                  background: "rgba(0,191,140,0.06)",
-                  border: "1px solid rgba(0,191,140,0.15)",
+                  background:
+                    "color-mix(in srgb, var(--primary-md) 6%, transparent)",
+                  border:
+                    "1px solid color-mix(in srgb, var(--primary-md) 15%, transparent)",
                   borderRadius: 8,
                   padding: "16px 20px",
                 }}
@@ -3602,7 +4043,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       {/* ════════════════════════════════════════
           SECTION 9 — AUTHORIZED DEALERS
       ════════════════════════════════════════ */}
@@ -3655,7 +4096,8 @@ export default function Home() {
                 key={b.name}
                 style={{
                   background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(0,191,140,0.2)",
+                  border:
+                    "1px solid color-mix(in srgb, var(--primary-md) 20%, transparent)",
                   borderRadius: 12,
                   padding: "32px 48px",
                   textAlign: "center",
@@ -3708,46 +4150,233 @@ export default function Home() {
           </div>
         </div>
       </div>
-      
+
       {/* ════════════════════════════════════════
-          SECTION 11 — CUSTOMIZE WORKBENCH
-          Configurator component (4-step form)
-          See WorkbenchConfigurator component above
+          SECTION 11 — GET IN TOUCH
+          Light theme — simple lead capture
+          Single form, under 30 seconds to fill
       ════════════════════════════════════════ */}
       <section
         id="workbench"
-        style={{ background: "var(--ink)", padding: "72px 40px" }}
+        style={{
+          background: "var(--surface)",
+          borderTop: "1px solid var(--border)",
+        }}
       >
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div className="sec" style={{ maxWidth: 900 }}>
+          {/* Header */}
           <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <div className="overline" style={{ color: "var(--primary-lt)" }}>
-              Configurator
+            <div className="overline" style={{ marginBottom: 16 }}>
+              Get In Touch
             </div>
             <h2
               style={{
-                fontSize: "clamp(22px,3vw,36px)",
+                fontSize: "clamp(26px, 3.5vw, 44px)",
                 fontWeight: 800,
-                color: "#fff",
-                letterSpacing: -1,
-                lineHeight: 1.13,
-                marginBottom: 10,
+                color: "var(--ink)",
+                letterSpacing: "-1.5px",
+                lineHeight: 1.1,
+                marginBottom: 16,
               }}
             >
-              Customize Your Workbench
+              Tell us what you need.
+              <br />
+              We'll take it from there.
             </h2>
             <p
               style={{
-                fontSize: 15,
-                color: "rgba(255,255,255,0.5)",
-                maxWidth: 500,
+                fontSize: 16,
+                color: "var(--mid)",
+                maxWidth: 480,
                 margin: "0 auto",
+                lineHeight: 1.7,
               }}
             >
-              Tell us your requirements — our engineers will design exactly what
-              you need.
+              No lengthy forms. No commitments. Just tell us about your
+              requirement and our engineers will get back within 24 hours.
             </p>
           </div>
-          <WorkbenchConfigurator />
+
+          {/* Form card */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 2,
+              background: "var(--border)",
+              border: "1px solid var(--border)",
+              borderRadius: 16,
+              overflow: "hidden",
+            }}
+            className="enquiry-grid"
+          >
+            {/* Left — form */}
+            <div
+              style={{
+                padding: "40px 36px",
+                background: "var(--white)",
+                borderRight: "1px solid var(--border)",
+              }}
+            >
+              <SimpleEnquiryForm waNumber={waNumber} />
+            </div>
+
+            {/* Right — what happens next */}
+            <div
+              style={{
+                padding: "40px 36px",
+                background: "var(--white)",
+                display: "flex",
+                flexDirection: "column",
+                gap: 28,
+              }}
+            >
+              <div>
+                <p
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "1.2px",
+                    color: "var(--muted)",
+                    marginBottom: 24,
+                  }}
+                >
+                  What happens next
+                </p>
+                <div
+                  style={{ display: "flex", flexDirection: "column", gap: 24 }}
+                >
+                  {[
+                    {
+                      step: "01",
+                      title: "We review your requirement",
+                      desc: "Our engineers read every enquiry personally. No automated responses.",
+                    },
+                    {
+                      step: "02",
+                      title: "We get back within 24 hours",
+                      desc: "With questions, a rough spec, or a ballpark — whatever makes sense first.",
+                    },
+                    {
+                      step: "03",
+                      title: "We design it together",
+                      desc: "One call or email thread is usually enough to nail down exactly what you need.",
+                    },
+                    {
+                      step: "04",
+                      title: "You get a clear quote",
+                      desc: "Fixed price, clear scope, realistic timeline. No surprises.",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.step}
+                      style={{
+                        display: "flex",
+                        gap: 16,
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: 11,
+                          fontWeight: 700,
+                          color: "var(--primary)",
+                          fontFamily: "var(--mono)",
+                          flexShrink: 0,
+                          marginTop: 3,
+                          minWidth: 20,
+                        }}
+                      >
+                        {item.step}
+                      </div>
+                      <div>
+                        <div
+                          style={{
+                            fontSize: 13.5,
+                            fontWeight: 700,
+                            color: "var(--ink)",
+                            marginBottom: 3,
+                          }}
+                        >
+                          {item.title}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: 12.5,
+                            color: "var(--mid)",
+                            lineHeight: 1.6,
+                          }}
+                        >
+                          {item.desc}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Direct contact */}
+              <div
+                style={{
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  borderLeft: "3px solid var(--primary)",
+                  borderRadius: "0 8px 8px 0",
+                  padding: "16px 20px",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "1px",
+                    color: "var(--primary)",
+                    marginBottom: 10,
+                  }}
+                >
+                  Prefer to call directly?
+                </p>
+                <a
+                  href="tel:+919742944306"
+                  style={{
+                    display: "block",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: "var(--ink)",
+                    textDecoration: "none",
+                    marginBottom: 4,
+                  }}
+                >
+                  +91 97429 44306
+                </a>
+                <a
+                  href="tel:+918048957300"
+                  style={{
+                    display: "block",
+                    fontSize: 13,
+                    color: "var(--mid)",
+                    textDecoration: "none",
+                    marginBottom: 8,
+                  }}
+                >
+                  +91 80 4895 7300
+                </a>
+                <a
+                  href="mailto:info@tazkmazter.com"
+                  style={{
+                    display: "block",
+                    fontSize: 13,
+                    color: "var(--mid)",
+                    textDecoration: "none",
+                  }}
+                >
+                  info@tazkmazter.com
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
       {/* ════════════════════════════════════════
