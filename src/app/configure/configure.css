@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+:root { --primary: #00897B; --primary-dk: #00695C; --primary-md: #00BFA5; }
+
+@media (max-width: 640px) {
+  .cfg-bench-grid { grid-template-columns: 1fr 1fr !important; }
+  .cfg-module-grid { grid-template-columns: 1fr 1fr !important; }
+  .cfg-form-2col { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 380px) {
+  .cfg-bench-grid { grid-template-columns: 1fr !important; }
+  .cfg-module-grid { grid-template-columns: 1fr !important; }
+}
