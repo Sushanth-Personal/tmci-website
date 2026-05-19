@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -322,123 +322,8 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Industries mega */}
-          <div style={{ position: "relative" }} className="mega-parent">
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-                padding: "0 13px",
-                height: 64,
-                fontSize: 13,
-                fontWeight: 600,
-                color: navLinkColor,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                transition: "color 0.15s",
-              }}
-              className="nl-trigger"
-            >
-              Industries
-              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                <path
-                  d="M2 3.5l3 3 3-3"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-            <div
-              className="mega-menu"
-              style={{
-                position: "absolute",
-                top: 63,
-                left: -20,
-                background: "#fff",
-                border: "1px solid #E2E8F0",
-                borderTop: "2px solid var(--primary)",
-                borderRadius: "0 0 12px 12px",
-                padding: 24,
-                minWidth: 380,
-                boxShadow: "0 12px 40px rgba(0,0,0,0.1)",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 8,
-                zIndex: 100,
-                opacity: 0,
-                pointerEvents: "none",
-                transition: "opacity 0.15s",
-              }}
-            >
-              {[
-                {
-                  title: "Core Sectors",
-                  links: [
-                    "Defence & Aerospace",
-                    "Oil, Gas & Petrochemical",
-                    "Power Generation",
-                    "Shipbuilding & Marine",
-                  ],
-                },
-                {
-                  title: "Other Sectors",
-                  links: [
-                    "Pharma & Biotech",
-                    "Automotive & EV",
-                    "Food Processing",
-                    "Education & R&D",
-                  ],
-                },
-              ].map((col) => (
-                <div key={col.title}>
-                  <div
-                    style={{
-                      fontSize: 9.5,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: "1.3px",
-                      color: "var(--primary)",
-                      marginBottom: 10,
-                      paddingBottom: 7,
-                      borderBottom: "1px solid #E2E8F0",
-                    }}
-                  >
-                    {col.title}
-                  </div>
-                  {col.links.map((l) => (
-                    <a
-                      key={l}
-                      href="#"
-                      style={{
-                        display: "block",
-                        padding: "6px 8px",
-                        borderRadius: 6,
-                        fontSize: 12.5,
-                        color: "#4A5568",
-                        fontWeight: 500,
-                        textDecoration: "none",
-                        transition: "all 0.12s",
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.background = "#F4FBFA";
-                        e.currentTarget.style.color = "var(--primary-dk)";
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.background = "";
-                        e.currentTarget.style.color = "#4A5568";
-                      }}
-                    >
-                      {l}
-                    </a>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {["Services", "Downloads", "About"].map((item) => (
+          {/* Plain links — Services, Downloads */}
+          {["Services", "Downloads"].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -460,6 +345,7 @@ export default function Navbar() {
             </a>
           ))}
 
+          {/* Blog */}
           <Link
             href="/blogs"
             style={{
@@ -468,10 +354,7 @@ export default function Navbar() {
               padding: "0 13px",
               fontSize: 13,
               fontWeight: 600,
-              color:
-                pathname === "/blogs"
-                  ? "var(--primary-md)"
-                  : navLinkColor,
+              color: pathname === "/blogs" ? "var(--primary-md)" : navLinkColor,
               textDecoration: "none",
               transition: "color 0.15s",
               whiteSpace: "nowrap",
@@ -481,13 +364,31 @@ export default function Navbar() {
             }
             onMouseOut={(e) =>
               (e.currentTarget.style.color =
-                pathname === "/blogs"
-                  ? "var(--primary-md)"
-                  : navLinkColor)
+                pathname === "/blogs" ? "var(--primary-md)" : navLinkColor)
             }
           >
             Blog
           </Link>
+
+          {/* Contact Us */}
+          <a
+            href="#workbench"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "0 13px",
+              fontSize: 13,
+              fontWeight: 600,
+              color: navLinkColor,
+              textDecoration: "none",
+              transition: "color 0.15s",
+              whiteSpace: "nowrap",
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.color = navLinkHover)}
+            onMouseOut={(e) => (e.currentTarget.style.color = navLinkColor)}
+          >
+            Contact Us
+          </a>
         </div>
 
         {/* Action buttons */}
@@ -532,7 +433,7 @@ export default function Navbar() {
           </a>
 
           <a
-            href="#catalogue"
+            href="/tmci-catalogue.pdf"
             style={{
               display: "flex",
               alignItems: "center",
@@ -660,9 +561,8 @@ export default function Navbar() {
           {[
             ["/", "Home"],
             ["/#products", "Products"],
-            ["/#industries", "Industries"],
             ["/blogs", "Blog"],
-            ["/#contact", "Contact"],
+            ["#workbench", "Contact Us"],
           ].map(([href, label]) => (
             <Link
               key={label}
@@ -681,7 +581,7 @@ export default function Navbar() {
             </Link>
           ))}
           <a
-            href="#workbench"
+            href="/configure"
             onClick={() => setOpen(false)}
             style={{
               display: "block",

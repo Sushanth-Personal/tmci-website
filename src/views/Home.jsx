@@ -351,7 +351,7 @@ function WorkbenchConfigurator() {
       val: "specific",
       icon: "📋",
       title: "I have a specific requirement",
-      desc: "I know what I need — just want to confirm TMCI can build it.",
+      desc: "I know what I need just want to confirm TMCI can build it.",
     },
     {
       val: "comparing",
@@ -615,7 +615,7 @@ function WorkbenchConfigurator() {
                 lineHeight: 1.6,
               }}
             >
-              We build every bench to specification — but first, help us
+              We build every bench to specification but first, help us
               understand where you're starting from.
             </p>
             <div
@@ -726,8 +726,8 @@ function WorkbenchConfigurator() {
                 lineHeight: 1.6,
               }}
             >
-              Select all that apply. Don't worry if you're unsure — we'll work
-              it out together.
+              Select all that apply. Don't worry if you're unsure, we'll work it
+              out together.
             </p>
             <div
               style={{
@@ -1028,17 +1028,18 @@ const PRODUCT_CATEGORIES = [
     headline: "Calibration Bench Systems",
     accent: true,
     tagline:
-      "Our flagship product line — built for in-house calibration of every parameter",
+      "Our flagship product line built for in-house calibration of every parameter",
     products: [
       {
         name: "Electrical & Electronics Calibration Test Bench",
         desc: "Modular ergonomic platform for precise testing, calibration, and maintenance of electrical and electronic equipment. Integrates multimeters, oscilloscopes, LCR meters, and power analyzers.",
         tag: "Most ordered",
         image: "",
+        slug: "electrical-calibration-bench",
       },
       {
         name: "Temperature Calibration Test Bench",
-        desc: "Specialized platform for accurate calibration of temperature instruments — sensors, transmitters, and controllers. Equipped with dry block calibrators, liquid baths, and reference thermometers.",
+        desc: "Specialized platform for accurate calibration of temperature instruments, sensors, transmitters, and controllers. Equipped with dry block calibrators, liquid baths, and reference thermometers.",
         tag: "ISO/IEC 17025 ready",
         image: "",
       },
@@ -1078,13 +1079,13 @@ const PRODUCT_CATEGORIES = [
       },
       {
         name: "Motor & Drive Test Bench",
-        desc: "Advanced modular system for testing, calibration, and evaluation of motors and drive systems — AC, DC, servo, and stepper motors.",
+        desc: "Advanced modular system for testing, calibration, and evaluation of motors and drive systems - AC, DC, servo, and stepper motors.",
         tag: "Automation ready",
         image: "",
       },
       {
         name: "Electric Vehicle (EV) Test Bench",
-        desc: "Specialized modular platform for testing EV components and systems — motors, inverters, BMS, and power electronics.",
+        desc: "Specialized modular platform for testing EV components and systems - motors, inverters, BMS, and power electronics.",
         tag: "EV · R&D",
         image: "",
       },
@@ -1106,7 +1107,7 @@ const PRODUCT_CATEGORIES = [
     products: [
       {
         name: "ESD Tables & Benches",
-        desc: "Contamination-free, static-controlled environment for precision tasks — PCB assembly, semiconductor handling, and testing.",
+        desc: "Contamination-free, static-controlled environment for precision tasks - PCB assembly, semiconductor handling, and testing.",
         tag: "ANSI-ESD S20.20",
         image: "",
       },
@@ -1117,7 +1118,7 @@ const PRODUCT_CATEGORIES = [
         image: "",
       },
       {
-        name: "ESD Workstation — Full Configuration",
+        name: "ESD Workstation - Full Configuration",
         desc: "Complete ESD workstation with 230V/415V power, RCCB, MCCB, VAF meter, banana sockets, AC/DC power supplies, and optional PC.",
         tag: "Full fit-out",
         image: "",
@@ -1158,7 +1159,7 @@ const PRODUCT_CATEGORIES = [
     label: "Instruments",
     headline: "Test & Measurement Instruments",
     tagline:
-      "Authorised dealer for Fluke and Harogic — full range of precision instruments",
+      "Authorised dealer for Fluke and Harogic - full range of precision instruments",
     products: [
       {
         name: "Gas Analyzers & Monitors",
@@ -1174,7 +1175,7 @@ const PRODUCT_CATEGORIES = [
       },
       {
         name: "Power Supplies & Signal Sources",
-        desc: "Fixed and variable AC/DC power supplies — 5V to 220V DC, single and three phase AC. Signal and function generators.",
+        desc: "Fixed and variable AC/DC power supplies - 5V to 220V DC, single and three phase AC. Signal and function generators.",
         tag: "Full range",
         image: "",
       },
@@ -1227,7 +1228,19 @@ function WhatWeMakeSection({ rawCategories }) {
     if (rawCategories) {
       try {
         const parsed = JSON.parse(rawCategories);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          // Merge slugs from local data — Supabase won't have them
+          return parsed.map((cat) => {
+            const localCat = PRODUCT_CATEGORIES.find((c) => c.id === cat.id);
+            return {
+              ...cat,
+              products: cat.products.map((p, i) => ({
+                ...p,
+                slug: p.slug || localCat?.products[i]?.slug || "",
+              })),
+            };
+          });
+        }
       } catch {}
     }
     return PRODUCT_CATEGORIES;
@@ -1416,26 +1429,52 @@ function WhatWeMakeSection({ rawCategories }) {
                     {product.desc}
                   </div>
                   {isActive && (
-                    <a
-                      href="/configure"
-                      onClick={(e) => e.stopPropagation()}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 4,
-                        marginTop: 10,
-                        fontSize: 11.5,
-                        fontWeight: 700,
-                        color: "#fff",
-                        border: "1px solid rgba(255,255,255,0.35)",
-                        borderRadius: 5,
-                        padding: "5px 12px",
-                        textDecoration: "none",
-                        width: "fit-content",
-                      }}
-                    >
-                      Enquire →
-                    </a>
+                    <>
+                      {isActive && product.slug && (
+                        <Link
+                          href={`/products/${product.slug}`}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            marginTop: 6,
+                            fontSize: 11.5,
+                            fontWeight: 700,
+                            color: "#fff",
+                            border: "1px solid rgba(255,255,255,0.35)",
+                            borderRadius: 5,
+                            padding: "5px 12px",
+                            textDecoration: "none",
+                            width: "fit-content",
+                          }}
+                        >
+                          View Details →
+                        </Link>
+                      )}
+                      <a
+                        href={`https://wa.me/919742944306?text=${encodeURIComponent("Hello! I'd like to enquire about this product.")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          marginTop: 10,
+                          fontSize: 11.5,
+                          fontWeight: 700,
+                          color: "#fff",
+                          border: "1px solid rgba(255,255,255,0.35)",
+                          borderRadius: 5,
+                          padding: "5px 12px",
+                          textDecoration: "none",
+                          width: "fit-content",
+                        }}
+                      >
+                        Enquire →
+                      </a>
+                    </>
                   )}
                 </div>
               );
@@ -2119,8 +2158,20 @@ export default function Home() {
     const cachedFaqs = cacheGet("faqs");
     if (cachedSections) {
       setSections(cachedSections);
-      if (cachedSections.__products)
-        setProductCategories(cachedSections.__products);
+      if (cachedSections.__products) {
+        // Re-merge slugs in case cache is stale
+        const merged = cachedSections.__products.map((cat) => {
+          const localCat = PRODUCT_CATEGORIES.find((c) => c.id === cat.id);
+          return {
+            ...cat,
+            products: cat.products.map((p, i) => ({
+              ...p,
+              slug: p.slug || localCat?.products[i]?.slug || "",
+            })),
+          };
+        });
+        setProductCategories(merged);
+      }
     }
     if (cachedFaqs) setFaqs(cachedFaqs);
     if (cachedSections && cachedFaqs) return;
@@ -2137,8 +2188,19 @@ export default function Home() {
       try {
         const cats = JSON.parse(productsSection.content);
         if (Array.isArray(cats) && cats.length > 0) {
-          setProductCategories(cats);
-          map.__products = cats;
+          // Merge slugs from local PRODUCT_CATEGORIES — Supabase data won't have them
+          const merged = cats.map((cat) => {
+            const localCat = PRODUCT_CATEGORIES.find((c) => c.id === cat.id);
+            return {
+              ...cat,
+              products: cat.products.map((p, i) => ({
+                ...p,
+                slug: p.slug || localCat?.products[i]?.slug || "",
+              })),
+            };
+          });
+          setProductCategories(merged);
+          map.__products = merged;
         }
       } catch {}
     }
@@ -2592,7 +2654,7 @@ export default function Home() {
         </div>
       </div>
       {/* ════════════════════════════════════════
-          SECTION 3 — WHAT WE MAKE (Products)
+       — WHAT WE MAKE (Products)
           3a. Section header
           3b. Category tabs
           3c. Product grid per category
@@ -2914,7 +2976,9 @@ export default function Home() {
               }}
             >
               <a
-                href="#workbench"
+                href={`https://wa.me/919742944306?text=${encodeURIComponent("Hello! I'd like to get a quote for a calibration/test bench setup.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -2935,7 +2999,7 @@ export default function Home() {
                   (e.currentTarget.style.background = "var(--primary)")
                 }
               >
-                Configure Your Bench →
+                Get a Quote →
               </a>
               <a
                 href={`https://wa.me/${waNumber}?text=${encodeURIComponent("Hello! I want to discuss building a proper lab setup.")}`}
@@ -3819,7 +3883,7 @@ export default function Home() {
                 Kochi Metro needed a fully controlled electrostatic discharge
                 environment for their electronics maintenance and assembly
                 operations. The sensitivity of the components being handled
-                meant that a standard workspace was not an option — any
+                meant that a standard workspace was not an option. Any
                 uncontrolled static discharge risked damaging equipment worth
                 significantly more than the lab itself.
               </p>
@@ -3833,9 +3897,9 @@ export default function Home() {
                 }}
               >
                 TMCI designed and installed a complete ESD-proof laboratory.
-                Every surface, every workstation, every accessory — flooring,
-                mats, benches, grounding points, wrist strap testers —
-                configured to ANSI-ESD S20.20 standards.
+                Every surface, every workstation, every accessory - flooring,
+                mats, benches, grounding points, wrist strap testers configured
+                to ANSI-ESD S20.20 standards.
               </p>
 
               <p
@@ -4379,6 +4443,114 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════
+          SECTION 9 — AUTHORIZED DEALERS
+      ════════════════════════════════════════ */}
+      <div
+        style={{
+          background: "#060F0D",
+          padding: "56px 40px",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+        }}
+      >
+        <div style={{ maxWidth: 1200, margin: "0 auto", textAlign: "center" }}>
+          <div
+            className="overline"
+            style={{ color: "var(--primary-lt)", marginBottom: 8 }}
+          >
+            Authorized Dealers
+          </div>
+          <p
+            style={{
+              fontSize: 14,
+              color: "rgba(255,255,255,0.35)",
+              marginBottom: 40,
+            }}
+          >
+            TMCI is an officially authorized dealer for these brands in India.
+          </p>
+          <div
+            style={{
+              display: "flex",
+              gap: 20,
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            {[
+              {
+                name: "Fluke",
+                tag: "Authorized Dealer",
+                logo: "https://res.cloudinary.com/dkhmnkxzo/image/upload/v1778578367/fluke-seeklogo_zrekcp.svg",
+                logoHeight: 48,
+              },
+              {
+                name: "Harogic",
+                tag: "Authorized Dealer",
+                logo: "https://res.cloudinary.com/dkhmnkxzo/image/upload/v1778578563/9c82e903-320d-4e78-847b-5ad5342c426c.png",
+                logoHeight: 72,
+              },
+            ].map((b) => (
+              <div
+                key={b.name}
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border:
+                    "1px solid color-mix(in srgb, var(--primary-md) 20%, transparent)",
+                  borderRadius: 12,
+                  padding: "32px 48px",
+                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 20,
+                  width: 280,
+                }}
+              >
+                <div
+                  style={{
+                    width: 160,
+                    height: 56,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={b.logo}
+                    alt={b.name}
+                    style={{
+                      maxWidth: 160,
+                      height: b.logoHeight,
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+                <div
+                  style={{
+                    width: "100%",
+                    height: 1,
+                    background: "rgba(255,255,255,0.07)",
+                  }}
+                />
+                <div
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "1.2px",
+                    color: "var(--primary-lt)",
+                  }}
+                >
+                  {b.tag}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* ════════════════════════════════════════
           SECTION 12 — FAQ
           Loaded from Supabase (admin managed)
@@ -4458,106 +4630,370 @@ export default function Home() {
         </div>
       </div>
       {/* ════════════════════════════════════════
-          SECTION 13 — BLOG PREVIEW
-          Shows 3 latest articles
-          Actual blogs loaded from /blogs page
-      ════════════════════════════════════════ */}
-      <div className="sec-alt" style={{ padding: "72px 40px" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+    SECTION 13 — FROM OUR ENGINEERS (Blog)
+    Dark theme — #060F0D with grid bg
+════════════════════════════════════════ */}
+      <div
+        style={{
+          background: "#060F0D",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Background grid */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage:
+              "linear-gradient(color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--primary-md) 3%, transparent) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            top: -80,
+            right: -80,
+            width: 500,
+            height: 500,
+            background:
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-md) 7%, transparent) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: -60,
+            left: -60,
+            width: 400,
+            height: 400,
+            background:
+              "radial-gradient(ellipse, color-mix(in srgb, var(--primary-lt) 5%, transparent) 0%, transparent 65%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div
+          className="sec"
+          style={{ maxWidth: 1200, position: "relative", zIndex: 2 }}
+        >
+          {/* Header */}
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-end",
-              marginBottom: 32,
+              marginBottom: 40,
+              flexWrap: "wrap",
+              gap: 16,
             }}
           >
             <div>
-              <div className="overline">Knowledge Hub</div>
+              <div className="overline" style={{ color: "var(--primary-lt)" }}>
+                From Our Engineers
+              </div>
               <h2
                 style={{
                   fontSize: "clamp(22px,3vw,36px)",
                   fontWeight: 800,
                   letterSpacing: -1,
-                  color: "var(--ink)",
+                  color: "#fff",
                   lineHeight: 1.13,
+                  marginBottom: 10,
                 }}
               >
-                Latest from TMCI
+                Answers to questions we get asked every week.
               </h2>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "rgba(255,255,255,0.45)",
+                  lineHeight: 1.7,
+                  maxWidth: 520,
+                }}
+              >
+                Real answers from engineers who've built over 350 labs. No sales
+                pitch — just what actually works.
+              </p>
             </div>
             <Link
               href="/blogs"
               style={{
-                color: "var(--primary)",
+                color: "var(--primary-lt)",
                 fontWeight: 700,
                 fontSize: 13,
                 whiteSpace: "nowrap",
+                flexShrink: 0,
+                textDecoration: "none",
               }}
             >
-              View all articles →
+              Read all articles →
             </Link>
           </div>
-          <div className="news-grid">
-            <div className="nc lg">
+
+          {/* Cards grid */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.4fr 1fr 1fr",
+              gap: 2,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 16,
+              overflow: "hidden",
+              marginBottom: 24,
+            }}
+            className="blog-grid"
+          >
+            {/* Featured article */}
+            <div
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                padding: "28px 24px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
+                borderRight: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
               <div
-                className="nc-img"
                 style={{
+                  width: "100%",
+                  height: 180,
                   background: "linear-gradient(135deg,#081520,#0C2E28)",
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 20,
+                  overflow: "hidden",
                 }}
               >
                 <BenchSVG />
               </div>
-              <div className="nc-body">
-                <div className="nc-tag">Product Spotlight</div>
-                <div className="nc-title">
-                  How our Calibration Test Bench is used by Oil & Gas testing
-                  facilities
-                </div>
-                <div className="nc-desc">
-                  The TMCI team works closely with each customer to define exact
-                  end-user requirements. Modules cover electronic signal,
-                  temperature, loop, and pressure applications.
-                </div>
-                <div className="nc-meta">📅 2024 · Product Overview</div>
+              <div
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                  color: "var(--primary-lt)",
+                  marginBottom: 10,
+                }}
+              >
+                Lab Setup
+              </div>
+              <div
+                style={{
+                  fontSize: 15,
+                  fontWeight: 800,
+                  color: "#fff",
+                  lineHeight: 1.45,
+                  marginBottom: 10,
+                }}
+              >
+                How to plan your first in-house calibration lab — what to get
+                right before you buy anything
+              </div>
+              <div
+                style={{
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.45)",
+                  lineHeight: 1.7,
+                  marginBottom: 16,
+                  flex: 1,
+                }}
+              >
+                Most labs get the equipment right and the workspace wrong.
+                Here's what 13 years of installations has taught us about what
+                actually matters when setting up from scratch.
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "rgba(255,255,255,0.25)",
+                  fontWeight: 500,
+                }}
+              >
+                📅 2024 · 6 min read
               </div>
             </div>
-            {[
-              {
-                tag: "Export",
-                title:
-                  "TMCI ships calibration systems internationally — including Saudi Arabia",
-                date: "2023",
-                icon: "🌍",
-              },
-              {
-                tag: "New Product",
-                title:
-                  "Trainer kits and lab workstations now available for educational institutions",
-                date: "2024",
-                icon: "🎓",
-              },
-            ].map((n) => (
-              <div key={n.tag} className="nc">
-                <div
-                  className="nc-img"
-                  style={{
-                    background: "linear-gradient(135deg,#1C2B38,#0F3040)",
-                    fontSize: 42,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {n.icon}
-                </div>
-                <div className="nc-body">
-                  <div className="nc-tag">{n.tag}</div>
-                  <div className="nc-title">{n.title}</div>
-                  <div className="nc-meta">📅 {n.date}</div>
-                </div>
+
+            {/* Article 2 */}
+            <div
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                padding: "28px 24px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
+                borderRight: "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: 120,
+                  background: "linear-gradient(135deg,#1C2B38,#0F3040)",
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 20,
+                  fontSize: 40,
+                }}
+              >
+                🔧
               </div>
-            ))}
+              <div
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                  color: "var(--primary-lt)",
+                  marginBottom: 10,
+                }}
+              >
+                Buying Guide
+              </div>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 800,
+                  color: "#fff",
+                  lineHeight: 1.45,
+                  marginBottom: 10,
+                  flex: 1,
+                }}
+              >
+                What to ask before buying a calibration bench — 6 questions most
+                buyers forget
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "rgba(255,255,255,0.25)",
+                  fontWeight: 500,
+                }}
+              >
+                📅 2024 · 4 min read
+              </div>
+            </div>
+
+            {/* Article 3 */}
+            <div
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                padding: "28px 24px",
+                display: "flex",
+                flexDirection: "column",
+                gap: 0,
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: 120,
+                  background: "linear-gradient(135deg,#1C2438,#0F2840)",
+                  borderRadius: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 20,
+                  fontSize: 40,
+                }}
+              >
+                ⚡
+              </div>
+              <div
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "1px",
+                  color: "var(--primary-lt)",
+                  marginBottom: 10,
+                }}
+              >
+                ESD
+              </div>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 800,
+                  color: "#fff",
+                  lineHeight: 1.45,
+                  marginBottom: 10,
+                  flex: 1,
+                }}
+              >
+                ESD basics — what your lab actually needs vs what vendors tend
+                to oversell
+              </div>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: "rgba(255,255,255,0.25)",
+                  fontWeight: 500,
+                }}
+              >
+                📅 2024 · 5 min read
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom CTA strip */}
+          <div
+            style={{
+              padding: "20px 28px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 16,
+            }}
+          >
+            <p
+              style={{
+                fontSize: 14,
+                color: "rgba(255,255,255,0.5)",
+                lineHeight: 1.6,
+              }}
+            >
+              <strong style={{ color: "rgba(255,255,255,0.8)" }}>
+                Have a question we haven't answered?
+              </strong>{" "}
+              Ask our engineers directly — no commitment, just a straight
+              answer.
+            </p>
+            <a
+              href={`https://wa.me/919742944306?text=${encodeURIComponent("Hello! I have a question about setting up my lab.")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(37,211,102,0.1)",
+                border: "1px solid rgba(37,211,102,0.25)",
+                color: "rgba(37,211,102,0.9)",
+                padding: "10px 20px",
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 600,
+                textDecoration: "none",
+                whiteSpace: "nowrap",
+              }}
+            >
+              💬 Ask an Engineer
+            </a>
           </div>
         </div>
       </div>
@@ -4572,7 +5008,7 @@ export default function Home() {
             <h2>Need a custom calibration or test solution?</h2>
             <p>
               Tell us your requirement and our engineers will design a system
-              built precisely to your specification — at a competitive price,
+              built precisely to your specification at a competitive price,
               delivered on time.
             </p>
           </div>
